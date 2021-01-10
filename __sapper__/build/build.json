@@ -1,0 +1,129 @@
+{
+  "bundler": "rollup",
+  "shimport": "2.0.4",
+  "assets": {
+    "main": "client.2a673209.js"
+  },
+  "css": {
+    "main": [
+      "client-a6ab5402.css"
+    ]
+  },
+  "dependencies": {
+    "index.svelte": [
+      "index.df2bc200.js",
+      "lib.98d03415.js",
+      "inject_styles.5607aec6.js",
+      "index-f293329d.css"
+    ],
+    "lostpassword.svelte": [
+      "lostpassword.b4985d99.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "Problem.15a1ecbc.js",
+      "ConnectDoc.d4ae2f0c.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "ConnectDoc-48f782bd.css",
+      "lostpassword-ff6a867c.css"
+    ],
+    "universes.svelte": [
+      "universes.8d9c4017.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "Problem.15a1ecbc.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "universes-1914e00f.css"
+    ],
+    "mailsent.svelte": [
+      "mailsent.8d103560.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "mailsent-7607be26.css"
+    ],
+    "sendmail.svelte": [
+      "sendmail.0b166c27.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css"
+    ],
+    "connect.svelte": [
+      "connect.2854d64e.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "ConnectDoc.d4ae2f0c.js",
+      "ConnectDoc.cc981cee.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "ConnectDoc-48f782bd.css",
+      "connect-9523f111.css"
+    ],
+    "enroll.svelte": [
+      "enroll.a3d04ecf.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "Problem.15a1ecbc.js",
+      "ConnectDoc.d4ae2f0c.js",
+      "ConnectDoc.cc981cee.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "ConnectDoc-48f782bd.css",
+      "enroll-0e365366.css"
+    ],
+    "resume/[token].svelte": [
+      "[token].e5924a3f.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "Problem.15a1ecbc.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "[token]-7607be26.css"
+    ],
+    "signua.svelte": [
+      "signua.04289ffb.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "UA.58cddfcc.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css"
+    ],
+    "whoami.svelte": [
+      "whoami.3f124682.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "Problem.15a1ecbc.js",
+      "ConnectDoc.d4ae2f0c.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "ConnectDoc-48f782bd.css",
+      "whoami-853dfea0.css"
+    ],
+    "login.svelte": [
+      "login.2ddd01a8.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "Problem.15a1ecbc.js",
+      "ConnectDoc.d4ae2f0c.js",
+      "ConnectDoc.cc981cee.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css",
+      "ConnectDoc-48f782bd.css",
+      "login-2a50747d.css"
+    ],
+    "ua.svelte": [
+      "ua.24be9d11.js",
+      "lib.98d03415.js",
+      "Bottom.f5e64682.js",
+      "UA.58cddfcc.js",
+      "inject_styles.5607aec6.js",
+      "Bottom-7bc330bc.css"
+    ]
+  },
+  "legacy_assets": {
+    "main": "client.1fc0f51e.js"
+  }
+}
