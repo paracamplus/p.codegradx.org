@@ -105,7 +105,6 @@ dist
 
 
 #QNC
-netlify.toml
 
 # Local Netlify folder
 .netlify

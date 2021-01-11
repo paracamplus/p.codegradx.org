@@ -1,0 +1,31 @@
+[build]
+  base = "./"
+  command = "npm run netlify"
+  publish = "__sapper__/export/"
+
+[build.environment]
+  A = "test"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/_digits/*.png"
+  [headers.values]
+    cache-control = "public,s-maxage=36000"
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    cache-control = "public,s-maxage=36000"
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    cache-control = "public,s-maxage=36000"
+[[headers]]
+  for = "/*.ico"
+  [headers.values]
+    cache-control = "public,s-maxage=36000"
+
+# end.
