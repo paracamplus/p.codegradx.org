@@ -102,3 +102,12 @@ dist
 
 # TernJS port file
 .tern-port
+
+
+#QNC
+netlify.toml
+
+# Local Netlify folder
+.netlify
+__sapper__/
+secrets/
