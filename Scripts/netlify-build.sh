@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-11 10:28:00 queinnec"
+# Time-stamp: "2021-01-11 10:54:46 queinnec"
 
 # Build the server on Netlify
 export CONTEXT=production
@@ -7,8 +7,8 @@ export NODE_ENV=$CONTEXT
 export NODE_VERSION=12.x
 
 #ls -Ral
-echo "*** whoami -> $(whoami)"
-echo "*** pwd    -> $(pwd)"
+echo "*** whoami -> $(whoami)"   # buildbot
+echo "*** pwd    -> $(pwd)"      # /opt/build/repo/
 echo "*** printenv is"
 printenv
 

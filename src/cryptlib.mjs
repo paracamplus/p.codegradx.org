@@ -1,58 +1,51 @@
 // Crypt utilities to hide from browsers the content of some cookies.
-// These are used on server-side.
+// These are used on server-side (between the browser and the server).
+// X servers do not need to know them.
 
 const chunksize = 80;
 
 // With Docker, this is where keys are available:
+const defaultKeyDirs = [
+    '/run/secrets/',
+    './secrets/'
+];
+
 const defaultfkeyfilenames = {
-    public:  '/run/secrets/fkeyPublic',
-    private: '/run/secrets/fkeyPrivate'
+    public:  'fkeyPublic',
+    private: 'fkeyPrivate'
 };
 
-function preparePublicKey (fkeyfilename = defaultfkeyfilenames.public) {
+function prepareKey (creator, filename) {
     const fs = require('fs');
     const crypto = require('crypto');
-    let pubkeycontent = undefined;
+    let keycontent = undefined;
     try {
-        if ( process.env.PUBLICKEY ) {
-            pubkeycontent = process.env.PUBLICKEY.replace(/@/g, '\n');
-        } else if ( fs.existsSync(fkeyfilename) ) {
-            pubkeycontent = fs.readFileSync(fkeyfilename);
-        } else {
-            throw new Error(`Missing public key file ${fkeyfilename}`);
+        for ( const dir of defaultKeyDirs ) {
+            const path = `${dir}/${filename}`;
+            if ( fs.existsSync(path) ) {
+                keycontent = fs.readFileSync(path);
+                break;
+            }
         }
-        const pubkey = crypto.createPublicKey({
-            key: pubkeycontent,
+        if ( ! keycontent ) {
+            throw new Error(`Missing key file ${filename}`);
+        }
+        const key = creator({
+            key: keycontent,
             format: 'pem'
         });
-        //console.log(`public key`, pubkey); // DEBUG
-        return pubkey;
+        return key;
     } catch (exc) {
         throw exc;
     }
 }
 
+function preparePublicKey (fkeyfilename = defaultfkeyfilenames.public) {
+    return prepareKey(crypto.createPublicKey, fkeyfilename);
+}
+
 function preparePrivateKey (fkeyfilename = defaultfkeyfilenames.private) {
-    const fs = require('fs');
-    const crypto = require('crypto');
-    let keycontent = undefined;
-    try {
-        if ( process.env.PRIVATEKEY ) {
-            const keycontent = process.env.PRIVATEKEY.replace(/@/g, '\n');
-        } else if ( fs.existsSync(fkeyfilename) ) {
-            keycontent = fs.readFileSync(fkeyfilename);
-        } else {
-            throw new Error(`Missing private key file ${fkeyfilename}`);
-        }
-        const key = crypto.createPrivateKey({
-            key: keycontent,
-            format: 'pem'
-        });
-        //console.log(`private key`, key); // DEBUG
-        return key;
-    } catch (exc) {
-        throw exc;
-    }
+    return prepareKey(crypto.createPrivateKey, fkeyfilename);
 }
 
 function decrypt (s) {
