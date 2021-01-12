@@ -1,24 +1,21 @@
 #! /bin/bash
-# Time-stamp: "2021-01-11 12:21:09 queinnec"
+# Time-stamp: "2021-01-12 10:43:19 queinnec"
 
-# Build the P server on Netlify:
-
-# Impose nodejs 12 and npm 7
-export CONTEXT=production
-export NODE_ENV=$CONTEXT
-export NODE_VERSION=12.x
-export NPM_VERSION=7.3.0
+# Build the P server on Vercel:
 
 # Erase some previous cached files:
-rm -rf __sapper__
+if [ -d __sapper__ ]
+then
+    rm -rf __sapper__
+fi
 
 # Inquire context:
 if ${SHOW_CONTEXT:-false}
 then
     echo "*** ls -al shows"
     ls -al
-    echo "*** whoami -> $(whoami)"   # buildbot
-    echo "*** pwd    -> $(pwd)"      # /opt/build/repo/
+    echo "*** whoami -> $(whoami)"   # 
+    echo "*** pwd    -> $(pwd)"      # 
     echo "*** node --version -> $(node --version)"
     echo "*** npm --version  -> $(npm --version)"
     echo "*** printenv is"
@@ -36,7 +33,7 @@ mkdir -p secrets/
   ls -l ../secrets/
 )
 
-npm install && \
+npm install --only=production && \
 npm run export
 
-# end of netlify-build.sh
+# end of vercel-build.sh

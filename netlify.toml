@@ -2,14 +2,24 @@
   base = "./"
   command = "npm run netlify"
   publish = "__sapper__/export/"
+  functions = "src/server/functions/"
 
 [build.environment]
-  A = "test"
+  TEST = "test"
+
+[dev]
+  command = "npm run dev"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/api/signupinit.json/*"
+  to = "/.netlify/functions/signupinit"
+  status = 200
+  force = true
 
 [[headers]]
   for = "/_digits/*.png"
@@ -25,6 +35,10 @@
     cache-control = "public,s-maxage=36000"
 [[headers]]
   for = "/*.ico"
+  [headers.values]
+    cache-control = "public,s-maxage=36000"
+[[headers]]
+  for = "/global.css"
   [headers.values]
     cache-control = "public,s-maxage=36000"
 

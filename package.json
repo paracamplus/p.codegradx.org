@@ -11,10 +11,11 @@
         "build": "sapper build --legacy",
         "export": "sapper export",
         "start": "node __sapper__/build",
-        "netlify": "Scripts/netlify-build.sh"
+        "netlify": "Scripts/netlify-build.sh",
+        "vercel": "Scripts/vercel-build.sh"
     },
     "dependencies": {
-        "codegradx": "^3.0.30",
+        "codegradx": "^3.0.31",
         "compression": "^1.7.1",
         "events": "^3.2.0",
         "node-fetch": "^2.6.1",
@@ -37,6 +38,7 @@
         "rollup-plugin-terser": "^7.0.0",
         "sapper": "^0.28.0",
         "svelte": "^3.17.3",
+        "vercel": "^21.0.1",
         "ZZZ-last-comma": "file:./ZZZ-last-comma/"
     },
     "bugs": {

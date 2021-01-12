@@ -110,3 +110,5 @@ dist
 .netlify
 __sapper__/
 secrets/
+
+.vercel
