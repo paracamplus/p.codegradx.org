@@ -21,10 +21,10 @@
         { "source": "/(.*)[.]css",
           "headers": [ { "key": "Content-Type",
                          "value": "text/css; charset=UTF-8" } ] },
-        { "source": "/.*[.]txt",
+        { "source": "/(.*)[.]txt",
           "headers": [ { "key": "Content-Type",
                          "value": "text/plain; charset=UTF-8" } ] },
-        { "source": "/.*[.]xml",
+        { "source": "/(.*)[.]xml",
           "headers": [ { "key": "Content-Type",
                          "value": "text/xml; charset=UTF-8" } ]  }
     ]
