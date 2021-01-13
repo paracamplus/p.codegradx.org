@@ -23,7 +23,7 @@
                          "value": "text/xml; charset=UTF-8" } ]  }
     ],
     "rewrites": [
-        { "source": "/(api/(.*.json)",
+        { "source": "/api/(.*.json)",
           "destination": "/api/$1" },
         { "source": "/(.*)",
           "destination": "/index.html" } ]
