@@ -1,0 +1,10 @@
+auth.json
+config.json
+.git/
+.gitignore
+.netlify/
+netlify.toml
+node_modules/
+Scripts/*js
+Scripts/netlify*
+Scripts/start-dev.sh

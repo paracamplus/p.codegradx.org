@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-12 10:43:19 queinnec"
+# Time-stamp: "2021-01-13 08:36:22 queinnec"
 
 # Build the P server on Vercel:
 
@@ -14,8 +14,8 @@ if ${SHOW_CONTEXT:-false}
 then
     echo "*** ls -al shows"
     ls -al
-    echo "*** whoami -> $(whoami)"   # 
-    echo "*** pwd    -> $(pwd)"      # 
+    echo "*** whoami -> $(whoami)"   # vercel
+    echo "*** pwd    -> $(pwd)"      # /vercel/workpath0/
     echo "*** node --version -> $(node --version)"
     echo "*** npm --version  -> $(npm --version)"
     echo "*** printenv is"
