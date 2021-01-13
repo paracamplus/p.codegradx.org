@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-13 14:53:09 queinnec"
+# Time-stamp: "2021-01-13 15:20:30 queinnec"
 
 # Build the P server on Netlify:
 
@@ -37,6 +37,6 @@ mkdir -p secrets/
 )
 
 npm install && \
-npm run build
+npm run exports
 
 # end of netlify-build.sh
