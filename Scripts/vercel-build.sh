@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-13 08:36:22 queinnec"
+# Time-stamp: "2021-01-13 14:53:05 queinnec"
 
 # Build the P server on Vercel:
 
@@ -33,7 +33,7 @@ mkdir -p secrets/
   ls -l ../secrets/
 )
 
-npm install --only=production && \
-npm run export
+npm install && \
+npm run build
 
 # end of vercel-build.sh
