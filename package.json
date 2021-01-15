@@ -1,7 +1,7 @@
 {
     "name": "p.codegradx.org",
     "description": "General CodeGradX Portal",
-    "version": "0.0.8",
+    "version": "0.0.11",
     "homepage": "https://p.codegradx.org/",
     "engines": {
         "node": ">=12.x"
@@ -11,7 +11,6 @@
         "build": "sapper build --legacy",
         "export": "sapper export",
         "start": "node __sapper__/build",
-        "netlify": "Scripts/netlify-build.sh",
         "vercel": "Scripts/vercel-build.sh"
     },
     "dependencies": {
@@ -37,10 +36,9 @@
         "rollup-plugin-svelte": "^7.0.0",
         "rollup-plugin-terser": "^7.0.0",
         "sapper": "^0.28.0",
-        "semver": "^5.7.1",
         "svelte": "^3.17.3",
-        "vercel": "^21.0.1",
-        "ZZZ-last-comma": "file:./ZZZ-last-comma/"
+        "vercel": "^21.1.0",
+        "vercel-sapper": "^0.43.0"
     },
     "bugs": {
         "email": "bugs@codegradx.org"
@@ -49,5 +47,10 @@
         "name": "Christian Queinnec",
         "email": "Christian.Queinnec@codegradx.org",
         "url": "https://christian.queinnec.org/"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:paracamplus/p.codegradx.org.git"
     }
 }

@@ -20,7 +20,10 @@
                          "value": "text/plain; charset=UTF-8" } ] },
         { "source": "/(.*)[.]xml",
           "headers": [ { "key": "Content-Type",
-                         "value": "text/xml; charset=UTF-8" } ]  }
+                         "value": "text/xml; charset=UTF-8" } ] },
+        { "source": "/api/(.*)",
+          "headers": [ { "key": "X-Via",
+                         "value": "/api/" } ] }
     ],
     "rewrites": [
         { "source": "/api/(.*.json)",
