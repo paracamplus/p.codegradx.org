@@ -26,8 +26,6 @@
                          "value": "/api/" } ] }
     ],
     "rewrites": [
-        { "source": "/api/(.*.json)",
-          "destination": "/api/$1" },
         { "source": "/(.*)",
           "destination": "/index.html" } ]
 }
