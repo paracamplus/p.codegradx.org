@@ -1,0 +1,32 @@
+// Vercel wrapper
+
+import {get } from '../routes/api/signupinit.json.js';
+import { VercelRequest, VercelResponse } from '';
+
+class VercelResponse {
+    constructor (res) {
+        this.statusCode = 500;
+        this.response = res;
+        this.statusMessage = "Server problem";
+        this.body = JSON.stringify({error: 'problem'});
+        this['Content-Type'] = 'application/json';
+    }
+    setHeader (key, value) {
+        //this.response[key] = value;
+    }
+    statusMessage (msg) {
+        //this.reponse.statusMessage = msg;
+    }
+    end (s) {
+        this.response.send(s);
+    }
+}
+
+async function handler (req, res) {
+    const wrappedres = new VercelResponse(res);
+    await get(req, wrappedres);
+}
+
+module.exports = handler;
+
+// end of signupinit.json.js

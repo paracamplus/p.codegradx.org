@@ -21,7 +21,7 @@
 
 */
 
-import { get } from '../../routes/api/signupinit.json.js';
+import { get } from '../src/routes/api/signupinit.json.js';
 
 class Response {
     constructor () {
