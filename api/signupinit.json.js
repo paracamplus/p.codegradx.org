@@ -4,8 +4,8 @@
    This wrapper is deployed in the ~/api/ directory.
 */
 
-import {get } from '../src/routes/api/signupinit.json.js';
-import { VercelRequest, VercelResponse } from 'vercel.mjs';
+import { get } from '../routes/api/signupinit.json.js';
+import { VercelRequest, VercelResponse } from './vercel.mjs';
 
 async function handler (req, res) {
     try {

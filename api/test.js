@@ -19,12 +19,22 @@
 
 */
 
+const fs = require('fs');
+
 async function handler (req, res) {
     try {
         console.log(`entering test handler`);
+
+        let info = 'Content of /var/task';
+        info += fs.readdirSync('/var/task/').join(', ');
+        info += '\n\n';
+        info += 'Content of /var/task/secrets/';
+        info += fs.readdirSync('/var/task/secrets/').join(', ');
+        info += '\n\n';
+        
         res.status(255);
         res.json({
-            body: req.body,
+            body: info,
             cookies: req.cookies,
             query: req.query
         });

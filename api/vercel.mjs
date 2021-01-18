@@ -9,6 +9,10 @@
 
    See https://vercel.com/docs/runtimes#official-runtimes/node-js/node-js-request-and-response-objects
 
+   Contenu de /var/task/:
+      /var/task/node_modules/
+      /var/task/src/routes/api/
+
 */
 
 export class VercelRequest {
