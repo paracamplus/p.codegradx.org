@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-18 18:22:05 queinnec"
+# Time-stamp: "2021-01-18 18:39:49 queinnec"
 
 # Build the P server on Vercel:
 
@@ -35,9 +35,10 @@ mkdir -p secrets/
 cp -rp secrets api/
 
 echo "Building the p.codegradx.org server..."
-npm install && npm run export
+npm run export
 
-echo "Buildin the API functions..."
-(cd api/ && npm install && npm run build)
+echo "Building the API functions..."
+cp -rp src static api/
+(cd api/ && npm run build)
 
 # end of vercel-build.sh
