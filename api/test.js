@@ -28,9 +28,10 @@ async function handler (req, res) {
         let info = 'Content of /var/task';
         info += fs.readdirSync('/var/task/').join(', ');
         info += '\n\n';
-        info += 'Content of /var/task/secrets/';
-        info += fs.readdirSync('/var/task/secrets/').join(', ');
-        info += '\n\n';
+        // No secrets here!
+        //info += 'Content of /var/task/secrets/';
+        //info += fs.readdirSync('/var/task/secrets/').join(', ');
+        //info += '\n\n';
         
         res.status(255);
         res.json({

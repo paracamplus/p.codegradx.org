@@ -1,0 +1,29 @@
+{
+    "name": "vercel.api.p.codegradx.org",
+    "description": "Vercel API General CodeGradX Portal",
+    "version": "0.0.1",
+    "homepage": "https://p.codegradx.org/",
+    "engines": {
+        "node": ">=12.x"
+    },
+    "scripts": {
+        "dev": "sapper dev",
+        "build": "sapper build",
+        "export": "sapper export",
+        "start": "node __sapper__/build"
+    },
+    "dependencies": {
+        "codegradx": "^3.0.31",
+        "node-fetch": "^2.6.1"
+    },
+    "devDependencies": {
+    },
+    "bugs": {
+        "email": "bugs@codegradx.org"
+    },
+    "author": {
+        "name": "Christian Queinnec",
+        "email": "Christian.Queinnec@codegradx.org",
+        "url": "https://christian.queinnec.org/"
+    }
+}
