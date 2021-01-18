@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-18 18:39:49 queinnec"
+# Time-stamp: "2021-01-18 18:45:16 queinnec"
 
 # Build the P server on Vercel:
 
@@ -22,7 +22,7 @@ then
     printenv
 fi
 
-# Building pair of keys:
+echo "*** Building pair of keys:"
 mkdir -p secrets/
 ( cd secrets/
   if [ ! -f ./fkeyPrivate ]
@@ -34,11 +34,11 @@ mkdir -p secrets/
 )
 cp -rp secrets api/
 
-echo "Building the p.codegradx.org server..."
+echo "*** Building the p.codegradx.org server..."
 npm run export
 
-echo "Building the API functions..."
+echo "*** Building the API functions..."
 cp -rp src static api/
-(cd api/ && npm run build)
+(cd api/ && npm install && npm run build)
 
 # end of vercel-build.sh
