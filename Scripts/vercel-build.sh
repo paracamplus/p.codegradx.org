@@ -1,12 +1,12 @@
 #! /bin/bash
-# Time-stamp: "2021-01-18 17:44:23 queinnec"
+# Time-stamp: "2021-01-18 18:22:05 queinnec"
 
 # Build the P server on Vercel:
 
 # Erase some previous cached files:
-if [ -d __sapper__ ]
+if [ -d __sapper__ -o -d api/__sapper__ ]
 then
-    rm -rf __sapper__
+    rm -rf __sapper__ api/__sapper__
 fi
 
 # Inquire context:
@@ -32,6 +32,7 @@ mkdir -p secrets/
   fi
   ls -l ../secrets/
 )
+cp -rp secrets api/
 
 echo "Building the p.codegradx.org server..."
 npm install && npm run export
