@@ -5,7 +5,7 @@
    That directory also contains ./{src,static,node_modules}/
 */
 
-import { get } from './src/routes/api/signupinit.json.js';
+import { get } from '/var/task/api/src/routes/api/signupinit.json.js';
 import { VercelRequest, VercelResponse } from './vercel.mjs';
 
 async function handler (req, res) {
@@ -15,7 +15,7 @@ async function handler (req, res) {
     info += '\n\n';
     console.log(info);
 
-    info = 'Content of /var/task: ';
+    info = 'Content of /var/task/api: ';
     info += fs.readdirSync('/var/task/api/').join(', ');
     info += '\n\n';
     console.log(info);
