@@ -9,6 +9,17 @@ import { get } from './src/routes/api/signupinit.json.js';
 import { VercelRequest, VercelResponse } from './vercel.mjs';
 
 async function handler (req, res) {
+
+    let info = 'Content of /var/task: ';
+    info += fs.readdirSync('/var/task/').join(', ');
+    info += '\n\n';
+    console.log(info);
+
+    info = 'Content of /var/task: ';
+    info += fs.readdirSync('/var/task/api/').join(', ');
+    info += '\n\n';
+    console.log(info);
+
     try {
         const wrappedreq = new VercelRequest(req);
         const wrappedres = new VercelResponse(res);
