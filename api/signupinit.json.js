@@ -1,7 +1,7 @@
 /**
    Vercel wrapper.
 
-   This wrapper is deployed in the ~/api/ directory.
+   This wrapper is deployed in the /var/task/api/ directory.
    That directory also contains ./{src,static,node_modules}/
 */
 
@@ -15,7 +15,7 @@ async function handler (req, res) {
     info += '\n\n';
     console.log(info);
     
-    let info = 'Content of /var/task: ';
+    info = 'Content of /var/task: ';
     info += fs.readdirSync('/var/task/').join(', ');
     info += '\n\n';
     console.log(info);
