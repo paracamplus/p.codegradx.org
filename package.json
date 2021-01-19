@@ -1,7 +1,7 @@
 {
     "name": "p.codegradx.org",
     "description": "General CodeGradX Portal",
-    "version": "0.0.23",
+    "version": "0.0.24",
     "homepage": "https://p.codegradx.org/",
     "engines": {
         "node": ">=12.x"
@@ -29,7 +29,6 @@
         "@babel/runtime": "^7.0.0",
         "@rollup/plugin-babel": "^5.0.0",
         "@rollup/plugin-commonjs": "^14.0.0",
-        "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^8.0.0",
         "@rollup/plugin-replace": "^2.2.0",
         "@rollup/plugin-url": "^5.0.0",
