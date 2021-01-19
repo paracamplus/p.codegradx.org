@@ -1,7 +1,7 @@
 {
     "name": "p.codegradx.org",
     "description": "General CodeGradX Portal",
-    "version": "0.0.27",
+    "version": "0.0.28",
     "homepage": "https://p.codegradx.org/",
     "engines": {
         "node": ">=12.x"
@@ -14,7 +14,7 @@
         "vercel": "Scripts/vercel-build.sh"
     },
     "dependencies": {
-        "codegradx": "^3.0.33",
+        "codegradx": "^3.0.35",
         "compression": "^1.7.1",
         "events": "^3.2.0",
         "node-fetch": "^2.6.1",

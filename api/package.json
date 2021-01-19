@@ -1,7 +1,7 @@
 {
     "name": "vercel.api.p.codegradx.org",
     "description": "Vercel API General CodeGradX Portal",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "homepage": "https://p.codegradx.org/api/",
     "engines": {
         "node": ">=12.x"
@@ -13,7 +13,7 @@
         "start": "node __sapper__/build"
     },
     "dependencies": {
-        "codegradx": "^3.0.33",
+        "codegradx": "^3.0.35",
         "compression": "^1.7.1",
         "events": "^3.2.0",
         "node-fetch": "^2.6.1",
