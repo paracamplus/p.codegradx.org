@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-19 09:46:21 queinnec"
+# Time-stamp: "2021-01-19 10:46:34 queinnec"
 
 # Build the P server on Vercel:
 
@@ -50,6 +50,6 @@ echo "*** Building the API functions..."
 cp -rp src static api/
 #sed -i.bak api/src/server.js -e 's/polka/export default polka/'
 #rm -f api/src/server.js.bak
-(cd api/ && npm ci && npm run build)
+(cd api/ && npm ci && ls -al && npm run build)
 
 # end of vercel-build.sh

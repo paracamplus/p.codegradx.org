@@ -1,7 +1,7 @@
 {
     "name": "vercel.api.p.codegradx.org",
     "description": "Vercel API General CodeGradX Portal",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "homepage": "https://p.codegradx.org/api/",
     "engines": {
         "node": ">=12.x"

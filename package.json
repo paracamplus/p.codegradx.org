@@ -1,7 +1,7 @@
 {
     "name": "p.codegradx.org",
     "description": "General CodeGradX Portal",
-    "version": "0.0.24",
+    "version": "0.0.25",
     "homepage": "https://p.codegradx.org/",
     "engines": {
         "node": ">=12.x"
