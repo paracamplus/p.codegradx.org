@@ -40,12 +40,12 @@ class Response {
         this['Content-Type'] = 'application/json';
     }
     setHeader (key, value) {
-        //this.response[key] = value;
+        this.response.setHeader(key, value);
         console.log(`ignore setHeader(${key}, ${value})`);
     }
     statusMessage (msg) {
         //this.reponse.statusMessage = msg;
-        console.log(`ignore statusMessage(${msg)`);
+        console.log(`ignore statusMessage(${msg})`);
     }
     statusCode (code) {
         this.response.status(code);
