@@ -6,7 +6,7 @@
 */
 
 //import { get } from '/var/task/api/src/routes/api/signupinit.json.js';
-const vercel = require('vercel.js');
+const vercel = require('./vercel.js');
 
 async function handler (req, res) {
 
