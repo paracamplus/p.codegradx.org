@@ -6,7 +6,7 @@
 */
 
 //import { get } from '/var/task/api/src/routes/api/signupinit.json.js';
-import { VercelRequest, VercelResponse } from './vercel.mjs';
+const vercel = require('vercel.js');
 
 async function handler (req, res) {
 
@@ -26,8 +26,8 @@ async function handler (req, res) {
     console.log(info);
 
     try {
-        const wrappedreq = new VercelRequest(req);
-        const wrappedres = new VercelResponse(res);
+        const wrappedreq = new vercel.Request(req);
+        const wrappedres = new vercel.Response(res);
         //await get(wrappedreq, wrappedres);
     } catch (exc) {
         console.error(`error in signupinit.json.js handler`, {exc});

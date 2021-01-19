@@ -15,7 +15,7 @@
 
 */
 
-export class VercelRequest {
+class Request {
     constructor (req) {
         this.request = req;
     }
@@ -31,7 +31,7 @@ export class VercelRequest {
    }
 */
 
-export class VercelResponse {
+class Response {
     constructor (res) {
         this.statusCode = 500;
         this.response = res;
@@ -55,4 +55,9 @@ export class VercelResponse {
     }
 }
 
-// end of src/server/vercelapi/vercel.mjs
+module.exports = {
+    Request,
+    Response
+};
+
+// end of src/server/vercelapi/vercel.js
