@@ -91,7 +91,7 @@
  
  import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
  const dispatch = createEventDispatcher();
- import { CodeGradX } from '../../node_modules/codegradx/codegradx.mjs';
+ import { CodeGradX } from 'codegradx';
  import { finalcrypt } from '../cryptlib.mjs';
 
  const message = {

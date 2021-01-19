@@ -44,11 +44,11 @@ async function handler (req, res) {
         }
         info += '\n\n';
 
-        const bridge = fs.readfileSync('/var/task/___vc_bridge.js');
-        const helpers = fs.readfileSync('/var/task/___vc_helpers.js');
-        const launcher = fs.readfileSync('/var/task/___vc_launcher.js');
-        const userfunction = fs.readfileSync('/var/runtime/UserFunction.js');
-        const index = fs.readfileSync('/var/runtime/index.js');
+        const bridge = fs.readFileSync('/var/task/___vc_bridge.js');
+        const helpers = fs.readFileSync('/var/task/___vc_helpers.js');
+        const launcher = fs.readFileSync('/var/task/___vc_launcher.js');
+        const userfunction = fs.readFileSync('/var/runtime/UserFunction.js');
+        const index = fs.readFileSync('/var/runtime/index.js');
         
         res.status(255);
         res.json({

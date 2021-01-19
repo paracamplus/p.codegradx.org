@@ -1,6 +1,6 @@
 // Specific server-side utilities
 
-import { CodeGradX } from '../../node_modules/codegradx/codegradx.mjs';
+import { CodeGradX } from 'codegradx';
 import fetch from 'node-fetch';
 
 /** NOTA: when signup.svelte requests signupinit.js, X-forwarded-host

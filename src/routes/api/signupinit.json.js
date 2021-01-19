@@ -1,6 +1,6 @@
 // Serve information for the movecaptcha
 
-import { CodeGradX } from '../../../node_modules/codegradx/codegradx.mjs';
+import { CodeGradX } from 'codegradx';
 import { crypt, shuffle } from '../../server/cryptlib.mjs';
 const fetch = require('node-fetch');
 

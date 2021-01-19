@@ -3,7 +3,7 @@
 import { get } from 'svelte/store';
 import { person } from '../stores.mjs';
 import * as sapper from '@sapper/app';
-import { CodeGradX } from '../../node_modules/codegradx/codegradx.mjs';
+import { CodeGradX } from 'codegradx';
 
 let dev = false;
 

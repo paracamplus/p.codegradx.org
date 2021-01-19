@@ -70,7 +70,7 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
- import { CodeGradX } from '../../node_modules/codegradx/codegradx.mjs';
+ import { CodeGradX } from 'codegradx';
  import { getConfig, initializePerson } from '../client/lib.mjs';
 
  let oauth2url = '/to/be/filled';

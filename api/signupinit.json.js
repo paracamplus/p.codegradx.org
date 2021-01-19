@@ -2,9 +2,10 @@
    Vercel wrapper.
 
    This wrapper is deployed in the ~/api/ directory.
+   That directory also contains ./{src,static,node_modules}/
 */
 
-import { get } from '../src/routes/api/signupinit.json.js';
+import { get } from './src/routes/api/signupinit.json.js';
 import { VercelRequest, VercelResponse } from './vercel.mjs';
 
 async function handler (req, res) {

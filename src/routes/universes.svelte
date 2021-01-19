@@ -148,7 +148,7 @@
  import { onMount } from 'svelte';
  import { fade } from 'svelte/transition';
  import { person } from '../stores.mjs';
- import { CodeGradX } from '../../node_modules/codegradx/codegradx.mjs';
+ import { CodeGradX } from 'codegradx';
  import { initializePerson } from '../client/lib.mjs';
 
  let error = undefined;

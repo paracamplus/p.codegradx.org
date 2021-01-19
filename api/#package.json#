@@ -1,7 +1,7 @@
 {
     "name": "vercel.api.p.codegradx.org",
     "description": "Vercel API General CodeGradX Portal",
-    "version": "0.0.11",
+    "version": "0.0.10",
     "homepage": "https://p.codegradx.org/api/",
     "engines": {
         "node": ">=12.x"
@@ -26,6 +26,7 @@
         "@babel/plugin-transform-runtime": "^7.0.0",
         "@babel/preset-env": "^7.0.0",
         "@babel/runtime": "^7.0.0",
+        "command-line-args": "^5.1.1",
         "@rollup/plugin-babel": "^5.0.0",
         "@rollup/plugin-commonjs": "^14.0.0",
         "@rollup/plugin-node-resolve": "^8.0.0",
