@@ -9,13 +9,9 @@
 
    See https://vercel.com/docs/runtimes#official-runtimes/node-js/node-js-request-and-response-objects
 
-   Contenu de /var/task/:
-      /var/task/node_modules/
-      /var/task/src/routes/api/
-
 */
 
-class Request {
+export class VercelRequest {
     constructor (req) {
         this.request = req;
     }
@@ -31,7 +27,7 @@ class Request {
    }
 */
 
-class Response {
+export class VercelResponse {
     constructor (res) {
         this.statusCode = 500;
         this.response = res;
@@ -40,12 +36,12 @@ class Response {
         this['Content-Type'] = 'application/json';
     }
     setHeader (key, value) {
-        this.response.setHeader(key, value);
+        //this.response[key] = value;
         console.log(`ignore setHeader(${key}, ${value})`);
     }
     statusMessage (msg) {
         //this.reponse.statusMessage = msg;
-        console.log(`ignore statusMessage(${msg})`);
+        console.log(`ignore statusMessage(${msg)`);
     }
     statusCode (code) {
         this.response.status(code);
@@ -55,9 +51,4 @@ class Response {
     }
 }
 
-module.exports = {
-    Request,
-    Response
-};
-
-// end of src/server/vercelapi/vercel.js
+// end of src/server/vercelapi/vercel.mjs

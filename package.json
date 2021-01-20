@@ -1,17 +1,18 @@
 {
     "name": "p.codegradx.org",
     "description": "General CodeGradX Portal",
-    "version": "0.0.36",
+    "version": "0.0.42",
     "homepage": "https://p.codegradx.org/",
     "engines": {
         "node": ">=12.x"
     },
     "scripts": {
         "dev": "sapper dev",
-        "build": "sapper build --legacy",
+        "build": "sapper build",
         "export": "sapper export",
         "start": "node __sapper__/build",
-        "vercel": "Scripts/vercel-build.sh"
+        "vercel": "Scripts/vercel-build.sh",
+        "vercel-serverless": "Scripts/vercel-serverless-build.sh"
     },
     "dependencies": {
         "codegradx": "^3.0.35",
@@ -19,6 +20,7 @@
         "events": "^3.2.0",
         "node-fetch": "^2.6.1",
         "polka": "next",
+        "serverless-http": "^2.6.1",
         "sirv": "^1.0.10"
     },
     "devDependencies": {
