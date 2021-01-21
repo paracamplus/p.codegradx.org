@@ -1,5 +1,5 @@
-#! /bin/bash -x
-# Time-stamp: "2021-01-20 20:38:04 queinnec"
+#! /bin/bash
+# Time-stamp: "2021-01-21 16:54:04 queinnec"
 
 # Build the P server on Vercel:
 
@@ -43,16 +43,12 @@ else
     unset FKEY_PRIVATE
 fi
 
-echo "*** Building the p.codegradx.org server..."
+echo "*** Building the p.codegradx.org static server..."
 npm run export
+ls -tal *
 
 echo "*** Building the API function..."
-cp -rp api/package*.json api/sources/
-cp -rp rollup.config.js Scripts secrets src static api/sources/
-
-cat > api/p.js <<EOF
-module.exports.handler = require('./sources/src/server.js');
-EOF
+cp -rp rollup.config.js secrets src static api/sources/
 
 cat > api/sources/src/server.js <<EOF
 import sirv from 'sirv';
@@ -81,6 +77,15 @@ module.exports.handler = async function handler (event, context) {
 };
 EOF
 
-( cd api/sources/ && npm ci && ls -al && npm run build)
+( cd api/sources/ && npm ci && ls -al && npm run build )
+( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
+cp -rp static api/
+rm -rf api/sources/
+ls -tal .
+ls -tal api/
+
+cat > api/p.js <<EOF
+module.exports.handler = require('./__sapper__/server/server.js');
+EOF
 
 # end of vercel-build.sh
