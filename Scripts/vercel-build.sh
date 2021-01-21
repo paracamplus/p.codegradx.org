@@ -1,7 +1,8 @@
 #! /bin/bash
-# Time-stamp: "2021-01-21 18:02:37 queinnec"
+# Time-stamp: "2021-01-21 18:18:44 queinnec"
 
-# Build the P server on Vercel:
+# Build the P server on Vercel.
+# api/p.js should already exist to be taken into account.
 
 # Erase some previous cached files:
 if [ -d __sapper__ -o -d api/__sapper__ ]
