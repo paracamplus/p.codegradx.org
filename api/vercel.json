@@ -23,7 +23,7 @@
           "headers": [ { "key": "Content-Type",
                          "value": "text/xml; charset=UTF-8" } ] },
         { "source": "/api/(.*)",
-          "headers": [ { "key": "X-Via",
+          "headers": [ { "key": "X-ViaAPI",
                          "value": "/api/" } ] }
     ]
 }

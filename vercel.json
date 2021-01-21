@@ -3,7 +3,13 @@
     "regions": ["cdg1"],
     "public": true,
     "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "NODEJS_AWS_HANDLER_NAME": "handler"
+    },
+    "functions": {
+        "api/p.js": {
+            "includeFiles": "api/**"
+        }
     },
     "headers": [
         { "source": "/(.*)[.]svg",
