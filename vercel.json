@@ -26,6 +26,8 @@
                          "value": "/api/" } ] }
     ],
     "rewrites": [
+        { "source": "/api/(.*)",
+          "destination": "/api/p" },
         { "source": "/(.*)",
           "destination": "/index.html" } ]
 }

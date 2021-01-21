@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-21 16:54:04 queinnec"
+# Time-stamp: "2021-01-21 17:29:58 queinnec"
 
 # Build the P server on Vercel:
 
@@ -45,7 +45,8 @@ fi
 
 echo "*** Building the p.codegradx.org static server..."
 npm run export
-ls -tal *
+echo "*** ls -tal ."
+ls -tal .
 
 echo "*** Building the API function..."
 cp -rp rollup.config.js secrets src static api/sources/
@@ -80,12 +81,20 @@ EOF
 ( cd api/sources/ && npm ci && ls -al && npm run build )
 ( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
 cp -rp static api/
-rm -rf api/sources/
+if [ "$VERCEL" = 1 ]
+then
+    echo "*** removing api/sources/"
+    rm -rf api/sources/
+fi
+echo "*** ls -tal ."
 ls -tal .
+echo "*** ls -tal api/"
 ls -tal api/
 
 cat > api/p.js <<EOF
 module.exports.handler = require('./__sapper__/server/server.js');
 EOF
+
+echo "*** end of vercel-build.sh"
 
 # end of vercel-build.sh
