@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-22 18:21:59 queinnec"
+# Time-stamp: "2021-01-22 18:27:50 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -111,13 +111,14 @@ module.exports.handler = async function (event, context) {
 EOF
 
 ( cd api/sources/ && npm run build )
-rm -rf __sapper__/build/
-mv api/sources/__sapper__ static/
 sed -i.bak \
     -e 's@__sapper__/build@./__sapper__/build@./' \
-    < static/__sapper__/build/server/server.js \
-    > static/__sapper__/build/server/server.js
-rm static/__sapper__/build/server/server.js.bak
+    < api/sources/__sapper__/build/server/server.js \
+    > api/sources/__sapper__/build/server/server.js
+rm api/sources/__sapper__/build/server/server.js.bak
+
+rm -rf __sapper__/build/
+mv api/sources/__sapper__ __sapper__/export/
 
 #( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
 #cp -rp static api/
