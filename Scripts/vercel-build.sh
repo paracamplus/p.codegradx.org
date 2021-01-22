@@ -1,8 +1,15 @@
 #! /bin/bash
-# Time-stamp: "2021-01-21 18:18:44 queinnec"
+# Time-stamp: "2021-01-22 10:48:31 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
+
+# On Vercel, project settings are:
+#    build command:     npm run vercel
+#    output directory:  __sapper__/export
+#    install command:   npm ci
+# no development command (default is sapper dev --port $PORT)
+# no root directory (default /)
 
 # Erase some previous cached files:
 if [ -d __sapper__ -o -d api/__sapper__ ]
@@ -23,34 +30,42 @@ then
     printenv
 fi
 
-if [ -z "$FKEY_PUBLIC" ]
-then if [ -z "$FKEY_PRIVATE" ]
-     then
-         echo "*** Building pair of keys:"
-         mkdir -p secrets/
-         ( cd secrets/
-           if [ ! -f ./fkeyPrivate ]
-           then 
-               ssh-keygen -t rsa -N '' -b 1024 -C "fkey@f.codegradx.org" -f ./fkeyPrivate
-               openssl rsa -in ./fkeyPrivate -pubout -out ./fkeyPublic
-           fi
-           ls -l ../secrets/
-         )
-         cp -rp secrets api/
-     else
-         unset FKEY_PUBLIC
-     fi
-else
-    unset FKEY_PRIVATE
-fi
+# if [ -z "$FKEY_PUBLIC" ]
+# then if [ -z "$FKEY_PRIVATE" ]
+#      then
+#          echo "*** Building pair of keys:"
+#          mkdir -p secrets/
+#          ( cd secrets/
+#            if [ ! -f ./fkeyPrivate ]
+#            then 
+#                ssh-keygen -t rsa -N '' -b 1024 -C "fkey@f.codegradx.org" -f ./fkeyPrivate
+#                openssl rsa -in ./fkeyPrivate -pubout -out ./fkeyPublic
+#            fi
+#            ls -l ../secrets/
+#          )
+#          cp -rp secrets api/
+#      else
+#          unset FKEY_PUBLIC
+#      fi
+# else
+#     unset FKEY_PRIVATE
+# fi
+
+showls () {
+    echo "*** ls -tal $1"
+    ls -tal $1
+}
 
 echo "*** Building the p.codegradx.org static server..."
 npm run export
-echo "*** ls -tal `pwd`"
-ls -tal `pwd`
+showls `pwd`
+showls `pwd`/__sapper__/
+showls `pwd`/static/
 
 echo "*** Building the API function..."
-cp -rp rollup.config.js secrets src static api/sources/
+cp -rp rollup.config.js package*.json \
+   secrets src static node_modules \
+   api/sources/
 
 cat > api/sources/src/server.js <<EOF
 import sirv from 'sirv';
@@ -79,18 +94,20 @@ module.exports.handler = async function handler (event, context) {
 };
 EOF
 
-( cd api/sources/ && npm ci && ls -al && npm run build )
-( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
-cp -rp static api/
-if [ "$VERCEL" = 1 ]
-then
-    echo "*** removing api/sources/"
-    rm -rf api/sources/
-fi
-echo "*** ls -tal `pwd`"
-ls -tal `pwd`
-echo "*** ls -tal `pwd`/api/"
-ls -tal `pwd`/api/
+( cd api/sources/ && npm ci && npm run build )
+rm -rf __sapper__/build/
+mv api/sources/__sapper__/build ./__sapper__/
+
+#( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
+#cp -rp static api/
+#if [ "$VERCEL" = 1 ]
+#then
+#    echo "*** removing api/sources/"
+#    rm -rf api/sources/
+#fi
+showls `pwd`
+showls `pwd`/__sapper__/
+showls `pwd`/api/
 
 echo "*** end of vercel-build.sh"
 
