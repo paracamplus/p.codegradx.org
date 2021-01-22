@@ -8,9 +8,7 @@
     },
     "functions": {
         "api/p.js": {
-            "includeFiles": [
-                "api/**"
-            ]
+            "includeFiles": "*"
         }
     },
     "headers": [
