@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-22 18:00:16 queinnec"
+# Time-stamp: "2021-01-22 18:21:59 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -10,6 +10,21 @@
 #    install command:   npm ci
 # no development command (default is sapper dev --port $PORT)
 # no root directory (default /)
+
+# Tab Source Output shows a thorough reorganization of the files:
+#   + _digits/*.png
+#   + api/p.js
+#   + client/*.{js,css}
+#   favicon.{ico,png}
+#   fw4ex-*.png
+#   global.css
+#   index.html
+#   manifest.json
+#   service-worker-index.html
+#   service-worker.js
+# So, static/ is exported
+#     __sapper__/export is moved into static/client
+#     api/ is moved into static/
 
 # Erase some previous cached files:
 if [ -d __sapper__ -o -d api/__sapper__ ]
@@ -65,7 +80,7 @@ showls `pwd`/static/
 
 echo "*** Building the API function..."
 cp -rp rollup.config.js \
-   src static node_modules \
+   src static \
    api/sources/
 
 cat > api/sources/src/server.js <<EOF
@@ -97,12 +112,12 @@ EOF
 
 ( cd api/sources/ && npm run build )
 rm -rf __sapper__/build/
-mv api/sources/__sapper__/build   __sapper__/
+mv api/sources/__sapper__ static/
 sed -i.bak \
     -e 's@__sapper__/build@./__sapper__/build@./' \
-    -e 's@\r@@' \
-    < __sapper__/build/server/server.js \
-    > __sapper__/build/server/server.js
+    < static/__sapper__/build/server/server.js \
+    > static/__sapper__/build/server/server.js
+rm static/__sapper__/build/server/server.js.bak
 
 #( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
 #cp -rp static api/
@@ -112,9 +127,9 @@ sed -i.bak \
 #    rm -rf api/sources/
 #fi
 
-showls `pwd`
-showls `pwd`/__sapper__/
-showls `pwd`/api/
+# showls `pwd`
+# showls `pwd`/__sapper__/
+# showls `pwd`/api/
 
 echo "*** end of vercel-build.sh"
 
