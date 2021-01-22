@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-22 10:48:31 queinnec"
+# Time-stamp: "2021-01-22 17:11:35 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -63,7 +63,7 @@ showls `pwd`/__sapper__/
 showls `pwd`/static/
 
 echo "*** Building the API function..."
-cp -rp rollup.config.js package*.json \
+cp -rp rollup.config.js \
    secrets src static node_modules \
    api/sources/
 
@@ -86,7 +86,7 @@ const server = polka() // You can also use Express
         );
 const handler = serverless(server);
 
-module.exports.handler = async function handler (event, context) {
+module.exports.handler = async function (event, context) {
    console.log('entering handler...');
    const result = await handler(event, context);
    console.log('exiting handler');
@@ -96,7 +96,14 @@ EOF
 
 ( cd api/sources/ && npm ci && npm run build )
 rm -rf __sapper__/build/
-mv api/sources/__sapper__/build ./__sapper__/
+mkdir -p node_modules/p/
+mv api/sources/__sapper__         node_modules/p/
+mv api/sources/package.json       node_modules/p/
+sed -i.bak \
+    -e 's@__sapper__/build@./__sapper__/build@./' \
+    -e 's@@@' \
+    < node_modules/p/__sapper__/build/server/server.js \
+    > node_modules/p/__sapper__/build/server/server.js
 
 #( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
 #cp -rp static api/
@@ -105,9 +112,11 @@ mv api/sources/__sapper__/build ./__sapper__/
 #    echo "*** removing api/sources/"
 #    rm -rf api/sources/
 #fi
+
 showls `pwd`
 showls `pwd`/__sapper__/
 showls `pwd`/api/
+showls `pwd`/node_modules/p/
 
 echo "*** end of vercel-build.sh"
 
