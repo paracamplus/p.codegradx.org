@@ -5,6 +5,7 @@
    See Scripts/vercel-build.sh
 */
 
-module.exports.handler = require('./__sapper__/server/server.js').handler;
+module.exports.handler =
+    require('./__sapper__/build/server/server.js').handler;
 
 // end of p.js

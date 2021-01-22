@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-22 18:27:50 queinnec"
+# Time-stamp: "2021-01-22 18:32:20 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -112,7 +112,7 @@ EOF
 
 ( cd api/sources/ && npm run build )
 sed -i.bak \
-    -e 's@__sapper__/build@./__sapper__/build@./' \
+    -e 's@__sapper__/build@./__sapper__/build@' \
     < api/sources/__sapper__/build/server/server.js \
     > api/sources/__sapper__/build/server/server.js
 rm api/sources/__sapper__/build/server/server.js.bak
