@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-22 17:11:35 queinnec"
+# Time-stamp: "2021-01-22 18:00:16 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -29,6 +29,7 @@ then
     echo "*** printenv is"
     printenv
 fi
+
 
 # if [ -z "$FKEY_PUBLIC" ]
 # then if [ -z "$FKEY_PRIVATE" ]
@@ -64,7 +65,7 @@ showls `pwd`/static/
 
 echo "*** Building the API function..."
 cp -rp rollup.config.js \
-   secrets src static node_modules \
+   src static node_modules \
    api/sources/
 
 cat > api/sources/src/server.js <<EOF
@@ -94,16 +95,14 @@ module.exports.handler = async function (event, context) {
 };
 EOF
 
-( cd api/sources/ && npm ci && npm run build )
+( cd api/sources/ && npm run build )
 rm -rf __sapper__/build/
-mkdir -p node_modules/p/
-mv api/sources/__sapper__         node_modules/p/
-mv api/sources/package.json       node_modules/p/
+mv api/sources/__sapper__/build   __sapper__/
 sed -i.bak \
     -e 's@__sapper__/build@./__sapper__/build@./' \
-    -e 's@@@' \
-    < node_modules/p/__sapper__/build/server/server.js \
-    > node_modules/p/__sapper__/build/server/server.js
+    -e 's@\r@@' \
+    < __sapper__/build/server/server.js \
+    > __sapper__/build/server/server.js
 
 #( cd api/sources/ && mv package*.json __sapper__ node_modules ../ )
 #cp -rp static api/
@@ -116,7 +115,6 @@ sed -i.bak \
 showls `pwd`
 showls `pwd`/__sapper__/
 showls `pwd`/api/
-showls `pwd`/node_modules/p/
 
 echo "*** end of vercel-build.sh"
 
