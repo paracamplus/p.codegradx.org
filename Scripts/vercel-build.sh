@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-23 17:06:30 queinnec"
+# Time-stamp: "2021-01-23 17:23:03 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -111,6 +111,7 @@ module.exports.handler = async function (event, context) {
 EOF
 
 echo "*** Building the p.codegradx.org dynamic server..."
+false && {
 npm run build
 showls `pwd`/
 showls __sapper__/
@@ -121,6 +122,7 @@ showls __sapper__/build/
       -e 's@__sapper__/build@./__sapper__/build@' \
       __sapper__/build/server/server.js && \
   rm __sapper__/build/server/server.js.bak )
+}
 
 echo "*** Building the p.codegradx.org static server..."
 npm run export
