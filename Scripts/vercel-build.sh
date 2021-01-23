@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-23 17:23:03 queinnec"
+# Time-stamp: "2021-01-23 17:53:56 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -83,6 +83,7 @@ showls () {
     ls -tal $1
 }
 
+mv src/server.js src/server.js.ORG
 cat > src/server.js <<EOF
 import sirv from 'sirv';
 import polka from 'polka';
@@ -125,6 +126,8 @@ showls __sapper__/build/
 }
 
 echo "*** Building the p.codegradx.org static server..."
+# This server.js is required by export when crawling the site:
+mv src/server.js.ORG src/server.js
 npm run export
 showls `pwd`/
 showls __sapper__/
@@ -132,7 +135,7 @@ showls __sapper__/export/
 
 if [ ! -f __sapper__/export/index.html ]
 then
-    echo "!!!!! Crawling phase missing!" >&2
+    echo "!!!!! Crawling phase probably missing!" >&2
     exit 1
 fi
 
