@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-23 17:59:52 queinnec"
+# Time-stamp: "2021-01-23 18:19:21 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -83,6 +83,7 @@ showls () {
     ls -tal $1
 }
 
+# This server.js is required for sapper export:
 mv src/server.js src/server.js.ORG
 cat > src/server.js <<EOF
 import sirv from 'sirv';
@@ -117,11 +118,13 @@ showls `pwd`/
 showls __sapper__/
 #showls __sapper__/export/
 showls __sapper__/build/
+tail -20 __sapper__/build/server/server.js
 
-( sed -i.bak \
+( cd __sapper__/build/ && sed -i.bak \
       -e 's@__sapper__/build@./__sapper__/build@' \
-      __sapper__/build/server/server.js && \
-  rm __sapper__/build/server/server.js.bak )
+      server/server.js && \
+  rm server/server.js.bak && \
+  cp -p server/server.js ../../src/server.js.SAV )
 
 echo "*** Building the p.codegradx.org static server..."
 # This server.js is required by export when crawling the site:
@@ -138,6 +141,7 @@ then
 fi
 
 mkdir -p __sapper__/export/__sapper__/
+mv src/server.js.SAV __sapper__/build/server/server.js
 mv __sapper__/build __sapper__/export/__sapper__/
 
 # NOTA: the content of p.js cannot be changed at build-time:
