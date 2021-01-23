@@ -6,6 +6,6 @@
 */
 
 module.exports.handler =
-    require('./__sapper__/build/server/server.js').handler;
+    require('../__sapper__/build/server/server.js').handler;
 
 // end of p.js

@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-23 17:53:56 queinnec"
+# Time-stamp: "2021-01-23 17:59:52 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -112,7 +112,6 @@ module.exports.handler = async function (event, context) {
 EOF
 
 echo "*** Building the p.codegradx.org dynamic server..."
-false && {
 npm run build
 showls `pwd`/
 showls __sapper__/
@@ -123,7 +122,6 @@ showls __sapper__/build/
       -e 's@__sapper__/build@./__sapper__/build@' \
       __sapper__/build/server/server.js && \
   rm __sapper__/build/server/server.js.bak )
-}
 
 echo "*** Building the p.codegradx.org static server..."
 # This server.js is required by export when crawling the site:
@@ -142,6 +140,7 @@ fi
 mkdir -p __sapper__/export/__sapper__/
 mv __sapper__/build __sapper__/export/__sapper__/
 
+# NOTA: the content of p.js cannot be changed at build-time:
 #mkdir -p api
 #cp -p __sapper__/export/server/server.js api/p.js
 
