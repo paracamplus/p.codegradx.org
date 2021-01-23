@@ -6,6 +6,5 @@ secrets/
 api/node_modules/
 api/__sapper__/
 api/static/
+.vercel/
 
-
-.vercel
