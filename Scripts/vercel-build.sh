@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-23 18:19:21 queinnec"
+# Time-stamp: "2021-01-23 18:38:11 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -145,8 +145,9 @@ mv src/server.js.SAV __sapper__/build/server/server.js
 mv __sapper__/build __sapper__/export/__sapper__/
 
 # NOTA: the content of p.js cannot be changed at build-time:
-#mkdir -p api
-#cp -p __sapper__/export/server/server.js api/p.js
+mkdir -p api
+cp -p __sapper__/export/__sapper__/build/server/server.js api/
+showls api/
 
 echo "*** end of vercel-build.sh"
 
