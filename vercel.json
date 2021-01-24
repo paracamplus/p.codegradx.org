@@ -8,7 +8,7 @@
     },
     "functions": {
         "api/p.js": {
-            "includeFiles": "*"
+            "includeFiles": "__sapper__"
         }
     },
     "headers": [
