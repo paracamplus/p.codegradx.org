@@ -27,11 +27,12 @@ async function handler (req, res) {
         console.log(`entering test handler`);
         let dir = req.query.dir || '.';
         dir = path.join(process.cwd(), dir);
+        const statsdir = fs.statSync(dir, { throwIfNoEntry: true});
         let info = '';
-        if ( fs.isDirectory(dir) ) {
+        if ( statsdir.isDirectory(dir) ) {
             info += `Content of directory ${dir}/:\n  `;
             info += fs.readdirSync(dir).join(',\n  ');
-        } else if ( fs.isFile(dir) ) {
+        } else if ( statsdir.isFile(dir) ) {
             info += `Content of file ${dir}:\n`;
             info += fs.readFileSync(dir);
         }
