@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-24 16:41:28 queinnec"
+# Time-stamp: "2021-01-24 18:10:29 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.

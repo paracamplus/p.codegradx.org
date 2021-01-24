@@ -25,10 +25,16 @@ const path = require('path');
 async function handler (req, res) {
     try {
         console.log(`entering test handler`);
-        const dir = req.query.dir || '.';
-
-        let info = `Content of ${dir}:\n`;
-        info += fs.readdirSync(path.join(process.cwd(), dir));
+        let dir = req.query.dir || '.';
+        dir = path.join(process.cwd(), dir);
+        let info = '';
+        if ( fs.isDirectory(dir) ) {
+            info += `Content of directory ${dir}/:\n  `;
+            info += fs.readdirSync(dir).join(',\n  ');
+        } else if ( fs.isFile(dir) ) {
+            info += `Content of file ${dir}:\n`;
+            info += fs.readFileSync(dir);
+        }
         info += '\n\n';
         console.log(info);
 
