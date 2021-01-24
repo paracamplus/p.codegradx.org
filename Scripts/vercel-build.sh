@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-23 18:38:11 queinnec"
+# Time-stamp: "2021-01-24 16:41:28 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -94,6 +94,9 @@ import { CodeGradX } from 'codegradx';
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
+
+const fs = require('fs');
+fs.mkdirSync(path.join(process.cwd(), 'static'));
 
 const serverless = require('serverless-http');
 const server = polka() // You can also use Express
