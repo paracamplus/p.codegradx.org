@@ -7023,7 +7023,7 @@ const dev = NODE_ENV === 'development';
 
 const fs$1 = require('fs');
 const path = require('path');
-fs$1.mkdirSync(path.join(process.cwd(), 'static'));
+//fs.mkdirSync(path.join(process.cwd(), 'static'));
 
 const serverless = require('serverless-http');
 const server = polka__default['default']() // You can also use Express
