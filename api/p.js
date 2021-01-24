@@ -1,3 +1,19 @@
+/**
+
+   Context of serverless function api/p.js should be:
+   + node_modules/
+   package.json
+   + static/
+     *.{png,ico}
+   + api/
+     api/p.js
+   ___vc_*.js
+   + sapper/
+     + build/
+       build.json
+       ...
+
+*/
 'use strict';
 
 var sirv = require('sirv');
@@ -7024,9 +7040,11 @@ const dev = NODE_ENV === 'development';
 const fs$1 = require('fs');
 const path = require('path');
 fs$1.mkdirSync(path.join(process.cwd(), 'static'), {recursive: true});
-console.log(fs$1.readdirSync('.').join(',\n  '));
-console.log(fs$1.readdirSync('./api').join(',\n  '));
-console.log(fs$1.readdirSync('./static').join(',\n  '));
+fs$1.mkdirSync(path.join(process.cwd(), 'sapper'), {recursive: true});
+console.log('+ ' + fs$1.readdirSync('.').join(',\n  '));
+console.log('+ ' + fs$1.readdirSync('./api').join(',\n  '));
+console.log('+ ' + fs$1.readdirSync('./static').join(',\n  '));
+console.log('+ ' + fs$1.readdirSync('./sapper').join(',\n  '));
 
 const serverless = require('serverless-http');
 const server = polka__default['default']() // You can also use Express
