@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-24 18:37:15 queinnec"
+# Time-stamp: "2021-01-24 18:49:47 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -102,7 +102,9 @@ const dev = NODE_ENV === 'development';
 
 const fs = require('fs');
 const path = require('path');
-//fs.mkdirSync(path.join(process.cwd(), 'static'));
+fs.mkdirSync(path.join(process.cwd(), 'static'), {recursive: true});
+console.log(fs.readdirSync('.').join(',\n  '));
+console.log(fs.readdirSync('./api').join(',\n  '));
 
 const serverless = require('serverless-http');
 const server = polka() // You can also use Express

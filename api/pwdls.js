@@ -17,6 +17,11 @@
 
    See https://vercel.com/docs/runtimes#official-runtimes/node-js/node-js-request-and-response-objects
 
+   Inspecting the run context of that serverless function shows:
+    /var/task/package.json
+    /var/task/___vc_*.js
+    /var/task/api/pwdls.js
+
 */
 
 const fs = require('fs');
