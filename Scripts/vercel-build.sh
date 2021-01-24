@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-24 18:49:47 queinnec"
+# Time-stamp: "2021-01-24 19:08:38 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -105,6 +105,7 @@ const path = require('path');
 fs.mkdirSync(path.join(process.cwd(), 'static'), {recursive: true});
 console.log(fs.readdirSync('.').join(',\n  '));
 console.log(fs.readdirSync('./api').join(',\n  '));
+console.log(fs.readdirSync('./static').join(',\n  '));
 
 const serverless = require('serverless-http');
 const server = polka() // You can also use Express
@@ -132,7 +133,7 @@ showls __sapper__/build/
 $DEBUG && tail -20 __sapper__/build/server/server.js
 
 ( cd __sapper__/build/ && sed -i.bak \
-      -e 's@__sapper__/build@./__sapper__/build@' \
+      -e 's@__sapper__/build@./sapper/build@' \
       server/server.js && \
   rm server/server.js.bak && \
   cp -p server/server.js ../../src/server.js.SAV )
@@ -151,13 +152,13 @@ then
     exit 1
 fi
 
-mkdir -p __sapper__/export/__sapper__/
+mkdir -p __sapper__/export/sapper/
 mv src/server.js.SAV __sapper__/build/server/server.js
-mv __sapper__/build __sapper__/export/__sapper__/
+mv __sapper__/build __sapper__/export/sapper/
 
 # NOTA: the content of p.js cannot be changed at build-time:
 mkdir -p api
-cp -p __sapper__/export/__sapper__/build/server/server.js api/
+cp -p __sapper__/export/sapper/build/server/server.js api/
 showls api/
 
 echo "*** end of vercel-build.sh"

@@ -2122,7 +2122,7 @@ const manifest = {
 	error: Error$1
 };
 
-const build_dir = "./__sapper__/build";
+const build_dir = "./sapper/build";
 
 /**
  * @param typeMap [Object] Map of MIME type -> Array[extensions]
@@ -7026,6 +7026,7 @@ const path = require('path');
 fs$1.mkdirSync(path.join(process.cwd(), 'static'), {recursive: true});
 console.log(fs$1.readdirSync('.').join(',\n  '));
 console.log(fs$1.readdirSync('./api').join(',\n  '));
+console.log(fs$1.readdirSync('./static').join(',\n  '));
 
 const serverless = require('serverless-http');
 const server = polka__default['default']() // You can also use Express
