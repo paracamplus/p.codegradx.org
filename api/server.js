@@ -7022,6 +7022,7 @@ const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
 const fs$1 = require('fs');
+const path = require('path');
 fs$1.mkdirSync(path.join(process.cwd(), 'static'));
 
 const serverless = require('serverless-http');

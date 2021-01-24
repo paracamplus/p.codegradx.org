@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-24 18:10:29 queinnec"
+# Time-stamp: "2021-01-24 18:22:50 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -30,6 +30,16 @@
 # However the build command is still npm run vercel so to differentiate
 # a manual deployment from a GIT deployment, the WOGIT (read without git)
 # environment variable is set.
+
+DEBUG=false
+
+showls () {
+    if $DEBUG
+    then
+        echo "*** ls -tal $1"
+        ls -tal $1
+    fi
+}
 
 if ${WOGIT:-false}
 then
@@ -78,11 +88,6 @@ else
     unset FKEY_PRIVATE
 fi
 
-showls () {
-    echo "*** ls -tal $1"
-    ls -tal $1
-}
-
 # This server.js is required for sapper export:
 mv src/server.js src/server.js.ORG
 cat > src/server.js <<EOF
@@ -96,6 +101,7 @@ const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
 const fs = require('fs');
+const path = require('path');
 fs.mkdirSync(path.join(process.cwd(), 'static'));
 
 const serverless = require('serverless-http');
@@ -121,7 +127,7 @@ showls `pwd`/
 showls __sapper__/
 #showls __sapper__/export/
 showls __sapper__/build/
-tail -20 __sapper__/build/server/server.js
+$DEBUG && tail -20 __sapper__/build/server/server.js
 
 ( cd __sapper__/build/ && sed -i.bak \
       -e 's@__sapper__/build@./__sapper__/build@' \
