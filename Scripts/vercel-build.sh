@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 17:59:27 queinnec"
+# Time-stamp: "2021-01-25 18:07:16 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -101,6 +101,7 @@ import polka from 'polka';
 import compression from 'compression';
 import * as sapper from '@sapper/server';
 import { CodeGradX } from 'codegradx';
+const serverless = require('serverless-http');
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
@@ -127,16 +128,17 @@ showDir('./__sapper__/export/static');
 showDir('./__sapper__/export/__sapper__');
 showDir('./__sapper__/export/__sapper__/build');
 
+const staticDir = path.join(process.cwd(), 'static');
+
 process.chdir('./__sapper__/export');
-showDir('.');
+showDir(process.cwd());
 
 let handler = undefined;
 try {
-  const serverless = require('serverless-http');
-  const server = polka() // You can also use Express
+  const server = polka()
         .use(
                 compression({ threshold: 0 }),
-                sirv('static', { dev }),
+                sirv(staticDir, { dev }),
                 sapper.middleware()
         );
   handler = serverless(server);

@@ -7018,6 +7018,8 @@ function serve({ prefix, pathname, cache_control }) {
 }
 function noop$1() { }
 
+const serverless = require('serverless-http');
+
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
@@ -7043,16 +7045,17 @@ showDir('./__sapper__/export/static');
 showDir('./__sapper__/export/__sapper__');
 showDir('./__sapper__/export/__sapper__/build');
 
+const staticDir = path.join(process.cwd(), 'static');
+
 process.chdir('./__sapper__/export');
-showDir('.');
+showDir(process.cwd());
 
 let handler = undefined;
 try {
-  const serverless = require('serverless-http');
-  const server = polka__default['default']() // You can also use Express
+  const server = polka__default['default']()
         .use(
                 compression__default['default']({ threshold: 0 }),
-                sirv__default['default']('static', { dev }),
+                sirv__default['default'](staticDir, { dev }),
                 middleware()
         );
   handler = serverless(server);
