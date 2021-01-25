@@ -2122,7 +2122,7 @@ const manifest = {
 	error: Error$1
 };
 
-const build_dir = "./__sapper__/build";
+const build_dir = "./__sapper__/export/__sapper__/build";
 
 /**
  * @param typeMap [Object] Map of MIME type -> Array[extensions]
@@ -7037,7 +7037,7 @@ showDir('.');
 showDir('./api');
 //showDir('./static');
 showDir('./__sapper__');
-showDir('././__sapper__/build');
+showDir('././__sapper__/export/__sapper__/build');
 showDir('./__sapper__/export');
 
 const serverless = require('serverless-http');
