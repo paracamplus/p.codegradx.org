@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 17:46:02 queinnec"
+# Time-stamp: "2021-01-25 17:59:27 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -130,20 +130,29 @@ showDir('./__sapper__/export/__sapper__/build');
 process.chdir('./__sapper__/export');
 showDir('.');
 
-const serverless = require('serverless-http');
-const server = polka() // You can also use Express
+let handler = undefined;
+try {
+  const serverless = require('serverless-http');
+  const server = polka() // You can also use Express
         .use(
                 compression({ threshold: 0 }),
-                sirv('./static', { dev }),
+                sirv('static', { dev }),
                 sapper.middleware()
         );
-const handler = serverless(server);
+  handler = serverless(server);
+} catch (exc) {
+  console.error({exc});
+}
 
 module.exports.handler = async function (event, context) {
    console.log('entering handler...');
-   const result = await handler(event, context);
-   console.log('exiting handler');
-   return result;
+   if ( handler ) {
+     const result = await handler(event, context);
+     console.log('exiting handler');
+     return result;
+   } else {
+     console.error('undefined handler');
+   }  
 };
 EOF
 

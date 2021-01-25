@@ -7046,18 +7046,27 @@ showDir('./__sapper__/export/__sapper__/build');
 process.chdir('./__sapper__/export');
 showDir('.');
 
-const serverless = require('serverless-http');
-const server = polka__default['default']() // You can also use Express
+let handler = undefined;
+try {
+  const serverless = require('serverless-http');
+  const server = polka__default['default']() // You can also use Express
         .use(
                 compression__default['default']({ threshold: 0 }),
-                sirv__default['default']('./static', { dev }),
+                sirv__default['default']('static', { dev }),
                 middleware()
         );
-const handler = serverless(server);
+  handler = serverless(server);
+} catch (exc) {
+  console.error({exc});
+}
 
 module.exports.handler = async function (event, context) {
    console.log('entering handler...');
-   const result = await handler(event, context);
-   console.log('exiting handler');
-   return result;
+   if ( handler ) {
+     const result = await handler(event, context);
+     console.log('exiting handler');
+     return result;
+   } else {
+     console.error('undefined handler');
+   }  
 };
