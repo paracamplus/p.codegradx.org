@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 14:36:04 queinnec"
+# Time-stamp: "2021-01-25 14:48:33 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -124,6 +124,8 @@ showDir('./__sapper__/build');
 showDir('./__sapper__/export');
 showDir('./__sapper__/export/__sapper__');
 showDir('./__sapper__/export/__sapper__/build');
+
+process.chdir('./__sapper__/export');
 
 const serverless = require('serverless-http');
 const server = polka() // You can also use Express
