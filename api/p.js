@@ -7044,8 +7044,8 @@ const path = require('path');
 
 function showDir (dir = '.') {
   try {
-    console.log("\nListing directory " + dir + ":\n");
-    console.log('  ' + fs$1.readdirSync(dir).join(',\n  '));
+    console.log("\nListing directory " + dir + ":\n  ");
+    console.log(fs$1.readdirSync(dir).join('\n  '));
   } catch (exc) {
     // ignore
   }
@@ -7053,7 +7053,7 @@ function showDir (dir = '.') {
 
 showDir('.');
 showDir('./api');
-//showDir('./static');
+showDir('./static');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 showDir('./__sapper__/export');
@@ -7074,6 +7074,12 @@ try {
                 sirv__default['default'](staticDir, { dev }),
                 middleware()
         );
+  if ( dev ) {
+     console.log('listening on ' + PORT);
+     server.listen(PORT, err => {
+          if (err) console.log('error', {err});
+     });
+  }
   handler = serverless(server);
 } catch (exc) {
   console.error({exc});

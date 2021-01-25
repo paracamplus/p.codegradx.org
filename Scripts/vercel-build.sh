@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 18:07:16 queinnec"
+# Time-stamp: "2021-01-25 18:29:52 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -111,8 +111,8 @@ const path = require('path');
 
 function showDir (dir = '.') {
   try {
-    console.log("\nListing directory " + dir + ":\n");
-    console.log('  ' + fs.readdirSync(dir).join(',\n  '));
+    console.log("\nListing directory " + dir + ":\n  ");
+    console.log(fs.readdirSync(dir).join('\n  '));
   } catch (exc) {
     // ignore
   }
@@ -120,7 +120,7 @@ function showDir (dir = '.') {
 
 showDir('.');
 showDir('./api');
-//showDir('./static');
+showDir('./static');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 showDir('./__sapper__/export');
@@ -141,6 +141,12 @@ try {
                 sirv(staticDir, { dev }),
                 sapper.middleware()
         );
+  if ( dev ) {
+     console.log('listening on ' + PORT);
+     server.listen(PORT, err => {
+          if (err) console.log('error', {err});
+     });
+  }
   handler = serverless(server);
 } catch (exc) {
   console.error({exc});
