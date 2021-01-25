@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 11:48:23 queinnec"
+# Time-stamp: "2021-01-25 12:04:36 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -32,6 +32,14 @@
 # environment variable is set.
 
 if ${WOGIT:-false}
+then
+    echo "*** Manual deployment"
+    # The webapp and its serverless functions are completely built on
+    # the dev machine.
+    exec /bin/true
+fi
+
+if [ -d __sapper__/export/__sapper__/build/ ]
 then
     echo "*** The entire webapp and its serverless functions are ready"
     # The webapp and its serverless functions are completely built on
