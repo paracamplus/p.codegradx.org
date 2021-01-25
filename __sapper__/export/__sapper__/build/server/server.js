@@ -7050,8 +7050,7 @@ const serverless = require('serverless-http');
 const server = polka__default['default']() // You can also use Express
         .use(
                 compression__default['default']({ threshold: 0 }),
-                sirv__default['default']('__sapper__/export/static', { dev }),
-                sirv__default['default']('static', { dev }),
+                sirv__default['default']('./static', { dev }),
                 middleware()
         );
 const handler = serverless(server);
