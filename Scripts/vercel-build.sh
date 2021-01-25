@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 16:42:22 queinnec"
+# Time-stamp: "2021-01-25 17:05:55 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -26,6 +26,16 @@
 #     __sapper__/export is moved into static/client
 #     api/ is moved into static/
 
+DEBUG=false
+
+showls () {
+    if $DEBUG
+    then
+        echo "*** ls -tal $1"
+        ls -tal $1
+    fi
+}
+
 # Tab source source is only filled with manual deployment.
 # However the build command is still npm run vercel so to differentiate
 # a manual deployment from a GIT deployment, the WOGIT (read without git)
@@ -47,16 +57,6 @@ then
     showls -R __sapper__/export/
     exec /bin/true
 fi
-
-DEBUG=false
-
-showls () {
-    if $DEBUG
-    then
-        echo "*** ls -tal $1"
-        ls -tal $1
-    fi
-}
 
 # Inquire context:
 if ${SHOW_CONTEXT:-false}
@@ -178,7 +178,7 @@ then
     exit 1
 fi
 
-mkdir __sapper__/export/static/
+mkdir -p __sapper__/export/static/
 cp -p __sapper__/export/*.{ico,png,css,json.html,js} __sapper__/export/static/
 showls __sapper__/
 showls __sapper__/export/
@@ -191,6 +191,8 @@ mv __sapper__/build __sapper__/export/__sapper__/
 #mkdir -p api
 #cp -p __sapper__/export/sapper/build/server/server.js api/
 #showls api/
+
+showls -R __sapper__/export/
 
 echo "*** end of vercel-build.sh"
 
