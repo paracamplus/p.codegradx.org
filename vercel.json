@@ -9,6 +9,9 @@
     "functions": {
         "api/p.js": {
             "includeFiles": "{static,sapper}/**"
+        },
+        "api/pwdls.js": {
+            "includeFiles": "sapper/*"
         }
     },
     "headers": [

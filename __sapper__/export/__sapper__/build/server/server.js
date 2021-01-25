@@ -1,19 +1,3 @@
-/**
-
-   Context of serverless function api/p.js should be:
-   + node_modules/
-   package.json
-   + static/
-     *.{png,ico}
-   + api/
-     api/p.js
-   ___vc_*.js
-   + sapper/
-     + build/
-       build.json
-       ...
-
-*/
 'use strict';
 
 var sirv = require('sirv');

@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-24 20:23:12 queinnec"
+# Time-stamp: "2021-01-25 11:48:23 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -26,10 +26,18 @@
 #     __sapper__/export is moved into static/client
 #     api/ is moved into static/
 
-# Tab source source is only filled when manual deployed.
+# Tab source source is only filled with manual deployment.
 # However the build command is still npm run vercel so to differentiate
 # a manual deployment from a GIT deployment, the WOGIT (read without git)
 # environment variable is set.
+
+if ${WOGIT:-false}
+then
+    echo "*** The entire webapp and its serverless functions are ready"
+    # The webapp and its serverless functions are completely built on
+    # the dev machine.
+    exec /bin/true
+fi
 
 DEBUG=false
 
@@ -40,18 +48,6 @@ showls () {
         ls -tal $1
     fi
 }
-
-if ${WOGIT:-false}
-then
-    # This is a manual deployment
-    exec Scripts/wogit-vercel-build.sh
-fi
-
-# Erase some previous cached files:
-if [ -d __sapper__ -o -d api/__sapper__ ]
-then
-    rm -rf __sapper__ api/__sapper__
-fi
 
 # Inquire context:
 if ${SHOW_CONTEXT:-false}
@@ -88,7 +84,7 @@ else
     unset FKEY_PRIVATE
 fi
 
-# This server.js is required for sapper export:
+# Preserve this server.js since it is required for sapper export:
 mv src/server.js src/server.js.ORG
 cat > src/server.js <<EOF
 import sirv from 'sirv';
@@ -102,12 +98,12 @@ const dev = NODE_ENV === 'development';
 
 const fs = require('fs');
 const path = require('path');
-fs.mkdirSync(path.join(process.cwd(), 'static'), {recursive: true});
-fs.mkdirSync(path.join(process.cwd(), 'sapper'), {recursive: true});
-console.log('+ ' + fs.readdirSync('.').join(',\n  '));
-console.log('+ ' + fs.readdirSync('./api').join(',\n  '));
-console.log('+ ' + fs.readdirSync('./static').join(',\n  '));
-console.log('+ ' + fs.readdirSync('./sapper').join(',\n  '));
+//fs.mkdirSync(path.join(process.cwd(), 'static'), {recursive: true});
+//fs.mkdirSync(path.join(process.cwd(), 'sapper'), {recursive: true});
+//console.log('+ ' + fs.readdirSync('.').join(',\n  '));
+//console.log('+ ' + fs.readdirSync('./api').join(',\n  '));
+//console.log('+ ' + fs.readdirSync('./static').join(',\n  '));
+//console.log('+ ' + fs.readdirSync('./sapper').join(',\n  '));
 
 const serverless = require('serverless-http');
 const server = polka() // You can also use Express
@@ -135,13 +131,14 @@ showls __sapper__/build/
 $DEBUG && tail -20 __sapper__/build/server/server.js
 
 ( cd __sapper__/build/ && sed -i.bak \
-      -e 's@__sapper__/build@./sapper/build@' \
+      -e 's@__sapper__/build@./__sapper__/build@' \
       server/server.js && \
   rm server/server.js.bak && \
   cp -p server/server.js ../../src/server.js.SAV )
+# Preserve that server.js it will be destroyed by sapper export.
 
 echo "*** Building the p.codegradx.org static server..."
-# This server.js is required by export when crawling the site:
+# Restaure this server.js since it is required by export when crawling the site:
 mv src/server.js.ORG src/server.js
 npm run export
 showls `pwd`/
@@ -154,9 +151,9 @@ then
     exit 1
 fi
 
-mkdir -p __sapper__/export/sapper/
+mkdir -p __sapper__/export/__sapper__/
 mv src/server.js.SAV __sapper__/build/server/server.js
-mv __sapper__/build __sapper__/export/sapper/
+mv __sapper__/build __sapper__/export/__sapper__/
 
 # NOTA: the content of p.js cannot be changed at build-time:
 #mkdir -p api
