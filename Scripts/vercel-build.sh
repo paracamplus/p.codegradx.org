@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 17:12:27 queinnec"
+# Time-stamp: "2021-01-25 17:18:39 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -179,7 +179,8 @@ then
 fi
 
 mkdir -p __sapper__/export/static/
-cp -p __sapper__/export/*.{ico,png,css,json,html,js} __sapper__/export/static/
+#cp -p __sapper__/export/*.{ico,png,css,json,html,js} __sapper__/export/static/
+cp -rp static __sapper__/export/
 showls __sapper__/
 showls __sapper__/export/
 
