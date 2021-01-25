@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 15:01:08 queinnec"
+# Time-stamp: "2021-01-25 16:42:22 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -44,6 +44,7 @@ then
     echo "*** The entire webapp and its serverless functions are ready"
     # The webapp and its serverless functions are completely built on
     # the dev machine.
+    showls -R __sapper__/export/
     exec /bin/true
 fi
 
@@ -107,7 +108,7 @@ const dev = NODE_ENV === 'development';
 const fs = require('fs');
 const path = require('path');
 
-function showDir (dir) {
+function showDir (dir = '.') {
   try {
     console.log("\nListing directory " + dir + ":\n");
     console.log('  ' + fs.readdirSync(dir).join(',\n  '));
@@ -171,17 +172,16 @@ showls `pwd`/
 showls __sapper__/
 showls __sapper__/export/
 
-mkdir __sapper__/static/
-rsync -avu __sapper__/export/ __sapper__/static/
-mv __sapper__/static __sapper__/export/
-showls __sapper__/
-showls __sapper__/export/
-
 if [ ! -f __sapper__/export/index.html ]
 then
     echo "!!!!! Crawling phase probably missing!" >&2
     exit 1
 fi
+
+mkdir __sapper__/export/static/
+cp -p __sapper__/export/*.{ico,png,css,json.html,js} __sapper__/export/static/
+showls __sapper__/
+showls __sapper__/export/
 
 mkdir -p __sapper__/export/__sapper__/
 mv src/server.js.SAV __sapper__/build/server/server.js

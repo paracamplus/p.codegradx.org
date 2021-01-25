@@ -7024,7 +7024,7 @@ const dev = NODE_ENV === 'development';
 const fs$1 = require('fs');
 const path = require('path');
 
-function showDir (dir) {
+function showDir (dir = '.') {
   try {
     console.log("\nListing directory " + dir + ":\n");
     console.log('  ' + fs$1.readdirSync(dir).join(',\n  '));
