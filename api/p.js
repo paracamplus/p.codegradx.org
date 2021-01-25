@@ -7039,13 +7039,22 @@ const dev = NODE_ENV === 'development';
 
 const fs$1 = require('fs');
 const path = require('path');
-//fs.mkdirSync(path.join(process.cwd(), 'static'), {recursive: true});
-//fs.mkdirSync(path.join(process.cwd(), 'sapper'), {recursive: true});
-console.log('+ ' + fs$1.readdirSync('.').join(',\n  '));
-console.log('+ ' + fs$1.readdirSync('./api').join(',\n  '));
-console.log('+ ' + fs$1.readdirSync('./static').join(',\n  '));
-console.log('+ ' + fs$1.readdirSync('./__sapper__').join(',\n  '));
-console.log('+ ' + fs$1.readdirSync('././__sapper__/build').join(',\n  '));
+
+function showDir (dir) {
+  try {
+    console.log("\nListing directory " + dir + ":\n");
+    console.log('  ' + fs$1.readdirSync(dir).join(',\n  '));
+  } catch (exc) {
+    // ignore
+  }
+}
+
+showDir('.');
+showDir('./api');
+//showDir('./static');
+showDir('./__sapper__');
+showDir('././__sapper__/build');
+showDir('./__sapper__/export');
 
 const serverless = require('serverless-http');
 const server = polka__default['default']() // You can also use Express
