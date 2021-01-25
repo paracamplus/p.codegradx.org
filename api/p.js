@@ -7055,10 +7055,12 @@ showDir('./api');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 showDir('./__sapper__/export');
+showDir('./__sapper__/export/static');
 showDir('./__sapper__/export/__sapper__');
 showDir('./__sapper__/export/__sapper__/build');
 
 process.chdir('./__sapper__/export');
+showDir('.');
 
 const serverless = require('serverless-http');
 const server = polka__default['default']() // You can also use Express

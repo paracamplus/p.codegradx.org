@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-25 14:48:33 queinnec"
+# Time-stamp: "2021-01-25 14:58:16 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -122,10 +122,12 @@ showDir('./api');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 showDir('./__sapper__/export');
+showDir('./__sapper__/export/static');
 showDir('./__sapper__/export/__sapper__');
 showDir('./__sapper__/export/__sapper__/build');
 
 process.chdir('./__sapper__/export');
+showDir('.');
 
 const serverless = require('serverless-http');
 const server = polka() // You can also use Express
@@ -166,6 +168,12 @@ echo "*** Building the p.codegradx.org static server..."
 mv src/server.js.ORG src/server.js
 npm run export
 showls `pwd`/
+showls __sapper__/
+showls __sapper__/export/
+
+mkdir __sapper__/static/
+cp -rp __sapper__/exports/* __sapper__/static/
+mv __sapper__/static __sapper__/exports/
 showls __sapper__/
 showls __sapper__/export/
 
