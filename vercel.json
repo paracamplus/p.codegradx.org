@@ -8,10 +8,10 @@
     },
     "functions": {
         "api/p.js": {
-            "includeFiles": "{static,sapper}/**"
+            "includeFiles": "{static,__sapper__}/**"
         },
         "api/pwdls.js": {
-            "includeFiles": "sapper/*"
+            "includeFiles": "__sapper__/*"
         }
     },
     "headers": [

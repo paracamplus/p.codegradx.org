@@ -11,25 +11,34 @@ const defaultKeyDirs = [
 ];
 
 const defaultfkeyfilenames = {
-    public:  'fkeyPublic',
-    private: 'fkeyPrivate'
+    public:  'fkeyPublic',        // FKEYPUBLIC
+    private: 'fkeyPrivate'        // FKEYPRIVATE
 };
 
 function prepareKey (creator, filename) {
-    const fs = require('fs');
-    const crypto = require('crypto');
     let keycontent = undefined;
-    try {
-        for ( const dir of defaultKeyDirs ) {
-            const path = `${dir}/${filename}`;
-            if ( fs.existsSync(path) ) {
-                keycontent = fs.readFileSync(path);
-                break;
+    if ( process.env[filename.toUpperCase()] ) {
+        keycontent = process.env[filename.toUpperCase()];
+        keycontent = keycontent.replace(/@/g, '\n');
+    } else {
+        const fs = require('fs');
+        const crypto = require('crypto');
+        try {
+            for ( const dir of defaultKeyDirs ) {
+                const path = `${dir}/${filename}`;
+                if ( fs.existsSync(path) ) {
+                    keycontent = fs.readFileSync(path);
+                    break;
+                }
             }
+        } catch (exc) {
+            throw exc;
         }
-        if ( ! keycontent ) {
-            throw new Error(`Missing key file ${filename}`);
-        }
+    }
+    if ( ! keycontent ) {
+        throw new Error(`Missing key ${filename}`);
+    }
+    try {
         const key = creator({
             key: keycontent,
             format: 'pem'
