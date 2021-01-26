@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-26 10:54:08 queinnec"
+# Time-stamp: "2021-01-26 10:58:13 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -49,7 +49,7 @@ then
     exec /bin/true
 fi
 
-if [ -d __sapper__/export/__sapper__/build/ ]
+if [ -d __sapper__/build/ ]
 then
     echo "*** The entire webapp and its serverless functions are ready"
     # The webapp and its serverless functions are completely built on
@@ -96,6 +96,7 @@ fi
 echo "*** Building the p.codegradx.org static server..."
 # export needs the original server.js with a listen method in order to
 # crawl the site after generation.
+cp -pf src/server.js src/server.js.ORG
 if grep -q listen.PORT < src/server.js
 then :
 else
@@ -176,6 +177,9 @@ EOF
 echo "*** Building the p.codegradx.org dynamic server..."
 npm run build
 cp __sapper__/build/server/server.js api/p.js
+
+# Restaure back the original file:
+mv -f src/server.js.ORG src/server.js
 
 echo "*** end of vercel-build.sh"
 
