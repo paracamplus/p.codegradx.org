@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-26 18:38:08 queinnec"
+# Time-stamp: "2021-01-26 19:03:55 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -125,7 +125,12 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
+module.exports.handler = async function (event, context) {
+  console.log('calling pseudo handler');
+};
 
+
+/*
 const server = polka()
         .use(
                 compression({ threshold: 0 }),
@@ -136,7 +141,6 @@ const handler = serverless(server);
 
 module.exports.handler = handler;
 
-/*
 module.exports.handler = async function (event, context) {
    console.log('entering handler...');
    if ( handler ) {
