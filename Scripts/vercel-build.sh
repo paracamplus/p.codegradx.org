@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-26 14:52:37 queinnec"
+# Time-stamp: "2021-01-26 17:15:49 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -51,11 +51,10 @@ fi
 
 # The webapp and its serverless functions are completely built on the
 # dev machine so nothing else to be done on Vercel.
-if [ -d __sapper__/build/ ]
+if [ -d export ]
 then
-    echo "*** The entire webapp and its serverless functions are ready"
-    showls -R __sapper__/export/
-    #exec /bin/true
+   echo "*** The entire webapp and its serverless functions are ready"
+   exec /bin/true
 fi
 
 # Inquire context:
@@ -94,6 +93,7 @@ then
 fi
 # Make sure that ./export is the 'output directory' in the project settings:
 mv __sapper__/export .
+rm -rf __sapper__/build
 
 # Update src/server.js in order to be invoked as a serverless function.
 cat > src/server.js <<EOF
@@ -125,18 +125,18 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
-let handler = undefined;
-try {
+//let handler = undefined;
+//try {
   const server = polka()
         .use(
                 compression({ threshold: 0 }),
                 sirv('static', { dev }),
                 sapper.middleware()
         );
-  handler = serverless(server);
-} catch (exc) {
-  console.error({exc});
-}
+  const handler = serverless(server);
+//} catch (exc) {
+//  console.error({exc});
+//}
 
 module.exports.handler = async function (event, context) {
    console.log('entering handler...');
@@ -153,6 +153,7 @@ EOF
 echo "*** Building the p.codegradx.org dynamic server..."
 npm run build
 cp -pf __sapper__/build/server/server.js api/p.js
+showls api/
 
 # Restaure back the original file:
 mv -f src/server.js.ORG src/server.js

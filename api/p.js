@@ -7041,18 +7041,18 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
-let handler = undefined;
-try {
+//let handler = undefined;
+//try {
   const server = polka__default['default']()
         .use(
                 compression__default['default']({ threshold: 0 }),
                 sirv__default['default']('static', { dev }),
                 middleware()
         );
-  handler = serverless(server);
-} catch (exc) {
-  console.error({exc});
-}
+  const handler = serverless(server);
+//} catch (exc) {
+//  console.error({exc});
+//}
 
 module.exports.handler = async function (event, context) {
    console.log('entering handler...');
