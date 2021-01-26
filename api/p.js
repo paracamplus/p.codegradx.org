@@ -1,19 +1,3 @@
-/**
-
-   Context of serverless function api/p.js should be:
-   + node_modules/
-   package.json
-   + static/
-     *.{png,ico}
-   + api/
-     api/p.js
-   ___vc_*.js
-   + sapper/
-     + build/
-       build.json
-       ...
-
-*/
 'use strict';
 
 var sirv = require('sirv');
@@ -7035,12 +7019,11 @@ function serve({ prefix, pathname, cache_control }) {
 function noop$1() { }
 
 const serverless = require('serverless-http');
+const fs$1 = require('fs');
+const path = require('path');
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
-
-const fs$1 = require('fs');
-const path = require('path');
 
 function showDir (dir = '.') {
   try {
@@ -7054,17 +7037,11 @@ function showDir (dir = '.') {
 showDir('.');
 showDir('./api');
 showDir('./static');
+showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
-showDir('./__sapper__/export');
-showDir('./__sapper__/export/static');
-showDir('./__sapper__/export/__sapper__');
-showDir('./__sapper__/export/__sapper__/build');
 
 const staticDir = path.join(process.cwd(), 'static');
-
-process.chdir('./__sapper__/export');
-showDir(process.cwd());
 
 let handler = undefined;
 try {
@@ -7074,12 +7051,6 @@ try {
                 sirv__default['default'](staticDir, { dev }),
                 middleware()
         );
-  if ( dev ) {
-     console.log('listening on ' + PORT);
-     server.listen(PORT, err => {
-          if (err) console.log('error', {err});
-     });
-  }
   handler = serverless(server);
 } catch (exc) {
   console.error({exc});
