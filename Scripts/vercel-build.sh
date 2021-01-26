@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-26 17:15:49 queinnec"
+# Time-stamp: "2021-01-26 18:16:10 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -125,18 +125,14 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
-//let handler = undefined;
-//try {
-  const server = polka()
+/*
+const server = polka()
         .use(
                 compression({ threshold: 0 }),
                 sirv('static', { dev }),
                 sapper.middleware()
         );
-  const handler = serverless(server);
-//} catch (exc) {
-//  console.error({exc});
-//}
+const handler = serverless(server);
 
 module.exports.handler = async function (event, context) {
    console.log('entering handler...');
@@ -148,11 +144,12 @@ module.exports.handler = async function (event, context) {
      console.error('undefined handler');
    }  
 };
+*/
 EOF
 
 echo "*** Building the p.codegradx.org dynamic server..."
 npm run build
-cp -pf __sapper__/build/server/server.js api/p.js
+tr -d '\r' < __sapper__/build/server/server.js > api/p.js
 showls api/
 
 # Restaure back the original file:
