@@ -1,12 +1,12 @@
 #! /bin/bash
-# Time-stamp: "2021-01-26 10:58:13 queinnec"
+# Time-stamp: "2021-01-26 14:52:37 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
 
 # On Vercel, project settings are:
 #    build command:     npm run vercel
-#    output directory:  __sapper__/export
+#    output directory:  export
 #    install command:   npm ci
 # no development command (default is sapper dev --port $PORT)
 # no root directory (default /)
@@ -36,7 +36,7 @@ showls () {
     fi
 }
 
-# Tab source source is only filled with manual deployment.
+# Tab 'source source' is only filled with manual deployment.
 # However the build command is still npm run vercel so to differentiate
 # a manual deployment from a GIT deployment, the WOGIT (read without git)
 # environment variable is set.
@@ -49,13 +49,13 @@ then
     exec /bin/true
 fi
 
+# The webapp and its serverless functions are completely built on the
+# dev machine so nothing else to be done on Vercel.
 if [ -d __sapper__/build/ ]
 then
     echo "*** The entire webapp and its serverless functions are ready"
-    # The webapp and its serverless functions are completely built on
-    # the dev machine.
     showls -R __sapper__/export/
-    exec /bin/true
+    #exec /bin/true
 fi
 
 # Inquire context:
@@ -69,28 +69,6 @@ then
     echo "*** npm --version  -> $(npm --version)"
     echo "*** printenv is"
     printenv
-fi
-
-false && \
-if [ -z "$FKEY_PUBLIC" ]
-then if [ -z "$FKEY_PRIVATE" ]
-     then
-         echo "*** Building pair of keys:"
-         mkdir -p secrets/
-         ( cd secrets/
-           if [ ! -f ./fkeyPrivate ]
-           then 
-               ssh-keygen -t rsa -N '' -b 1024 -C "fkey@f.codegradx.org" -f ./fkeyPrivate
-               openssl rsa -in ./fkeyPrivate -pubout -out ./fkeyPublic
-           fi
-           ls -l ../secrets/
-         )
-         cp -rp secrets api/
-     else
-         unset FKEY_PUBLIC
-     fi
-else
-    unset FKEY_PRIVATE
 fi
 
 echo "*** Building the p.codegradx.org static server..."
@@ -114,7 +92,7 @@ then
     echo "!!!!! Crawling phase probably missing!" >&2
     exit 1
 fi
-# Make sure that export is the 'output directory' in the project settings:
+# Make sure that ./export is the 'output directory' in the project settings:
 mv __sapper__/export .
 
 # Update src/server.js in order to be invoked as a serverless function.
@@ -147,14 +125,12 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
-const staticDir = path.join(process.cwd(), 'static');
-
 let handler = undefined;
 try {
   const server = polka()
         .use(
                 compression({ threshold: 0 }),
-                sirv(staticDir, { dev }),
+                sirv('static', { dev }),
                 sapper.middleware()
         );
   handler = serverless(server);
@@ -176,7 +152,7 @@ EOF
 
 echo "*** Building the p.codegradx.org dynamic server..."
 npm run build
-cp __sapper__/build/server/server.js api/p.js
+cp -pf __sapper__/build/server/server.js api/p.js
 
 # Restaure back the original file:
 mv -f src/server.js.ORG src/server.js

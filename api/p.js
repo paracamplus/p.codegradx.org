@@ -7041,14 +7041,12 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
-const staticDir = path.join(process.cwd(), 'static');
-
 let handler = undefined;
 try {
   const server = polka__default['default']()
         .use(
                 compression__default['default']({ threshold: 0 }),
-                sirv__default['default'](staticDir, { dev }),
+                sirv__default['default']('static', { dev }),
                 middleware()
         );
   handler = serverless(server);
