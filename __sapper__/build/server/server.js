@@ -7053,7 +7053,7 @@ showDir('./__sapper__/build');
 //} catch (exc) {
 //  console.error({exc});
 //}
-
+/*
 module.exports.handler = async function (event, context) {
    console.log('entering handler...');
    if ( handler ) {
@@ -7064,3 +7064,4 @@ module.exports.handler = async function (event, context) {
      console.error('undefined handler');
    }  
 };
+*/
