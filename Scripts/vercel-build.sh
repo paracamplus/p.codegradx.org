@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-26 20:34:03 queinnec"
+# Time-stamp: "2021-01-27 09:42:48 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -106,8 +106,17 @@ const serverless = require('serverless-http');
 const fs = require('fs');
 const path = require('path');
 
-const { PORT, NODE_ENV } = process.env;
+const { NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
+
+module.exports.handler = async function (event, context, callback) {
+   console.log('Within handler...');
+   return {
+      statusCode: 200,
+      headers: {},
+      body: 'Default handler OK'
+   };
+};
 
 function showDir (dir = '.') {
   try {
@@ -125,15 +134,19 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
+try {
 const server = polka()
         .use(
                 compression({ threshold: 0 }),
-                sirv('Xstatic', { dev }),
+                sirv('static', { dev }),
                 sapper.middleware()
         );
 const handler = serverless(server);
 
 module.exports.handler = handler;
+} catch (exc) {
+  console.log({exc});
+}
 
 /*
 module.exports.handler = async function (event, context) {

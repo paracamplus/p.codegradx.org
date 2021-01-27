@@ -7022,8 +7022,17 @@ const serverless = require('serverless-http');
 const fs$1 = require('fs');
 const path = require('path');
 
-const { PORT, NODE_ENV } = process.env;
+const { NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
+
+module.exports.handler = async function (event, context, callback) {
+   console.log('Within handler...');
+   return {
+      statusCode: 200,
+      headers: {},
+      body: 'Default handler OK'
+   };
+};
 
 function showDir (dir = '.') {
   try {
@@ -7041,15 +7050,19 @@ showDir('./export');
 showDir('./__sapper__');
 showDir('./__sapper__/build');
 
+try {
 const server = polka__default['default']()
         .use(
                 compression__default['default']({ threshold: 0 }),
-                sirv__default['default']('Xstatic', { dev }),
+                sirv__default['default']('static', { dev }),
                 middleware()
         );
 const handler = serverless(server);
 
 module.exports.handler = handler;
+} catch (exc) {
+  console.log({exc});
+}
 
 /*
 module.exports.handler = async function (event, context) {
