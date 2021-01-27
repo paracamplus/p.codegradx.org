@@ -7025,6 +7025,15 @@ const path = require('path');
 const { NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
+process.on('unhandledRejection', err => {
+    console.error('Unhandled rejection:', err);
+    setTimeout(() => process.exit(11), 5*1000);
+});
+process.on("uncaughtException", error => {
+    console.error("Uncaught Exception:", error);
+    setTimeout(() => process.exit(12), 5*1000);
+});
+
 module.exports.handler = async function (event, context, callback) {
    console.log('Within handler...');
    return {
@@ -7051,17 +7060,18 @@ showDir('./__sapper__');
 showDir('./__sapper__/build');
 
 try {
-const server = polka__default['default']()
+  const server = polka__default['default']()
         .use(
                 compression__default['default']({ threshold: 0 }),
                 sirv__default['default']('static', { dev }),
                 middleware()
         );
-const handler = serverless(server);
+  const handler = serverless(server);
+  module.exports = { handler, server };
 
-module.exports.handler = handler;
 } catch (exc) {
   console.log({exc});
+  setTimeout(() => process.exit(13), 5*1000);
 }
 
 /*

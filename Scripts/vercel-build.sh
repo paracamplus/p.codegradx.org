@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-27 09:42:48 queinnec"
+# Time-stamp: "2021-01-27 10:27:07 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -109,6 +109,15 @@ const path = require('path');
 const { NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
+process.on('unhandledRejection', err => {
+    console.error('Unhandled rejection:', err);
+    setTimeout(() => process.exit(11), 5*1000);
+});
+process.on("uncaughtException", error => {
+    console.error("Uncaught Exception:", error);
+    setTimeout(() => process.exit(12), 5*1000);
+});
+
 module.exports.handler = async function (event, context, callback) {
    console.log('Within handler...');
    return {
@@ -135,17 +144,18 @@ showDir('./__sapper__');
 showDir('./__sapper__/build');
 
 try {
-const server = polka()
+  const server = polka()
         .use(
                 compression({ threshold: 0 }),
                 sirv('static', { dev }),
                 sapper.middleware()
         );
-const handler = serverless(server);
+  const handler = serverless(server);
+  module.exports = { handler, server };
 
-module.exports.handler = handler;
 } catch (exc) {
   console.log({exc});
+  setTimeout(() => process.exit(13), 5*1000);
 }
 
 /*
