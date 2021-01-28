@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-27 10:27:07 queinnec"
+# Time-stamp: "2021-01-28 09:43:18 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -73,13 +73,7 @@ fi
 echo "*** Building the p.codegradx.org static server..."
 # export needs the original server.js with a listen method in order to
 # crawl the site after generation.
-cp -pf src/server.js src/server.js.ORG
-if grep -q listen.PORT < src/server.js
-then :
-else
-    echo "Bad version of src/server.js"
-    exit 2
-fi
+cp -pf src/nativeserver.js src/server.js
 
 npm run export
 showls `pwd`/
@@ -95,90 +89,15 @@ fi
 mv __sapper__/export .
 rm -rf __sapper__/build
 
-# Update src/server.js in order to be invoked as a serverless function.
-cat > src/server.js <<EOF
-import sirv from 'sirv';
-import polka from 'polka';
-import compression from 'compression';
-import * as sapper from '@sapper/server';
-import { CodeGradX } from 'codegradx';
-const serverless = require('serverless-http');
-const fs = require('fs');
-const path = require('path');
-
-const { NODE_ENV } = process.env;
-const dev = NODE_ENV === 'development';
-
-process.on('unhandledRejection', err => {
-    console.error('Unhandled rejection:', err);
-    setTimeout(() => process.exit(11), 5*1000);
-});
-process.on("uncaughtException", error => {
-    console.error("Uncaught Exception:", error);
-    setTimeout(() => process.exit(12), 5*1000);
-});
-
-module.exports.handler = async function (event, context, callback) {
-   console.log('Within handler...');
-   return {
-      statusCode: 200,
-      headers: {},
-      body: 'Default handler OK'
-   };
-};
-
-function showDir (dir = '.') {
-  try {
-    console.log("\nListing directory " + dir + ":\n  ");
-    console.log(fs.readdirSync(dir).join('\n  '));
-  } catch (exc) {
-    // ignore
-  }
-}
-
-showDir('.');
-showDir('./api');
-showDir('./static');
-showDir('./export');
-showDir('./__sapper__');
-showDir('./__sapper__/build');
-
-try {
-  const server = polka()
-        .use(
-                compression({ threshold: 0 }),
-                sirv('static', { dev }),
-                sapper.middleware()
-        );
-  const handler = serverless(server);
-  module.exports = { handler, server };
-
-} catch (exc) {
-  console.log({exc});
-  setTimeout(() => process.exit(13), 5*1000);
-}
-
-/*
-module.exports.handler = async function (event, context) {
-   console.log('entering handler...');
-   if ( handler ) {
-     const result = await handler(event, context);
-     console.log('exiting handler');
-     return result;
-   } else {
-     console.error('undefined handler');
-   }  
-};
-*/
-EOF
-
 echo "*** Building the p.codegradx.org dynamic server..."
+# Update src/server.js in order to be invoked as a serverless function.
+cp -pf src/pserver.js src/server.js
 npm run build
 tr -d '\r' < __sapper__/build/server/server.js > api/p.js
 showls api/
 
 # Restaure back the original file:
-mv -f src/server.js.ORG src/server.js
+mv -f src/nativeserver.js src/server.js
 
 echo "*** end of vercel-build.sh"
 

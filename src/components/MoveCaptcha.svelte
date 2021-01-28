@@ -92,7 +92,7 @@
  import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
  const dispatch = createEventDispatcher();
  import { CodeGradX } from 'codegradx';
- import { finalcrypt } from '../cryptlib.mjs';
+ import { finalcrypt } from '../server/cryptlib.mjs';
 
  const message = {
    building: "Construction d'une Captcha...",

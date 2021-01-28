@@ -5,6 +5,16 @@ import { person } from '../stores.mjs';
 import * as sapper from '@sapper/app';
 import { CodeGradX } from 'codegradx';
 
+/*
+function apisapper (href, opts) {
+    if ( ! href.match(/^\/api\/p/\/) ) {
+        href = `/api/p/${href}`.replace(/\/\/+/g, '/');
+    }
+    return sapper.goto(href, opts);
+}
+export { apisapper as sapper };
+*/
+
 let dev = false;
 
 const config = {

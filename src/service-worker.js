@@ -1,4 +1,7 @@
-import { timestamp, files, shell } from '@sapper/service-worker';
+import { files, shell } from '@sapper/service-worker';
+
+// See https://sapper.svelte.dev/docs#Deploying_service_workers
+const timestamp = process.env.SAPPER_TIMESTAMP;
 
 const ASSETS = `cache${timestamp}`;
 
