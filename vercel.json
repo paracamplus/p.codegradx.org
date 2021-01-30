@@ -32,7 +32,10 @@
                          "value": "text/xml; charset=UTF-8" } ] },
         { "source": "/api/(.*)",
           "headers": [ { "key": "X-Via",
-                         "value": "/api/" } ] }
+                         "value": "/api/" },
+                       { "key": "Cache-Control",
+                         "value": "s-max-age=1, stale-while-revalidate" }
+                     ] }
     ],
     "rewrites": [
         { "source": "/api/p(/.*)",

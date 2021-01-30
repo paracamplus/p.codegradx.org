@@ -6,6 +6,7 @@ var compression = require('compression');
 var fs$1 = require('fs');
 var path = require('path');
 var codegradx = require('codegradx');
+var queryString = require('query-string');
 var Stream = require('stream');
 var http = require('http');
 var Url = require('url');
@@ -19,6 +20,7 @@ var polka__default = /*#__PURE__*/_interopDefaultLegacy(polka);
 var compression__default = /*#__PURE__*/_interopDefaultLegacy(compression);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs$1);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
+var queryString__default = /*#__PURE__*/_interopDefaultLegacy(queryString);
 var Stream__default = /*#__PURE__*/_interopDefaultLegacy(Stream);
 var http__default = /*#__PURE__*/_interopDefaultLegacy(http);
 var Url__default = /*#__PURE__*/_interopDefaultLegacy(Url);
@@ -134,19 +136,80 @@ function shuffle (array) {
     return array;
 }
 
-// Serve digit image as /digit/[slug].js
+// Serve information for the movecaptcha
+const fetch$1 = require('node-fetch');
+
+const prefixurl = '/api/digit.js';
+
+async function get (req, res, next) {
+
+    const state = new codegradx.CodeGradX.State();
+    // Initialize that server-side CodeGradX instance:
+    state.servers = state.defaultservers;
+    state.fetch = fetch$1;
+    
+    state.sendAXServer('x', {
+        path: '/movecaptchainfo',
+        method: 'GET',
+        headers: {
+            Accept: 'application/json'
+        }
+    }).then((response) => {
+        if ( response.entityKind !== 'JSON' ) {
+            throw "bad answer";
+        }
+        //console.log(response);//DEBUG
+        //console.log(response.entity);//DEBUG
+        const nonce = response.entity.nonce;
+        const wanted = response.entity.wanted;
+        const expires = codegradx.CodeGradX._str2Date(response.entity.expires)
+              .toUTCString();
+        const images = response.entity.images;
+        const urls = shuffle(images.map((s) => `${prefixurl}?slug=${s}`));
+        //console.log(nonce, wanted, urls); //DEBUG
+
+        let content = `${nonce},${wanted.join('')},${images.join(',')}`;
+        content = crypt(content);
+        let cookie = `MV=${content}; path=/digit/; expires=${expires};`;
+        res.setHeader('Set-Cookie', cookie);
+		res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({nonce, wanted, urls, expires}));
+        
+    }).catch((exc) => {
+        console.log('signupinit PB', state.log);
+        console.log('signupinit PB', exc);
+        let content = `Problem
+exception: ${exc.toString()}
+state.log is
+${state.log.items.join('\n')}
+`;
+        res.statusCode = 500;
+        res.statusMessage = "Erroneous movecaptchainfo";
+        res.setHeader('Content-Type', 'text/plain');
+        res.end(content);
+    });
+}
+
+// end of api/signupinit.js
+
+var route_0 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    get: get
+});
+
+// Serve digit image as /api/digit.js?slug=XXX
 
 const fs = require('fs');
 
-async function get(req, res, next) {
-	// the `slug` parameter is available because this file
-	// is called [slug].json.js
-	let { slug } = req.params;
+async function get$1(req, res, next) {
+    let params = req.query || queryString__default['default'].parse(req.url);
+    console.log(req.url, req.query);//DEBUG
+    let slug = params.slug;
     slug = slug.replace(/[.]png$/, '');
 
     let images = [];
-    const cookies = req.headers.cookie.split(';');
-    //console.log('cookies', cookies);
+    const cookies = req.cookies || req.headers.cookie.split(';');
+    console.log('cookies', cookies);
     for ( const cookie of cookies ) {
         const nameValue = cookie.trim().split('=');
         //console.log(nameValue);
@@ -177,68 +240,7 @@ async function get(req, res, next) {
     res.end(fs.readFileSync(pngfile));
 }
 
-// end of digit/[slug].js
-
-var route_0 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    get: get
-});
-
-// Serve information for the movecaptcha
-const fetch$1 = require('node-fetch');
-
-const prefixurl = '/digit';
-
-async function get$1 (req, res, next) {
-
-    const state = new codegradx.CodeGradX.State();
-    // Initialize that server-side CodeGradX instance:
-    state.servers = state.defaultservers;
-    state.fetch = fetch$1;
-    
-    state.sendAXServer('x', {
-        path: '/movecaptchainfo',
-        method: 'GET',
-        headers: {
-            Accept: 'application/json'
-        }
-    }).then((response) => {
-        if ( response.entityKind !== 'JSON' ) {
-            throw "bad answer";
-        }
-        //console.log(response);//DEBUG
-        //console.log(response.entity);//DEBUG
-        const nonce = response.entity.nonce;
-        const wanted = response.entity.wanted;
-        const expires = codegradx.CodeGradX._str2Date(response.entity.expires)
-              .toUTCString();
-        const images = response.entity.images;
-        const urls = shuffle(images.map((s) => `${prefixurl}/${s}.png`));
-        //console.log(nonce, wanted, urls); //DEBUG
-
-        let content = `${nonce},${wanted.join('')},${images.join(',')}`;
-        content = crypt(content);
-        let cookie = `MV=${content}; path=/digit/; expires=${expires};`;
-        res.setHeader('Set-Cookie', cookie);
-		res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({nonce, wanted, urls, expires}));
-        
-    }).catch((exc) => {
-        console.log('signupinit PB', state.log);
-        console.log('signupinit PB', exc);
-        let content = `Problem
-exception: ${exc.toString()}
-state.log is
-${state.log.items.join('\n')}
-`;
-        res.statusCode = 500;
-        res.statusMessage = "Erroneous movecaptchainfo";
-        res.setHeader('Content-Type', 'text/plain');
-        res.end(content);
-    });
-}
-
-// end of signupinit.js
+// end of api/digit/[slug].js
 
 var route_1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -382,7 +384,7 @@ function add_attribute(name, value, boolean) {
     return ` ${name}${value === true ? '' : `=${typeof value === 'string' ? JSON.stringify(escape(value)) : `"${value}"`}`}`;
 }
 
-/* src/components/ParacamplusLogo.svelte generated by Svelte v3.32.0 */
+/* src/components/ParacamplusLogo.svelte generated by Svelte v3.32.1 */
 
 let originalWidth = 332.73508;
 let originalHeight = 341.99368;
@@ -404,7 +406,7 @@ const ParacamplusLogo = create_ssr_component(($$result, $$props, $$bindings, slo
 <svg xmlns="${"http://www.w3.org/2000/svg"}"${add_attribute("width", width, 0)}${add_attribute("height", height, 0)} viewBox="${"0 0 " + escape(originalWidth) + " " + escape(originalHeight)}"><g transform="${"translate(0,-1)"}"><g transform="${"matrix(1.25,0,0,-1.25,0,336.25)"}"><path d="${"M 226.41738,-88.491041 A 114.15444,116.22555 0 0 1 106.28808,5.0668218 114.15444,116.22555 0 0 1 0.39503011,-104.88137 114.15444,116.22555 0 0 1 94.622217,-225.33326"}" transform="${"scale(1,-1)"}" id="${"outercircle"}" style="${"opacity:1;fill:" + escape(fgcolor) + ";fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:3.20000005;stroke-dasharray:none;stroke-dashoffset:2.72127938;stroke-opacity:1"}"></path><path transform="${"scale(1,-1)"}" d="${"M 191.7794,-94.153239 A 79.189468,85.609978 0 0 1 108.44514,-25.239935 79.189468,85.609978 0 0 1 34.986639,-106.2261 79.189468,85.609978 0 0 1 100.35248,-194.94915"}" id="${"innercircle"}" style="${"opacity:1;fill:" + escape(bgcolor) + ";fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:3.20000005;stroke-dasharray:none;stroke-dashoffset:2.72127938;stroke-opacity:1"}"></path></g><rect style="${"opacity:1;fill:" + escape(bgcolor) + ";fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:3.20000005;stroke-dasharray:none;stroke-dashoffset:2.72127938;stroke-opacity:1"}" width="${"134.25633"}" height="${"147.17029"}" x="${"94.783516"}" y="${"-235.13135"}" transform="${"matrix(1.25,0,0,1.25,0,336.25)"}"></rect></g><g id="${"layer2top"}" style="${"display:inline"}" transform="${"translate(0,-1)"}"><path style="${"fill:none;fill-rule:evenodd;stroke:" + escape(fgcolor) + ";stroke-width:50;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"}" d="${"m 86.619135,150.58535 c 79.918635,0.36549 149.603795,-0.73096 221.116355,0.36549 0,0 -9.03181,-61.277337 -39.43166,-85.562193 C 237.90398,41.103791 185.29916,25.956138 185.29916,25.956138 l 0.36549,230.253392"}"></path></g></svg>`;
 });
 
-/* src/components/SplashImage.svelte generated by Svelte v3.32.0 */
+/* src/components/SplashImage.svelte generated by Svelte v3.32.1 */
 
 const SplashImage = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let { size = "1em" } = $$props;
@@ -490,7 +492,7 @@ function writable(value, start = noop) {
 
 const CONTEXT_KEY = {};
 
-/* src/routes/_layout.svelte generated by Svelte v3.32.0 */
+/* src/routes/_layout.svelte generated by Svelte v3.32.1 */
 
 const css = {
 	code: "main.svelte-1vk44dp{position:relative;top:0px;min-height:100vh;background-color:white;margin:0 auto;display:grid;grid-template-rows:auto 1fr auto}",
@@ -507,7 +509,7 @@ var root_comp = /*#__PURE__*/Object.freeze({
     'default': Layout
 });
 
-/* src/routes/_error.svelte generated by Svelte v3.32.0 */
+/* src/routes/_error.svelte generated by Svelte v3.32.1 */
 
 const css$1 = {
 	code: "h1.svelte-8od9u6,p.svelte-8od9u6{margin:0 auto}h1.svelte-8od9u6{font-size:2.8em;font-weight:700;margin:0 0 0.5em 0}p.svelte-8od9u6{margin:1em auto}@media(min-width: 480px){h1.svelte-8od9u6{font-size:4em}}",
@@ -530,7 +532,7 @@ const Error$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 ${ ``}`;
 });
 
-/* src/node_modules/@sapper/internal/App.svelte generated by Svelte v3.32.0 */
+/* src/node_modules/@sapper/internal/App.svelte generated by Svelte v3.32.1 */
 
 const App = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let { stores } = $$props;
@@ -562,7 +564,7 @@ ${validate_component(Layout, "Layout").$$render($$result, Object.assign({ segmen
 
 // This file is generated by Sapper — do not edit it!
 
-const ignore = [/^\/digit\/([^/]+?)\/?$/, /^\/api\/signupinit\.json$/];
+const ignore = [/^\/api\/signupinit\.json$/, /^\/api\/digit\/?$/];
 
 const routes = (d => [
 	{
@@ -926,7 +928,7 @@ function isUser (o) {
 
 // end of client/lib.mjs
 
-/* src/routes/index.svelte generated by Svelte v3.32.0 */
+/* src/routes/index.svelte generated by Svelte v3.32.1 */
 
 const css$2 = {
 	code: "div.background.svelte-1ic78iv{background-color:#20295b;min-height:100vh}p.text.svelte-1ic78iv,div.text.svelte-1ic78iv{color:white;font-size:200%}",
@@ -936,7 +938,6 @@ const css$2 = {
 const Routes = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $person, $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => $person = value);
-	person.subscribe($$value => $person = $$value);
 
 	onMount(async () => {
 		return initializePerson().then(async () => {
@@ -970,7 +971,7 @@ var component_0 = /*#__PURE__*/Object.freeze({
     'default': Routes
 });
 
-/* src/components/Header.svelte generated by Svelte v3.32.0 */
+/* src/components/Header.svelte generated by Svelte v3.32.1 */
 
 const css$3 = {
 	code: "header.svelte-1r24ydt{max-height:2rem}",
@@ -980,7 +981,6 @@ const css$3 = {
 const Header = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $person, $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => $person = value);
-	person.subscribe($$value => $person = $$value);
 
 	$$result.css.add(css$3);
 	$$unsubscribe_person();
@@ -997,7 +997,7 @@ const Header = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 </header>`;
 });
 
-/* src/components/Problem.svelte generated by Svelte v3.32.0 */
+/* src/components/Problem.svelte generated by Svelte v3.32.1 */
 
 const Problem = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let { error = undefined } = $$props;
@@ -1008,7 +1008,7 @@ const Problem = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	: ``}`;
 });
 
-/* src/components/Bottom.svelte generated by Svelte v3.32.0 */
+/* src/components/Bottom.svelte generated by Svelte v3.32.1 */
 
 const css$4 = {
 	code: "footer.svelte-y8sbul{max-height:2rem}a.svelte-y8sbul{text-decoration:none}",
@@ -1025,7 +1025,7 @@ const Bottom = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 </footer>`;
 });
 
-/* src/routes/lostpassword.svelte generated by Svelte v3.32.0 */
+/* src/routes/lostpassword.svelte generated by Svelte v3.32.1 */
 
 const css$5 = {
 	code: "header.bold.svelte-1t9r4a0{font-weight:bold}input.error.svelte-1t9r4a0{background-color:pink}",
@@ -1037,7 +1037,6 @@ let defaultlogin = "mon.email@a.moi";
 const Lostpassword = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => value);
-	person.subscribe($$value => $$value);
 	let login = undefined;
 
 	onMount(async () => {
@@ -1079,7 +1078,7 @@ var component_1 = /*#__PURE__*/Object.freeze({
     'default': Lostpassword
 });
 
-/* src/routes/universes.svelte generated by Svelte v3.32.0 */
+/* src/routes/universes.svelte generated by Svelte v3.32.1 */
 
 const css$6 = {
 	code: "p.smallHint.svelte-7owgve.svelte-7owgve{color:#aaa}.personName.svelte-7owgve.svelte-7owgve{color:#334191;padding:0.1em 0.5em 0.1em 0.5em;border-radius:0.5em;border:solid 1px #334191}li.svelte-7owgve span.va.svelte-7owgve{vertical-align:0px}.videoWrapper.svelte-7owgve.svelte-7owgve{height:100px}.videoWrapper.svelte-7owgve iframe.svelte-7owgve,.videoWrapper.svelte-7owgve img.svelte-7owgve{top:0;left:0;width:20%;height:auto !important}",
@@ -1089,7 +1088,6 @@ const css$6 = {
 const Universes = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $person, $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => $person = value);
-	person.subscribe($$value => $person = $$value);
 	onMount(initializePerson);
 
 	$$result.css.add(css$6);
@@ -1146,7 +1144,7 @@ var component_2 = /*#__PURE__*/Object.freeze({
     'default': Universes
 });
 
-/* src/routes/mailsent.svelte generated by Svelte v3.32.0 */
+/* src/routes/mailsent.svelte generated by Svelte v3.32.1 */
 
 const css$7 = {
 	code: ".personName.svelte-i8s1l7{color:#334191;padding:0.1em 0.5em 0.1em 0.5em;border-radius:0.5em;border:solid 1px #334191}",
@@ -1156,7 +1154,6 @@ const css$7 = {
 const Mailsent = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $person, $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => $person = value);
-	person.subscribe($$value => $person = $$value);
 
 	onMount(async () => {
 		if (!$person) {
@@ -1210,12 +1207,11 @@ var component_3 = /*#__PURE__*/Object.freeze({
     'default': Mailsent
 });
 
-/* src/routes/sendmail.svelte generated by Svelte v3.32.0 */
+/* src/routes/sendmail.svelte generated by Svelte v3.32.1 */
 
 const Sendmail = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $person, $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => $person = value);
-	person.subscribe($$value => $person = $$value);
 
 	onMount(async () => {
 		return initializePerson().then(async () => {
@@ -1249,7 +1245,7 @@ var component_4 = /*#__PURE__*/Object.freeze({
     'default': Sendmail
 });
 
-/* src/routes/connect.svelte generated by Svelte v3.32.0 */
+/* src/routes/connect.svelte generated by Svelte v3.32.1 */
 
 const css$8 = {
 	code: "header.bold.svelte-lbq2h3{font-weight:bold}",
@@ -1309,12 +1305,13 @@ var component_5 = /*#__PURE__*/Object.freeze({
     'default': Connect
 });
 
-/* src/components/MoveCaptcha.svelte generated by Svelte v3.32.0 */
+/* src/components/MoveCaptcha.svelte generated by Svelte v3.32.1 */
 
 const css$9 = {
 	code: "div.targets.svelte-ju4jbp.svelte-ju4jbp{margin-top:4em;display:grid;grid-template-columns:auto 3em 3em 3em 3em auto;justify-items:center;grid-column-gap:1em}div.targets.svelte-ju4jbp div.target.svelte-ju4jbp{width:3em;background-color:#eee}div.targets.svelte-ju4jbp div.target img.svelte-ju4jbp{width:3em;height:3em}div.images.svelte-ju4jbp.svelte-ju4jbp{margin-top:1em;display:grid;grid-template-columns:auto 3em 3em 3em 3em 3em auto;grid-template-rows:3em 3em;justify-items:center;grid-column-gap:1em;grid-row-gap:1em}div.images.svelte-ju4jbp div.image.svelte-ju4jbp{width:3em;background-color:white}div.images.svelte-ju4jbp div.image img.svelte-ju4jbp{width:3em;height:3em} img.targeted {border:solid #334191 4px}",
-	map: "{\"version\":3,\"file\":\"MoveCaptcha.svelte\",\"sources\":[\"MoveCaptcha.svelte\"],\"sourcesContent\":[\"<!-- -*- coding: utf-8 -*- -->\\n\\n{#if urls.length === 0 }\\n<div></div>\\n\\n{:else}\\n\\n<div id='movecaptcha' class='w3-container w3-center'>\\n  { installHooks(), '' }\\n  <p> Déplacez les chiffres dans les cases vides afin de former la\\n    suite {#each wanted as w}{w} {/each}.\\n  </p>\\n  \\n  {#if progress}<div class='w3-green'>{progress}</div>{/if}\\n  \\n  <div class='images'>\\n    <!-- first row- -->\\n    <div></div>\\n    <div class='image'><img alt='11' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='12' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='13' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='14' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='15' src='/_digits/white.png' /></div>\\n    <div></div>\\n    \\n    <div></div>\\n    <div class='image'><img alt='21' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='22' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='23' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='24' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='25' src='/_digits/white.png' /></div>\\n    <div></div>\\n  </div>\\n\\n  <div class='targets'>\\n    <div></div>\\n    <div class='target'><img alt='a1' src='/_digits/white.png'/></div>\\n    <div class='target'><img alt='a2' src='/_digits/white.png'/></div>\\n    <div class='target'><img alt='a3' src='/_digits/white.png'/></div>\\n    <div class='target'><img alt='a4' src='/_digits/white.png'/></div>\\n    <div></div>\\n  </div>\\n</div>\\n\\n{/if}\\n\\n{#if error}<Problem bind:error={error} />{/if}\\n  \\n\\n<style>\\n div.targets {\\n   margin-top: 4em;\\n   display: grid;\\n   grid-template-columns: auto 3em 3em 3em 3em auto;\\n   justify-items: center;\\n   grid-column-gap: 1em;\\n }\\n div.targets div.target {\\n   width: 3em;\\n   background-color: #eee;\\n }\\n div.targets div.target img {\\n   width: 3em;\\n   height: 3em;\\n }\\n \\n div.images {\\n   margin-top: 1em;\\n   display: grid;\\n   grid-template-columns: auto 3em 3em 3em 3em 3em auto;\\n   grid-template-rows: 3em 3em;\\n   justify-items: center;\\n   grid-column-gap: 1em;\\n   grid-row-gap: 1em;\\n }\\n div.images div.image {\\n   width: 3em;\\n   background-color: white;\\n }\\n div.images div.image img {\\n   width: 3em;\\n   height: 3em;\\n }\\n :global( img.targeted ) {\\n   border: solid #334191 4px;\\n }\\n</style>\\n\\n<script>\\n import Problem from '../components/Problem.svelte';\\n \\n import { onMount, createEventDispatcher, afterUpdate } from 'svelte';\\n const dispatch = createEventDispatcher();\\n import { CodeGradX } from 'codegradx';\\n import { finalcrypt } from '../server/cryptlib.mjs';\\n\\n const message = {\\n   building: \\\"Construction d'une Captcha...\\\",\\n   finished: `Navré mais les 2 minutes pendant lesquelles \\nvous pouviez résoudre la captcha sont écoulées.`,\\n   badcaptcha: \\\"Je n'arrive pas à construire la Captcha\\\"\\n };\\n\\n let captcha = undefined;\\n let nonce = undefined;\\n let wanted = [];\\n let urls = [];\\n let expires = undefined;\\n\\n const prefixurl = '/digit';\\n const whiteImage = '/_digits/white.png';\\n let targetsArray = [];\\n let error = undefined;\\n let progress = message.building;\\n $: end = computeEnd(expires);\\n\\n onMount(() => {\\n   error = undefined;\\n   getInfo(true);\\n });\\n\\n async function getInfo (bool) {\\n   if ( bool ) {\\n     try {\\n       const response = await fetch('/api/signupinit.json');\\n       //console.log(response);//DEBUG\\n       if ( response.ok ) {\\n         response.entity = await response.json();\\n         //console.log('signup', response.entity);//DEBUG\\n         nonce = response.entity.nonce;\\n         wanted = response.entity.wanted;\\n         urls = response.entity.urls;\\n         expires = response.entity.expires;\\n       } else {\\n         throw response;\\n       }\\n     } catch(exc) {\\n       console.log('signup', 'getInfo', exc);\\n       error = message.badcaptcha;\\n       progress = undefined;\\n     }\\n   }\\n }\\n\\n function computeEnd (expires) {\\n   if ( typeof document !== 'undefined' ) {\\n     installHooks();\\n     return Date.parse(expires);\\n   }\\n }\\n \\n async function refreshCaptcha (event) {\\n   error = undefined;\\n   await getInfo(true);\\n }\\n\\n function installHooks () {\\n   error = undefined;\\n   // Leave time to #movecaptcha to be created:\\n   setTimeout(doInstallHooks, 1000);\\n   end = Date.parse(expires);\\n }\\n\\n function doInstallHooks () {\\n   const movecaptcha = document.getElementById('movecaptcha');\\n   const images = movecaptcha.getElementsByClassName('image');\\n   for ( let i=0 ; i<images.length ; i++) {\\n     const divimage = images.item(i);\\n     const image = divimage.firstElementChild;\\n     image.setAttribute('src', urls[i]);\\n     image.addEventListener('dragstart', (event) => {\\n       error = undefined;\\n       event.dataTransfer.setData(\\\"text/plain\\\", event.target.src);\\n       event.dataTransfer.effectAllowed = 'copy';\\n       return true;\\n     });\\n   }\\n   \\n   const targets = movecaptcha.getElementsByClassName('target');\\n   targetsArray = [];\\n   for ( let i=0 ; i<targets.length ; i++ ) {\\n     const target = targets.item(i);\\n     const targetImage = target.firstElementChild;\\n     targetsArray.push(targetImage);\\n     targetImage.setAttribute('src', whiteImage);\\n     target.addEventListener(\\\"dragenter\\\", illuminate);\\n     target.addEventListener(\\\"dragover\\\", (event) => {\\n       event.preventDefault();\\n     });\\n     target.addEventListener(\\\"dragleave\\\", tarnish);\\n     target.addEventListener(\\\"drop\\\", drop);\\n   }\\n   captcha = captcha || {\\n     getResponse,\\n     refresh: refreshCaptcha,\\n     getCount: filledBoxes\\n   };\\n   progress = undefined;\\n   dispatch('ready', captcha);\\n }\\n\\n function illuminate (event) {\\n   event.preventDefault();\\n   if ( Date.now() < end ) {\\n     const target = event.target;\\n     const classes = target.getAttribute('class') + ' targeted';\\n     target.setAttribute('class', classes);\\n   } else {\\n     error = message.finished;\\n     event.preventDefault();\\n     event.stopPropagation();\\n     dispatch('timeout', {\\n       captcha,\\n     });\\n   }\\n }\\n function tarnish (event) {\\n   event.preventDefault();\\n   const target = event.target;\\n   const classes = target.getAttribute('class').replace(/ targeted/, '');\\n   target.setAttribute('class', classes);\\n }\\n function drop (event) {\\n   if ( Date.now() < end ) {\\n     tarnish(event);\\n     event.target.setAttribute('src', event.dataTransfer.getData(\\\"text/plain\\\"));\\n     dispatch('change', {\\n       captcha,\\n       count: filledBoxes()\\n     });\\n     if ( isComplete() ) {\\n       dispatch('complete', {\\n         captcha,\\n         complete: true\\n       });\\n     }\\n   } else {\\n     error = message.finished;\\n     event.preventDefault();\\n     event.stopPropagation();\\n     dispatch('timeout', {\\n       captcha,\\n     });\\n   }\\n }\\n\\n // Return the number of filled boxes:\\n function filledBoxes () {\\n   let count = 0;\\n   targetsArray.forEach(target => {\\n     const src = target.getAttribute('src');\\n     if ( ! target.getAttribute('src').match(/white[.]png/) ) {\\n       count++;\\n     }\\n   });\\n   return count;\\n }\\n\\n // semi-predicate returning the set of images filling boxes:\\n function isComplete () {\\n   let results = [];\\n   if ( targetsArray.some(target => {\\n     const src = target.getAttribute('src');\\n     results.push(src.replace(/^.*\\\\/(\\\\w+)[.]png$/, '$1'));\\n     return target.getAttribute('src').match(/white[.]png/);\\n   }) ) {\\n     return false;\\n   } else {\\n     return results;\\n   }\\n }\\n\\n // Return the result of the solved captcha:\\n function getResponse () {\\n   if ( Date.now() < end ) {\\n     let results = isComplete();\\n     //console.log('results', results);//DEBUG\\n     if ( results ) {\\n       let content = btoa(`${nonce},${results.join(',')}`);\\n       return `movecaptcha,${content}`;\\n     } else {\\n       return false;\\n     }\\n   } else {\\n     error = message.finished;\\n     dispatch('timeout', {\\n       captcha,\\n     });\\n     return false;\\n   }\\n }\\n\\n</script>\\n\\n\"],\"names\":[],\"mappings\":\"AAkDC,GAAG,QAAQ,4BAAC,CAAC,AACX,UAAU,CAAE,GAAG,CACf,OAAO,CAAE,IAAI,CACb,qBAAqB,CAAE,IAAI,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,IAAI,CAChD,aAAa,CAAE,MAAM,CACrB,eAAe,CAAE,GAAG,AACtB,CAAC,AACD,GAAG,sBAAQ,CAAC,GAAG,OAAO,cAAC,CAAC,AACtB,KAAK,CAAE,GAAG,CACV,gBAAgB,CAAE,IAAI,AACxB,CAAC,AACD,GAAG,sBAAQ,CAAC,GAAG,OAAO,CAAC,GAAG,cAAC,CAAC,AAC1B,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,AACb,CAAC,AAED,GAAG,OAAO,4BAAC,CAAC,AACV,UAAU,CAAE,GAAG,CACf,OAAO,CAAE,IAAI,CACb,qBAAqB,CAAE,IAAI,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,IAAI,CACpD,kBAAkB,CAAE,GAAG,CAAC,GAAG,CAC3B,aAAa,CAAE,MAAM,CACrB,eAAe,CAAE,GAAG,CACpB,YAAY,CAAE,GAAG,AACnB,CAAC,AACD,GAAG,qBAAO,CAAC,GAAG,MAAM,cAAC,CAAC,AACpB,KAAK,CAAE,GAAG,CACV,gBAAgB,CAAE,KAAK,AACzB,CAAC,AACD,GAAG,qBAAO,CAAC,GAAG,MAAM,CAAC,GAAG,cAAC,CAAC,AACxB,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,AACb,CAAC,AACO,cAAc,AAAE,CAAC,AACvB,MAAM,CAAE,KAAK,CAAC,OAAO,CAAC,GAAG,AAC3B,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"MoveCaptcha.svelte\",\"sources\":[\"MoveCaptcha.svelte\"],\"sourcesContent\":[\"<!-- -*- coding: utf-8 -*- -->\\n\\n{#if urls.length === 0 }\\n<div></div>\\n\\n{:else}\\n\\n<div id='movecaptcha' class='w3-container w3-center'>\\n  { installHooks(), '' }\\n  <p> Déplacez les chiffres dans les cases vides afin de former la\\n    suite {#each wanted as w}{w} {/each}.\\n  </p>\\n  \\n  {#if progress}<div class='w3-green'>{progress}</div>{/if}\\n  \\n  <div class='images'>\\n    <!-- first row- -->\\n    <div></div>\\n    <div class='image'><img alt='11' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='12' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='13' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='14' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='15' src='/_digits/white.png' /></div>\\n    <div></div>\\n    \\n    <div></div>\\n    <div class='image'><img alt='21' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='22' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='23' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='24' src='/_digits/white.png' /></div>\\n    <div class='image'><img alt='25' src='/_digits/white.png' /></div>\\n    <div></div>\\n  </div>\\n\\n  <div class='targets'>\\n    <div></div>\\n    <div class='target'><img alt='a1' src='/_digits/white.png'/></div>\\n    <div class='target'><img alt='a2' src='/_digits/white.png'/></div>\\n    <div class='target'><img alt='a3' src='/_digits/white.png'/></div>\\n    <div class='target'><img alt='a4' src='/_digits/white.png'/></div>\\n    <div></div>\\n  </div>\\n</div>\\n\\n{/if}\\n\\n{#if error}<Problem bind:error={error} />{/if}\\n  \\n\\n<style>\\n div.targets {\\n   margin-top: 4em;\\n   display: grid;\\n   grid-template-columns: auto 3em 3em 3em 3em auto;\\n   justify-items: center;\\n   grid-column-gap: 1em;\\n }\\n div.targets div.target {\\n   width: 3em;\\n   background-color: #eee;\\n }\\n div.targets div.target img {\\n   width: 3em;\\n   height: 3em;\\n }\\n \\n div.images {\\n   margin-top: 1em;\\n   display: grid;\\n   grid-template-columns: auto 3em 3em 3em 3em 3em auto;\\n   grid-template-rows: 3em 3em;\\n   justify-items: center;\\n   grid-column-gap: 1em;\\n   grid-row-gap: 1em;\\n }\\n div.images div.image {\\n   width: 3em;\\n   background-color: white;\\n }\\n div.images div.image img {\\n   width: 3em;\\n   height: 3em;\\n }\\n :global( img.targeted ) {\\n   border: solid #334191 4px;\\n }\\n</style>\\n\\n<script>\\n import Problem from '../components/Problem.svelte';\\n \\n import { onMount, createEventDispatcher, afterUpdate } from 'svelte';\\n const dispatch = createEventDispatcher();\\n import { CodeGradX } from 'codegradx';\\n import { finalcrypt } from '../server/cryptlib.mjs';\\n\\n const message = {\\n   building: \\\"Construction d'une Captcha...\\\",\\n   finished: `Navré mais les 2 minutes pendant lesquelles \\nvous pouviez résoudre la captcha sont écoulées.`,\\n   badcaptcha: \\\"Je n'arrive pas à construire la Captcha\\\"\\n };\\n\\n let captcha = undefined;\\n let nonce = undefined;\\n let wanted = [];\\n let urls = [];\\n let expires = undefined;\\n\\n const whiteImage = '/_digits/white.png';\\n let targetsArray = [];\\n let error = undefined;\\n let progress = message.building;\\n $: end = computeEnd(expires);\\n\\n onMount(() => {\\n   error = undefined;\\n   getInfo(true);\\n });\\n\\n async function getInfo (bool) {\\n   if ( bool ) {\\n     try {\\n       const response = await fetch('/api/signupinit.json');\\n       //console.log(response);//DEBUG\\n       if ( response.ok ) {\\n         response.entity = await response.json();\\n         //console.log('signup', response.entity);//DEBUG\\n         nonce = response.entity.nonce;\\n         wanted = response.entity.wanted;\\n         urls = response.entity.urls;\\n         expires = response.entity.expires;\\n       } else {\\n         throw response;\\n       }\\n     } catch(exc) {\\n       console.log('signup', 'getInfo', exc);\\n       error = message.badcaptcha;\\n       progress = undefined;\\n     }\\n   }\\n }\\n\\n function computeEnd (expires) {\\n   if ( typeof document !== 'undefined' ) {\\n     installHooks();\\n     return Date.parse(expires);\\n   }\\n }\\n \\n async function refreshCaptcha (event) {\\n   error = undefined;\\n   await getInfo(true);\\n }\\n\\n function installHooks () {\\n   error = undefined;\\n   // Leave time to #movecaptcha to be created:\\n   setTimeout(doInstallHooks, 1000);\\n   end = Date.parse(expires);\\n }\\n\\n function doInstallHooks () {\\n   const movecaptcha = document.getElementById('movecaptcha');\\n   const images = movecaptcha.getElementsByClassName('image');\\n   for ( let i=0 ; i<images.length ; i++) {\\n     const divimage = images.item(i);\\n     const image = divimage.firstElementChild;\\n     image.setAttribute('src', urls[i]);\\n     image.addEventListener('dragstart', (event) => {\\n       error = undefined;\\n       event.dataTransfer.setData(\\\"text/plain\\\", event.target.src);\\n       event.dataTransfer.effectAllowed = 'copy';\\n       return true;\\n     });\\n   }\\n   \\n   const targets = movecaptcha.getElementsByClassName('target');\\n   targetsArray = [];\\n   for ( let i=0 ; i<targets.length ; i++ ) {\\n     const target = targets.item(i);\\n     const targetImage = target.firstElementChild;\\n     targetsArray.push(targetImage);\\n     targetImage.setAttribute('src', whiteImage);\\n     target.addEventListener(\\\"dragenter\\\", illuminate);\\n     target.addEventListener(\\\"dragover\\\", (event) => {\\n       event.preventDefault();\\n     });\\n     target.addEventListener(\\\"dragleave\\\", tarnish);\\n     target.addEventListener(\\\"drop\\\", drop);\\n   }\\n   captcha = captcha || {\\n     getResponse,\\n     refresh: refreshCaptcha,\\n     getCount: filledBoxes\\n   };\\n   progress = undefined;\\n   dispatch('ready', captcha);\\n }\\n\\n function illuminate (event) {\\n   event.preventDefault();\\n   if ( Date.now() < end ) {\\n     const target = event.target;\\n     const classes = target.getAttribute('class') + ' targeted';\\n     target.setAttribute('class', classes);\\n   } else {\\n     error = message.finished;\\n     event.preventDefault();\\n     event.stopPropagation();\\n     dispatch('timeout', {\\n       captcha,\\n     });\\n   }\\n }\\n function tarnish (event) {\\n   event.preventDefault();\\n   const target = event.target;\\n   const classes = target.getAttribute('class').replace(/ targeted/, '');\\n   target.setAttribute('class', classes);\\n }\\n function drop (event) {\\n   if ( Date.now() < end ) {\\n     tarnish(event);\\n     event.target.setAttribute('src', event.dataTransfer.getData(\\\"text/plain\\\"));\\n     dispatch('change', {\\n       captcha,\\n       count: filledBoxes()\\n     });\\n     if ( isComplete() ) {\\n       dispatch('complete', {\\n         captcha,\\n         complete: true\\n       });\\n     }\\n   } else {\\n     error = message.finished;\\n     event.preventDefault();\\n     event.stopPropagation();\\n     dispatch('timeout', {\\n       captcha,\\n     });\\n   }\\n }\\n\\n // Return the number of filled boxes:\\n function filledBoxes () {\\n   let count = 0;\\n   targetsArray.forEach(target => {\\n     const src = target.getAttribute('src');\\n     if ( ! target.getAttribute('src').match(/white[.]png/) ) {\\n       count++;\\n     }\\n   });\\n   return count;\\n }\\n\\n // semi-predicate returning the set of images filling boxes:\\n function isComplete () {\\n   let results = [];\\n   if ( targetsArray.some(target => {\\n     const src = target.getAttribute('src');\\n     results.push(src.replace(/^.*\\\\/(\\\\w+)[.]png$/, '$1'));\\n     return target.getAttribute('src').match(/white[.]png/);\\n   }) ) {\\n     return false;\\n   } else {\\n     return results;\\n   }\\n }\\n\\n // Return the result of the solved captcha:\\n function getResponse () {\\n   if ( Date.now() < end ) {\\n     let results = isComplete();\\n     //console.log('results', results);//DEBUG\\n     if ( results ) {\\n       let content = btoa(`${nonce},${results.join(',')}`);\\n       return `movecaptcha,${content}`;\\n     } else {\\n       return false;\\n     }\\n   } else {\\n     error = message.finished;\\n     dispatch('timeout', {\\n       captcha,\\n     });\\n     return false;\\n   }\\n }\\n\\n</script>\\n\\n\"],\"names\":[],\"mappings\":\"AAkDC,GAAG,QAAQ,4BAAC,CAAC,AACX,UAAU,CAAE,GAAG,CACf,OAAO,CAAE,IAAI,CACb,qBAAqB,CAAE,IAAI,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,IAAI,CAChD,aAAa,CAAE,MAAM,CACrB,eAAe,CAAE,GAAG,AACtB,CAAC,AACD,GAAG,sBAAQ,CAAC,GAAG,OAAO,cAAC,CAAC,AACtB,KAAK,CAAE,GAAG,CACV,gBAAgB,CAAE,IAAI,AACxB,CAAC,AACD,GAAG,sBAAQ,CAAC,GAAG,OAAO,CAAC,GAAG,cAAC,CAAC,AAC1B,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,AACb,CAAC,AAED,GAAG,OAAO,4BAAC,CAAC,AACV,UAAU,CAAE,GAAG,CACf,OAAO,CAAE,IAAI,CACb,qBAAqB,CAAE,IAAI,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,GAAG,CAAC,IAAI,CACpD,kBAAkB,CAAE,GAAG,CAAC,GAAG,CAC3B,aAAa,CAAE,MAAM,CACrB,eAAe,CAAE,GAAG,CACpB,YAAY,CAAE,GAAG,AACnB,CAAC,AACD,GAAG,qBAAO,CAAC,GAAG,MAAM,cAAC,CAAC,AACpB,KAAK,CAAE,GAAG,CACV,gBAAgB,CAAE,KAAK,AACzB,CAAC,AACD,GAAG,qBAAO,CAAC,GAAG,MAAM,CAAC,GAAG,cAAC,CAAC,AACxB,KAAK,CAAE,GAAG,CACV,MAAM,CAAE,GAAG,AACb,CAAC,AACO,cAAc,AAAE,CAAC,AACvB,MAAM,CAAE,KAAK,CAAC,OAAO,CAAC,GAAG,AAC3B,CAAC\"}"
 };
+
 const whiteImage = "/_digits/white.png";
 
 function tarnish(event) {
@@ -1585,7 +1582,7 @@ ${error
 	return $$rendered;
 });
 
-/* src/routes/enroll.svelte generated by Svelte v3.32.0 */
+/* src/routes/enroll.svelte generated by Svelte v3.32.1 */
 
 const css$a = {
 	code: "header.bold.svelte-q6rd9e{font-weight:bold}input.error.svelte-q6rd9e{background-color:pink}p.smallHint.svelte-q6rd9e{color:#aaa}",
@@ -1597,7 +1594,6 @@ let defaultlogin$1 = "mon.email@a.moi";
 const Enroll = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => value);
-	person.subscribe($$value => $$value);
 	let login = undefined;
 
 	onMount(async () => {
@@ -1647,7 +1643,7 @@ var component_6 = /*#__PURE__*/Object.freeze({
     'default': Enroll
 });
 
-/* src/routes/resume/[token].svelte generated by Svelte v3.32.0 */
+/* src/routes/resume/[token].svelte generated by Svelte v3.32.1 */
 
 const css$b = {
 	code: ".personName.svelte-i8s1l7{color:#334191;padding:0.1em 0.5em 0.1em 0.5em;border-radius:0.5em;border:solid 1px #334191}",
@@ -1657,7 +1653,6 @@ const css$b = {
 const U5Btokenu5D = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $person, $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => $person = value);
-	person.subscribe($$value => $person = $$value);
 	let error = undefined;
 
 	onMount(async () => {
@@ -1738,7 +1733,7 @@ var component_7 = /*#__PURE__*/Object.freeze({
     'default': U5Btokenu5D
 });
 
-/* src/components/UA.svelte generated by Svelte v3.32.0 */
+/* src/components/UA.svelte generated by Svelte v3.32.1 */
 
 const UA = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let ua = undefined;
@@ -1777,12 +1772,11 @@ const UA = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	: ``}`;
 });
 
-/* src/routes/signua.svelte generated by Svelte v3.32.0 */
+/* src/routes/signua.svelte generated by Svelte v3.32.1 */
 
 const Signua = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => value);
-	person.subscribe($$value => $$value);
 
 	onMount(async () => {
 		return initializePerson();
@@ -1818,7 +1812,7 @@ var component_8 = /*#__PURE__*/Object.freeze({
     'default': Signua
 });
 
-/* src/routes/whoami.svelte generated by Svelte v3.32.0 */
+/* src/routes/whoami.svelte generated by Svelte v3.32.1 */
 
 const css$c = {
 	code: ".personName.svelte-3wk50w{color:#334191;padding:0.1em 0.5em 0.1em 0.5em;margin:0em 0.1em 0em 0.1em;border-radius:0.5em;border:solid 1px #334191}.bold.svelte-3wk50w{font-weight:bolder}tr.inactive.svelte-3wk50w{background-color:#eee}",
@@ -1828,7 +1822,6 @@ const css$c = {
 const Whoami = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $person, $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => $person = value);
-	person.subscribe($$value => $person = $$value);
 	let error = undefined;
 
 	onMount(async () => {
@@ -1921,7 +1914,7 @@ var component_9 = /*#__PURE__*/Object.freeze({
     'default': Whoami
 });
 
-/* src/routes/login.svelte generated by Svelte v3.32.0 */
+/* src/routes/login.svelte generated by Svelte v3.32.1 */
 
 const css$d = {
 	code: "header.bold.svelte-q6rd9e{font-weight:bold}input.error.svelte-q6rd9e{background-color:pink}p.smallHint.svelte-q6rd9e{color:#aaa}",
@@ -1934,7 +1927,6 @@ let defaultpassword = "***";
 const Login = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	let $$unsubscribe_person;
 	$$unsubscribe_person = subscribe(person, value => value);
-	person.subscribe($$value => $$value);
 	let login = undefined;
 	let password = undefined;
 
@@ -1982,7 +1974,7 @@ var component_10 = /*#__PURE__*/Object.freeze({
     'default': Login
 });
 
-/* src/routes/ua.svelte generated by Svelte v3.32.0 */
+/* src/routes/ua.svelte generated by Svelte v3.32.1 */
 
 const Ua = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	return `${($$result.head += `${($$result.title = `<title>CodeGradX/ConditionsUsage</title>`, "")}`, "")}
@@ -2016,15 +2008,15 @@ const d = decodeURIComponent;
 const manifest = {
 	server_routes: [
 		{
-			// digit/[slug].js
-			pattern: /^\/digit\/([^/]+?)\/?$/,
+			// api/signupinit.json.js
+			pattern: /^\/api\/signupinit\.json$/,
 			handlers: route_0,
-			params: match => ({ slug: d(match[1]) })
+			params: () => ({})
 		},
 
 		{
-			// api/signupinit.json.js
-			pattern: /^\/api\/signupinit\.json$/,
+			// api/digit.js
+			pattern: /^\/api\/digit\/?$/,
 			handlers: route_1,
 			params: () => ({})
 		}
@@ -7035,10 +7027,9 @@ const { NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
 function logger (req, res, next) {
-  console.log(req.path);//DEBUG
+  dev && console.log(`>>> ${req.path}`); //DEBUG
   next(); // move on
 }
-//**************************************** end of signupinit.json
 
 function handleError (err, req, res, next) {
     console.error({path: req.originalUrl,
