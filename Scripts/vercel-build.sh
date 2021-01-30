@@ -1,5 +1,5 @@
 #! /bin/bash
-# Time-stamp: "2021-01-30 09:35:42 queinnec"
+# Time-stamp: "2021-01-30 14:33:02 queinnec"
 
 # Build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
@@ -22,10 +22,10 @@
 #   manifest.json
 #   service-worker-index.html
 #   service-worker.js
-# So, the final ./export/ directory is made with
+# So, the final ./export/ directory is filled with:
 #     the content of static/
-#     __sapper__/export is moved into static/client
-#     and the api/ directory is moved into static/
+#     __sapper__/export is moved into export/client
+#     and the api/ directory is moved into export/api
 
 DEBUG=false
 DEBUG=true
@@ -51,17 +51,17 @@ then
     exec /bin/true
 fi
 
-BUILD_EXPORT=true
-BUILD_SERVER=true
+BUILD_EXPORT=${BUILD_EXPORT:-true}
+BUILD_SERVER=${BUILD_SERVER:-true}
 
 # The webapp and its serverless functions are completely built on the
 # dev machine so nothing else to be done on Vercel.
-if [ -d export ]
+if $BUILD_EXPORT && [ -d export ]
 then
     BUILD_EXPORT=false
 fi
 
-if [ "$(wc -l < api/p.js)" -gt 1000 ]
+if $BUILD_SERVER && [ -f api/p.js -a "$(wc -l < api/p.js)" -gt 1000 ]
 then
     BUILD_SERVER=false
 fi

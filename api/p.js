@@ -170,7 +170,7 @@ async function get (req, res, next) {
 
         let content = `${nonce},${wanted.join('')},${images.join(',')}`;
         content = crypt(content);
-        let cookie = `MV=${content}; path=/digit/; expires=${expires};`;
+        let cookie = `MV=${content}; path=/api; expires=${expires};`;
         res.setHeader('Set-Cookie', cookie);
 		res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({nonce, wanted, urls, expires}));
@@ -197,47 +197,103 @@ var route_0 = /*#__PURE__*/Object.freeze({
     get: get
 });
 
+// Client utilities
+
+/**
+   Sleep for n seconds
+*/
+
+async function sleep (seconds) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(true), 1000 * seconds);
+    });
+}
+
+/**
+   Get cookies.
+
+   @param {IncomingMessage} req
+   @return Map(key => value)
+
+*/
+
+function getCookies (req) {
+    let result = new Map();
+    let cookies = req.headers.cookie;
+    if ( cookies ) {
+        cookies = cookies.split(';');
+        for ( const cookie of cookies ) {
+            const nameValue = cookie.trim().split('=');
+            //console.log(nameValue);
+            result.set(nameValue[0], decodeURIComponent(nameValue[1]));
+        }
+        //console.log({cookies, result});//DEBUG
+    }
+    return result;
+}
+
 // Serve digit image as /api/digit.js?slug=XXX
 
 const fs = require('fs');
 
+const pngDirs = [
+    // When deployed in Docker:
+    "static",
+    // When deployed on Vercel, _digits/ is besides api/
+    "."
+];
+
 async function get$1(req, res, next) {
-    let params = req.query || queryString__default['default'].parse(req.url);
-    console.log(req.url, req.query);//DEBUG
-    let slug = params.slug;
-    slug = slug.replace(/[.]png$/, '');
+    try {
+        const search = req.url.replace(/^.*\?/, '?');
+        const params = queryString__default['default'].parse(search);
+        //console.log(req.url, {search, params}, req.query);//DEBUG
+        let slug = params.slug.replace(/[.]png$/, '');
 
-    let images = [];
-    const cookies = req.cookies || req.headers.cookie.split(';');
-    console.log('cookies', cookies);
-    for ( const cookie of cookies ) {
-        const nameValue = cookie.trim().split('=');
-        //console.log(nameValue);
-        const content = decrypt(nameValue[1]);
-        if ( nameValue[0] === 'MV' ) {
-            const fields = content.split(',');
+        let images = [];
+        const MVcontent = getCookies(req).get('MV');
+        //console.log({MVcontent});// DEBUG
+        if ( MVcontent ) {
+            const fields = decrypt(MVcontent).split(',');
             images = fields.slice(2);
-            break;
+        } else {
+            throw "Missing MV cookie";
         }
-    }
-    //console.log('images', images, slug);
+        //console.log({images, slug});//DEBUG
 
-    let pngfile = 'static/_digits/bad.png';
-    if ( images.length > 0 ) {
-        // There was an MV cookie (therefore not expired!):
-        for ( let i=0 ; i<images.length ; i++ ) {
-            if ( images[i] === slug ) {
-                pngfile = `static/_digits/${i}.png`;
-                break;
+        let pngfile = undefined;
+        for ( const pngDir of pngDirs ) {
+            const badfile = `${pngDir}/_digits/bad.png`;
+            if ( fs.existsSync(badfile) ) {
+                pngfile = badfile;
             }
         }
+        if ( ! pngfile ) {
+            throw "Missing bad png";
+        }
+        for ( const pngDir of pngDirs ) {
+            if ( images.length > 0 ) {
+                // There was an MV cookie (therefore not expired!):
+                for ( let i=0 ; i<images.length ; i++ ) {
+                    if ( images[i] === slug ) {
+                        const file = `${pngDir}/_digits/${i}.png`;
+                        if ( fs.existsSync(file) ) {
+                            pngfile = file;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        //console.log('pngfile', pngfile); //DEBUG
+        // TODO add noise to image ???
+        res.setHeader('Content-Type', 'image/png');
+        res.end(fs.readFileSync(pngfile));
+    } catch (exc) {
+        console.log(exc);
+        res.status(400);
+        res.end(JSON.stringify({error: exc.toString()}));
     }
-    //console.log('pngfile', pngfile); //DEBUG
-
-    // TODO add noise to image ???
-
-    res.setHeader('Content-Type', 'image/png');
-    res.end(fs.readFileSync(pngfile));
 }
 
 // end of api/digit/[slug].js
@@ -843,7 +899,7 @@ const person = writable(undefined);
 
 // end of stores.mjs
 
-// Client library
+// Client library.
 
 const config = {
     x: {
@@ -853,16 +909,6 @@ const config = {
 
 function getConfig () {
     return config;
-}
-
-/**
-   Sleep for n seconds
-*/
-
-async function sleep (seconds) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => resolve(true), 1000 * seconds);
-    });
 }
 
 /**
@@ -924,7 +970,7 @@ async function initializePerson () {
 
 function isUser (o) {
     return o && o instanceof codegradx.CodeGradX.User && o.pseudo;
-} 
+}
 
 // end of client/lib.mjs
 
@@ -932,7 +978,7 @@ function isUser (o) {
 
 const css$2 = {
 	code: "div.background.svelte-1ic78iv{background-color:#20295b;min-height:100vh}p.text.svelte-1ic78iv,div.text.svelte-1ic78iv{color:white;font-size:200%}",
-	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<style>\\n div.background {\\n   background-color: #20295b;\\n   min-height: 100vh;\\n }\\n p.text, div.text {\\n   color: white;\\n   font-size: 200%;\\n }\\n</style>\\n\\n<svelte:head>\\n  <title>CodeGradX</title>\\n</svelte:head>\\n\\n<div class='w3-container background'\\n     on:click={go} >\\n  <center>\\n    <div class='text' style='padding-top: 10vh;'>\\n      CodeGradX\\n    </div>\\n\\n    <div style='margin-top: 10vh;'>\\n      <SplashImage size='25%'/>\\n    </div>\\n\\n    {#if isUser($person)}\\n    <p class='text'>\\n      Bonjour {$person.pseudo},\\n    </p>\\n    {/if}\\n    \\n    <p class='text'>\\n      Découvrez ses exercices de programmation à notation\\n      automatique...\\n    </p>\\n  </center>\\n</div>\\n\\n<script>\\n import SplashImage from '../components/SplashImage.svelte';\\n\\n import * as sapper from '@sapper/app';\\n import { onMount } from 'svelte';\\n import { person } from '../stores.mjs';\\n import { CodeGradX } from 'codegradx';\\n import { isUser, sleep, initializePerson } from '../client/lib.mjs';\\n\\n function go (event) {\\n   sapper.goto('/universes');\\n }\\n\\n onMount(async () => {\\n   return initializePerson()\\n   .then(async () => {\\n     return sapper.goto('/universes');\\n   });\\n });\\n\\n \\n</script>\\n\"],\"names\":[],\"mappings\":\"AACC,GAAG,WAAW,eAAC,CAAC,AACd,gBAAgB,CAAE,OAAO,CACzB,UAAU,CAAE,KAAK,AACnB,CAAC,AACD,CAAC,oBAAK,CAAE,GAAG,KAAK,eAAC,CAAC,AAChB,KAAK,CAAE,KAAK,CACZ,SAAS,CAAE,IAAI,AACjB,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"index.svelte\",\"sources\":[\"index.svelte\"],\"sourcesContent\":[\"<style>\\n div.background {\\n   background-color: #20295b;\\n   min-height: 100vh;\\n }\\n p.text, div.text {\\n   color: white;\\n   font-size: 200%;\\n }\\n</style>\\n\\n<svelte:head>\\n  <title>CodeGradX</title>\\n</svelte:head>\\n\\n<div class='w3-container background'\\n     on:click={go} >\\n  <center>\\n    <div class='text' style='padding-top: 10vh;'>\\n      CodeGradX\\n    </div>\\n\\n    <div style='margin-top: 10vh;'>\\n      <SplashImage size='25%'/>\\n    </div>\\n\\n    {#if isUser($person)}\\n    <p class='text'>\\n      Bonjour {$person.pseudo},\\n    </p>\\n    {/if}\\n    \\n    <p class='text'>\\n      Découvrez ses exercices de programmation à notation\\n      automatique...\\n    </p>\\n  </center>\\n</div>\\n\\n<script>\\n import SplashImage from '../components/SplashImage.svelte';\\n\\n import * as sapper from '@sapper/app';\\n import { onMount } from 'svelte';\\n import { person } from '../stores.mjs';\\n import { CodeGradX } from 'codegradx';\\n import { isUser, initializePerson } from '../client/lib.mjs';\\n import { sleep } from '../client/utils.mjs';\\n\\n function go (event) {\\n   sapper.goto('/universes');\\n }\\n\\n onMount(async () => {\\n   return initializePerson()\\n   .then(async () => {\\n     return sapper.goto('/universes');\\n   });\\n });\\n\\n \\n</script>\\n\"],\"names\":[],\"mappings\":\"AACC,GAAG,WAAW,eAAC,CAAC,AACd,gBAAgB,CAAE,OAAO,CACzB,UAAU,CAAE,KAAK,AACnB,CAAC,AACD,CAAC,oBAAK,CAAE,GAAG,KAAK,eAAC,CAAC,AAChB,KAAK,CAAE,KAAK,CACZ,SAAS,CAAE,IAAI,AACjB,CAAC\"}"
 };
 
 const Routes = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -1148,7 +1194,7 @@ var component_2 = /*#__PURE__*/Object.freeze({
 
 const css$7 = {
 	code: ".personName.svelte-i8s1l7{color:#334191;padding:0.1em 0.5em 0.1em 0.5em;border-radius:0.5em;border:solid 1px #334191}",
-	map: "{\"version\":3,\"file\":\"mailsent.svelte\",\"sources\":[\"mailsent.svelte\"],\"sourcesContent\":[\"<style>\\n .personName {\\n   color: #334191;\\n   padding: 0.1em 0.5em 0.1em 0.5em;\\n   border-radius: 0.5em;\\n   border: solid 1px #334191;\\n }\\n</style>\\n\\n<svelte:head>\\n  <title>CodeGradX/ConfirmationCourriel</title>\\n</svelte:head>\\n\\n<Header />\\n\\n{#if $person}\\n<section class='w3-container'>\\n  <p>\\n    Si <code class='personName'>{$person.login}</code> est connu\\n    de CodeGradX, alors un courriel vient de lui être adressé.\\n    {#if ! $person.confirmedemail}\\n    Ce courriel contient un lien vous permettant de confirmer\\n    votre adresse électronique.\\n    {:else}\\n    Ce courriel contient un lien vous permettant de vous connecter\\n    à nouveau à CodeGradX.\\n    {/if}\\n    Pensez éventuellement à vérifier votre spam!\\n  </p>\\n\\n  <p> Pour rappel </p>\\n  <ul>\\n    {#if $person.confirmedemail}\\n    <li> Vous avez déjà confirmé votre adresse électronique. </li>\\n    {:else}\\n    <li> Vous n'avez pas encore confirmé votre adresse électronique. </li>\\n    {/if}\\n    \\n    {#if $person.confirmedua === $person.uaversion}\\n    <li> Vous avez déjà signé les conditions d'usage. </li>\\n    {:else}\\n    <li> Vous n'avez pas encore signé les conditions d'usage. </li>\\n    {/if}\\n  </ul>\\n</section>\\n\\n{:else}\\n<section class='w3-container'>\\n  <p> Je ne sais qui vous êtes aussi vous redirige-je vers la\\n    page appropriée...\\n  </p>\\n</section>\\n{/if}\\n\\n<Bottom />\\n\\n<script>\\n import Header from '../components/Header.svelte';\\n import Problem from '../components/Problem.svelte';\\n import ShowStore from '../components/ShowStore.svelte';\\n import Bottom from '../components/Bottom.svelte';\\n\\n import * as sapper from '@sapper/app';\\n import { onMount } from 'svelte';\\n import { person } from '../stores.mjs';\\n import { CodeGradX } from 'codegradx';\\n import { getConfig, sleep } from '../client/lib.mjs';\\n import { isUser, initializePerson } from '../client/lib.mjs';\\n\\n let path = undefined;\\n\\n async function XXXreconnect (event) {\\n   // Redirect to the /universes page with renewed credentials:\\n   try {\\n     await CodeGradX.getCurrentState().sendAXServer('x', {\\n       path: path,\\n       method: 'GET',\\n       headers: {\\n         'Accept': 'application/json',\\n         'Content-Type': 'application/x-www-form-urlencoded'\\n       }\\n     });\\n   } catch (exc) {\\n     console.log({exc});//DEBUG\\n   }\\n }\\n\\n onMount(async () => {\\n   if ( ! $person ) {\\n     // In case the User has already completed its enrollment and has\\n     // a valid safeCookie:\\n     $person = await CodeGradX.getCurrentUser();\\n     // assert(isUser($person))\\n   }\\n   // If coming from /connect, then $person is a partial user:\\n   if ( ! $person ) {\\n     await sleep(1);\\n     sapper.goto('/connect');\\n   }\\n });\\n\\n</script>\\n\"],\"names\":[],\"mappings\":\"AACC,WAAW,cAAC,CAAC,AACX,KAAK,CAAE,OAAO,CACd,OAAO,CAAE,KAAK,CAAC,KAAK,CAAC,KAAK,CAAC,KAAK,CAChC,aAAa,CAAE,KAAK,CACpB,MAAM,CAAE,KAAK,CAAC,GAAG,CAAC,OAAO,AAC3B,CAAC\"}"
+	map: "{\"version\":3,\"file\":\"mailsent.svelte\",\"sources\":[\"mailsent.svelte\"],\"sourcesContent\":[\"<style>\\n .personName {\\n   color: #334191;\\n   padding: 0.1em 0.5em 0.1em 0.5em;\\n   border-radius: 0.5em;\\n   border: solid 1px #334191;\\n }\\n</style>\\n\\n<svelte:head>\\n  <title>CodeGradX/ConfirmationCourriel</title>\\n</svelte:head>\\n\\n<Header />\\n\\n{#if $person}\\n<section class='w3-container'>\\n  <p>\\n    Si <code class='personName'>{$person.login}</code> est connu\\n    de CodeGradX, alors un courriel vient de lui être adressé.\\n    {#if ! $person.confirmedemail}\\n    Ce courriel contient un lien vous permettant de confirmer\\n    votre adresse électronique.\\n    {:else}\\n    Ce courriel contient un lien vous permettant de vous connecter\\n    à nouveau à CodeGradX.\\n    {/if}\\n    Pensez éventuellement à vérifier votre spam!\\n  </p>\\n\\n  <p> Pour rappel </p>\\n  <ul>\\n    {#if $person.confirmedemail}\\n    <li> Vous avez déjà confirmé votre adresse électronique. </li>\\n    {:else}\\n    <li> Vous n'avez pas encore confirmé votre adresse électronique. </li>\\n    {/if}\\n    \\n    {#if $person.confirmedua === $person.uaversion}\\n    <li> Vous avez déjà signé les conditions d'usage. </li>\\n    {:else}\\n    <li> Vous n'avez pas encore signé les conditions d'usage. </li>\\n    {/if}\\n  </ul>\\n</section>\\n\\n{:else}\\n<section class='w3-container'>\\n  <p> Je ne sais qui vous êtes aussi vous redirige-je vers la\\n    page appropriée...\\n  </p>\\n</section>\\n{/if}\\n\\n<Bottom />\\n\\n<script>\\n import Header from '../components/Header.svelte';\\n import Problem from '../components/Problem.svelte';\\n import ShowStore from '../components/ShowStore.svelte';\\n import Bottom from '../components/Bottom.svelte';\\n\\n import * as sapper from '@sapper/app';\\n import { onMount } from 'svelte';\\n import { person } from '../stores.mjs';\\n import { CodeGradX } from 'codegradx';\\n import { sleep } from '../client/utils.mjs';\\n import { getConfig, isUser, initializePerson } from '../client/lib.mjs';\\n\\n let path = undefined;\\n\\n async function XXXreconnect (event) {\\n   // Redirect to the /universes page with renewed credentials:\\n   try {\\n     await CodeGradX.getCurrentState().sendAXServer('x', {\\n       path: path,\\n       method: 'GET',\\n       headers: {\\n         'Accept': 'application/json',\\n         'Content-Type': 'application/x-www-form-urlencoded'\\n       }\\n     });\\n   } catch (exc) {\\n     console.log({exc});//DEBUG\\n   }\\n }\\n\\n onMount(async () => {\\n   if ( ! $person ) {\\n     // In case the User has already completed its enrollment and has\\n     // a valid safeCookie:\\n     $person = await CodeGradX.getCurrentUser();\\n     // assert(isUser($person))\\n   }\\n   // If coming from /connect, then $person is a partial user:\\n   if ( ! $person ) {\\n     await sleep(1);\\n     sapper.goto('/connect');\\n   }\\n });\\n\\n</script>\\n\"],\"names\":[],\"mappings\":\"AACC,WAAW,cAAC,CAAC,AACX,KAAK,CAAE,OAAO,CACd,OAAO,CAAE,KAAK,CAAC,KAAK,CAAC,KAAK,CAAC,KAAK,CAChC,aAAa,CAAE,KAAK,CACpB,MAAM,CAAE,KAAK,CAAC,GAAG,CAAC,OAAO,AAC3B,CAAC\"}"
 };
 
 const Mailsent = create_ssr_component(($$result, $$props, $$bindings, slots) => {
