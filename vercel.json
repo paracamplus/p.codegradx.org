@@ -11,7 +11,12 @@
             "includeFiles": "{static,__sapper__}/**"
         },
         "api/pwdls.js": {
-            "includeFiles": "__sapper__/*"
+            "includeFiles": "*"
+        },
+        "api/signupinit.json.js": {
+        },
+        "api/digit.js": {
+            "includeFiles": "_digits/*"
         }
     },
     "headers": [
