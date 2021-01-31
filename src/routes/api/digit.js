@@ -28,7 +28,7 @@ export async function get(req, res, next) {
         //console.log(req.url, {search, params}, req.query);//DEBUG
         let slug = params.slug.replace(/[.]png$/, '');
 
-/*        
+       
         let info = '';
         let dir = process.cwd();
         info += `\nContent of directory ${dir}/:\n  `;
@@ -40,7 +40,7 @@ export async function get(req, res, next) {
         info += `\nContent of directory ${dir}/:\n  `;
         info += fs.readdirSync(dir).join(',\n  ');
         console.log(info);
-*/
+
         
         let images = [];
         const MVcontent = getCookies(req).get('MV');
