@@ -1,7 +1,7 @@
 #! /bin/bash
-# Time-stamp: "2021-01-30 14:33:02 queinnec"
+# Time-stamp: "2021-01-31 15:00:29 queinnec"
 
-# Build the P server on Vercel.
+# Finish to build the P server on Vercel.
 # api/p.js should already exist to be taken into account.
 
 # On Vercel, project settings are:

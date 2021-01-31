@@ -240,7 +240,9 @@ const pngDirs = [
     // When deployed in Docker:
     "static/_digits",
     // When deployed on Vercel, _digits/ is besides api/
-    "../_digits"
+    "../_digits",
+    "./_digits",
+    "export/_digits"
 ];
 
 async function get$1(req, res, next) {
@@ -286,7 +288,7 @@ async function get$1(req, res, next) {
                 }
             }
         }
-        //console.log('pngfile', pngfile); //DEBUG
+        console.log(`Sending pngfile ${pngfile}`); //DEBUG
         // TODO add noise to image ???
         res.setHeader('Content-Type', 'image/png');
         res.end(fs.readFileSync(pngfile));
