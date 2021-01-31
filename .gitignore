@@ -9,6 +9,4 @@ secrets/
 
 auth.json
 config.json
-rollup.config.js
-src/
-static/
+export/
