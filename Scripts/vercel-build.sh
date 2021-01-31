@@ -1,8 +1,17 @@
 #! /bin/bash
-# Time-stamp: "2021-01-31 15:00:29 queinnec"
+# Time-stamp: "2021-01-31 16:04:43 queinnec"
 
-# Finish to build the P server on Vercel.
-# api/p.js should already exist to be taken into account.
+# Finish to build the P server to be run on Vercel.
+
+VERCEL_WAY=${VERCEL_WAY:-"$1"}
+case "$VERCEL_WAY" in
+    local)
+    ;;
+    remote)
+    ;;
+    *)
+    ;;
+esac
 
 # On Vercel, project settings are:
 #    build command:     npm run vercel

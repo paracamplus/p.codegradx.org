@@ -239,10 +239,14 @@ const fs = require('fs');
 const pngDirs = [
     // When deployed in Docker:
     "static/_digits",
-    // When deployed on Vercel, _digits/ is besides api/
-    "../_digits",
-    "./_digits",
-    "export/_digits"
+    
+    // When deployed on Vercel, cwd() contains:
+    //      + _digits/
+    //      + api/digit.js
+    //      + _ node_modules/
+    //      package.json
+    // so:
+    "./_digits"
 ];
 
 async function get$1(req, res, next) {
@@ -254,10 +258,10 @@ async function get$1(req, res, next) {
 
         let info = '';
         let dir = process.cwd();
-        info += `Content of directory ${dir}/:\n  `;
+        info += `\nContent of directory ${dir}/:\n  `;
         info += fs.readdirSync(dir).join(',\n  ');
-        dir = '..';
-        info += `Content of directory ${dir}/:\n  `;
+        dir = './api';
+        info += `\nContent of directory ${dir}/:\n  `;
         info += fs.readdirSync(dir).join(',\n  ');
         console.log(info);
 
