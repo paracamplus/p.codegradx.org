@@ -1,6 +1,6 @@
 {
     "name": "p.codegradx.org",
-    "version": "0.0.132",
+    "version": "0.0.133",
     "description": "General CodeGradX Portal",
     "keywords": [
         "CodeGradX",
@@ -15,7 +15,7 @@
         "build": "sapper build",
         "export": "sapper export",
         "start": "node __sapper__/build",
-        "vercel": "Scripts/vercel-build.sh -r"
+        "vercel": "Scripts/vercel-build.sh -l"
     },
     "dependencies": {
         "codegradx": "^3.0.35",
