@@ -5,6 +5,18 @@ import { decrypt } from '../../server/cryptlib.mjs';
 import queryString from 'query-string';
 import { getCookies } from '../../common/utils.mjs';
 
+function showDir (dir) {
+    let info = '';
+    try {
+        info += `\nContent of directory ${dir}/:\n  `;
+        info += fs.readdirSync(dir).join(',\n  ');
+    } catch (exc) {
+        info += `!!!!! Absent directory ${dir}`;
+    }
+    info += '\n';
+    return info;
+}
+
 const pngDirs = [
     // When deployed in Docker:
     "static/_digits",
@@ -28,19 +40,11 @@ export async function get(req, res, next) {
         //console.log(req.url, {search, params}, req.query);//DEBUG
         let slug = params.slug.replace(/[.]png$/, '');
 
-       
         let info = '';
-        let dir = process.cwd();
-        info += `\nContent of directory ${dir}/:\n  `;
-        info += fs.readdirSync(dir).join(',\n  ');
-        dir = './api';
-        info += `\nContent of directory ${dir}/:\n  `;
-        info += fs.readdirSync(dir).join(',\n  ');
-        dir = './export';
-        info += `\nContent of directory ${dir}/:\n  `;
-        info += fs.readdirSync(dir).join(',\n  ');
+        info += showDir(process.cwd());
+        info += showDir('./api');
+        info += showDir('./export');
         console.log(info);
-
         
         let images = [];
         const MVcontent = getCookies(req).get('MV');
