@@ -240,13 +240,16 @@ const pngDirs = [
     // When deployed in Docker:
     "static/_digits",
     
-    // When deployed on Vercel, cwd() contains:
-    //      + _digits/
-    //      + api/digit.js
-    //      + _ node_modules/
-    //      package.json
-    // so:
-    "./_digits"
+    /**
+       When deployed on Vercel, cwd(), that is /var/task/ contains:
+          ___vc_*.js
+          + api/digit.js
+          + export/_digits/
+          + _ node_modules/
+          package.json
+
+     so this is the path of the images:                 */
+    "./export/_digits"
 ];
 
 async function get$1(req, res, next) {
@@ -261,6 +264,9 @@ async function get$1(req, res, next) {
         info += `\nContent of directory ${dir}/:\n  `;
         info += fs.readdirSync(dir).join(',\n  ');
         dir = './api';
+        info += `\nContent of directory ${dir}/:\n  `;
+        info += fs.readdirSync(dir).join(',\n  ');
+        dir = './export';
         info += `\nContent of directory ${dir}/:\n  `;
         info += fs.readdirSync(dir).join(',\n  ');
         console.log(info);

@@ -1,17 +1,59 @@
 #! /bin/bash
-# Time-stamp: "2021-01-31 16:04:43 queinnec"
+# Time-stamp: "2021-01-31 16:28:39 queinnec"
 
 # Finish to build the P server to be run on Vercel.
 
-VERCEL_WAY=${VERCEL_WAY:-"$1"}
-case "$VERCEL_WAY" in
-    local)
-    ;;
-    remote)
-    ;;
-    *)
-    ;;
-esac
+DEBUG=${DEBUG:-false}
+BUILD_EXPORT=${BUILD_EXPORT:-false}
+BUILD_SERVER=${BUILD_SERVER:-false}
+
+while getopts "dlrv:" option
+do
+    case "$option" in
+        d)
+            DEBUG=true
+            ;;
+        l)
+            echo "Build locally the static and dynamic servers"
+            BUILD_EXPORT=true
+            BUILD_SERVER=true
+            ;;
+        r)
+            echo "Build static and dynamic servers on Vercel"
+            BUILD_EXPORT=false
+            BUILD_SERVER=false            
+            ;;
+        v)
+            VERCEL_WAY=$OPTARG
+            case "$VERCEL_WAY" in
+                remote)
+                    echo "Build static and dynamic servers on Vercel"
+                    BUILD_EXPORT=false
+                    BUILD_SERVER=false            
+                    ;;
+                local)
+                    echo "Build locally the static and dynamic servers"
+                    BUILD_EXPORT=true
+                    BUILD_SERVER=true
+                    ;;
+                *)
+                    echo "!!!!! Unrecognizable option $VERCEL_WAY" >&2
+                    exit 3
+                    ;;
+            esac
+            ;;
+        *)
+            echo "!!!!! Unknown option $option" >&2
+            exit 2
+            ;;
+    esac
+done
+cat <<EOF 
+*** Configuration is
+  DEBUG=${DEBUG} 
+  BUILD_EXPORT=${BUILD_EXPORT}
+  BUILD_SERVER=${BUILD_SERVER}
+EOF
 
 # On Vercel, project settings are:
 #    build command:     npm run vercel
@@ -36,9 +78,6 @@ esac
 #     __sapper__/export is moved into export/client
 #     and the api/ directory is moved into export/api
 
-DEBUG=false
-DEBUG=true
-
 showls () {
     if $DEBUG
     then
@@ -47,7 +86,7 @@ showls () {
     fi
 }
 
-# Tab 'source source' is only filled with manual deployment.
+# Tab 'source > source' is only filled with manual deployment.
 # However the build command is still npm run vercel so to differentiate
 # a manual deployment from a GIT deployment, the WOGIT (read without git)
 # environment variable is set.
@@ -59,9 +98,6 @@ then
     # the dev machine.
     exec /bin/true
 fi
-
-BUILD_EXPORT=${BUILD_EXPORT:-true}
-BUILD_SERVER=${BUILD_SERVER:-true}
 
 # The webapp and its serverless functions are completely built on the
 # dev machine so nothing else to be done on Vercel.
@@ -76,7 +112,7 @@ then
 fi
 
 # Inquire context:
-if ${SHOW_CONTEXT:-false}
+if ${DEBUG:-false}
 then
     echo "*** ls -al shows"
     ls -al
@@ -106,7 +142,8 @@ then
     fi
     # Make sure that ./export is the 'output directory' in the project settings:
     mv __sapper__/export .
-    # Remove that directory in order to be able to build the dynamic server:
+    # Remove that useless directory in order to be able to build the
+    # dynamic server.
     rm -rf __sapper__/build
 else
     echo "*** Don't rebuild the ./export/ directory!"
