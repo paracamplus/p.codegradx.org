@@ -13,8 +13,6 @@
         "api/pwdls.js": {
             "includeFiles": "*"
         },
-        "api/signupinit.json.js": {
-        },
         "api/digit.js": {
             "includeFiles": "_digits/*"
         }
