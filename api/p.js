@@ -238,9 +238,9 @@ const fs = require('fs');
 
 const pngDirs = [
     // When deployed in Docker:
-    "static",
+    "static/_digits",
     // When deployed on Vercel, _digits/ is besides api/
-    "."
+    "../_digits"
 ];
 
 async function get$1(req, res, next) {
@@ -263,9 +263,10 @@ async function get$1(req, res, next) {
 
         let pngfile = undefined;
         for ( const pngDir of pngDirs ) {
-            const badfile = `${pngDir}/_digits/bad.png`;
+            const badfile = `${pngDir}/bad.png`;
             if ( fs.existsSync(badfile) ) {
                 pngfile = badfile;
+                break;
             }
         }
         if ( ! pngfile ) {
@@ -276,7 +277,7 @@ async function get$1(req, res, next) {
                 // There was an MV cookie (therefore not expired!):
                 for ( let i=0 ; i<images.length ; i++ ) {
                     if ( images[i] === slug ) {
-                        const file = `${pngDir}/_digits/${i}.png`;
+                        const file = `${pngDir}/${i}.png`;
                         if ( fs.existsSync(file) ) {
                             pngfile = file;
                             break;
