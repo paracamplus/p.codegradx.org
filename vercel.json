@@ -14,7 +14,7 @@
             "includeFiles": "*"
         },
         "api/digit.js": {
-            "includeFiles": "{.,export}/_digits/*"
+            "includeFiles": "{.,export,static}/_digits/*"
         }
     },
     "headers": [

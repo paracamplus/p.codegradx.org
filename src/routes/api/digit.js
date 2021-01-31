@@ -29,8 +29,12 @@ const pngDirs = [
           + _ node_modules/
           package.json
 
+       However, if servers are built on Vercel, then /var/task/ contains:
+          
+
      so this is the path of the images:                 */
-    "./export/_digits"
+    "./export/_digits",
+    "./static/_digits"
 ];
 
 export async function get(req, res, next) {
@@ -44,6 +48,7 @@ export async function get(req, res, next) {
         info += showDir(process.cwd());
         info += showDir('./api');
         info += showDir('./export');
+        info += showDir('./static');
         console.log(info);
         
         let images = [];
