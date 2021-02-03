@@ -20,6 +20,9 @@
    width: 20%;
    height: auto !important;
  }
+ span.underline {
+   color: red;
+ }
 </style>
 
 <svelte:head>
@@ -34,8 +37,9 @@
       sélectionnez l'univers d'exercices que vous souhaitez.
       </p>
     {:else}
-      <p> Sélectionnez, après vous être identifié, l'univers d'exercices que
-        vous souhaitez. <br />
+      <p> Sélectionnez,
+        <span class:underline={underline}>après vous être identifié</span>,
+        l'univers d'exercices que vous souhaitez. <br />
     {/if}
     <p class='smallHint'>
       Le titre indique s'il est en anglais ou en français.
@@ -154,6 +158,7 @@
  let error = undefined;
  let showmoocjs = false;
  let showmoocprogrec = false;
+ let underline = false;
  
  onMount(initializePerson);
  
@@ -163,11 +168,13 @@
      event.preventDefault();
      event.stopPropagation();
      error = "Vous devez d'abord vous identifier!";
+     underline = true;
    }
  }
 
  function hideProblem (event) {
    error = undefined;
+   underline = false;
  }
 
  function connect (event) {

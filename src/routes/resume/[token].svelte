@@ -16,8 +16,10 @@
 <section class='w3-container'>
   <p> Bonjour {#if $person}<span class='personName'>{$person.email}</span>
     {/if}</p>
-  <p> J'attends donc que vous cliquiez sur le lien qui vient de vous être
-    envoyé par courriel. </p>
+  <p> J'attends donc que vous confirmiez votre adresse électronique en
+    cliquant sur le lien qui vient de vous être envoyé par courriel ce
+    qui vous permettra de progresser dans votre inscription. Vous
+    pourrez également recharger cette page. </p>
 
   {#if error}<Problem bind:error={error} />{/if}
   

@@ -6,7 +6,7 @@
 
 export async function sleep (seconds) {
     return new Promise((resolve, reject) => {
-        setTimeout(() => resolve(true), 1000 * seconds);
+        setTimeout(() => resolve(true), Math.round(1000 * seconds));
     });
 }
 

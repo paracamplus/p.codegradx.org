@@ -18,7 +18,10 @@ function showDir (dir) {
 }
 
 const pngDirs = [
-    // When deployed in Docker:
+    // When on dev machine:
+    "_digits",
+
+    // When on Docker:
     "static/_digits",
     
     /**
@@ -30,9 +33,14 @@ const pngDirs = [
           package.json
 
        However, if servers are built on Vercel, then /var/task/ contains:
-          
+          ___vc_*.js
+          + api/digit.js
+          + _ node_modules/
+          package.json
+          + static/_digits/
 
-     so this is the path of the images:                 */
+       so these are the two possible paths of the images:                 */
+    
     "./export/_digits",
     "./static/_digits"
 ];
@@ -44,20 +52,22 @@ export async function get(req, res, next) {
         //console.log(req.url, {search, params}, req.query);//DEBUG
         let slug = params.slug.replace(/[.]png$/, '');
 
-        let info = '';
-        info += showDir(process.cwd());
-        info += showDir('./api');
-        info += showDir('./export');
-        info += showDir('./static');
-        console.log(info);
-        
+        if ( 0 ) {
+            let info = '';
+            info += showDir(process.cwd());
+            info += showDir('./api');
+            info += showDir('./export');
+            info += showDir('./static');
+            console.log(info);
+        }
+
         let images = [];
         const MVcontent = getCookies(req).get('MV');
         //console.log({MVcontent});// DEBUG
         if ( MVcontent ) {
             const fields = decrypt(MVcontent).split(',');
             images = fields.slice(2);
-        } else {
+2        } else {
             throw "Missing MV cookie";
         }
         //console.log({images, slug});//DEBUG
@@ -87,15 +97,16 @@ export async function get(req, res, next) {
                 }
             }
         }
-        console.log(`Sending pngfile ${pngfile}`); //DEBUG
+        //console.log(`Sending pngfile ${pngfile}`); //DEBUG
         // TODO add noise to image ???
         res.setHeader('Content-Type', 'image/png');
         res.end(fs.readFileSync(pngfile));
     } catch (exc) {
         console.log(exc);
-        res.status(400);
+        res.statusCode = 400;
+        res.statusMessage = "Missing image";
         res.end(JSON.stringify({error: exc.toString()}));
     }
 }
 
-// end of api/digit/[slug].js
+// end of api/digit.js

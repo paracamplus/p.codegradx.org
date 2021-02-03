@@ -4,7 +4,10 @@ import { CodeGradX } from 'codegradx';
 import { crypt, shuffle } from '../../server/cryptlib.mjs';
 const fetch = require('node-fetch');
 
-const prefixurl = '/api/digit.js';
+/* NOTA: Fortunately, Vercel allows serverless functions to be invoked
+   with or without the .js suffix.
+*/
+const prefixurl = '/api/digit';
 
 export async function get (req, res, next) {
 
@@ -35,7 +38,10 @@ export async function get (req, res, next) {
 
         let content = `${nonce},${wanted.join('')},${images.join(',')}`;
         content = crypt(content);
+        // Rename the cookie as __Secure-MV ? See
+        //   https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
         let cookie = `MV=${content}; path=/api; expires=${expires};`;
+        cookie += `sameSite=none; secure; httponly;`;
         res.setHeader('Set-Cookie', cookie);
 		res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({nonce, wanted, urls, expires}));

@@ -2,7 +2,7 @@
 
 {#if urls.length === 0 }
   <div></div>
-  {#if progress}<div class='w3-green'>{progress}</div>{/if}
+  {#if progress}<div class='w3-center w3-green'>{progress}</div>{/if}
 
 {:else}
 
@@ -17,19 +17,19 @@
   <div class='images'>
     <!-- first row- -->
     <div></div>
-    <div class='image'><img alt='11' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='12' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='13' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='14' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='15' src='/_digits/white.png' /></div>
+    <div class='image'><img alt='11' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='12' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='13' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='14' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='15' src='/_digits/bad.png' /></div>
     <div></div>
     
     <div></div>
-    <div class='image'><img alt='21' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='22' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='23' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='24' src='/_digits/white.png' /></div>
-    <div class='image'><img alt='25' src='/_digits/white.png' /></div>
+    <div class='image'><img alt='21' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='22' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='23' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='24' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='25' src='/_digits/bad.png' /></div>
     <div></div>
   </div>
 
@@ -94,6 +94,7 @@
  const dispatch = createEventDispatcher();
  import { CodeGradX } from 'codegradx';
  import { finalcrypt } from '../server/cryptlib.mjs';
+ import { sleep } from '../common/utils.mjs';
 
  const message = {
    building: "Construction d'une Captcha...",
@@ -109,64 +110,77 @@ vous pouviez résoudre la captcha sont écoulées.`,
  let expires = undefined;
 
  const whiteImage = '/_digits/white.png';
+ const badImage = '/_digits/bad.png';
  let targetsArray = [];
  let error = undefined;
- let progress = message.building;
- $: end = computeEnd(expires);
+ let progress = undefined;
+ let end = undefined;
 
- onMount(() => {
-   error = undefined;
-   getInfo(true);
+ onMount(async () => {
+   await refreshCaptcha(null);
  });
 
- async function getInfo (bool) {
-   if ( bool ) {
-     try {
-       const response = await fetch('/api/signupinit.json');
-       //console.log(response);//DEBUG
-       if ( response.ok ) {
-         response.entity = await response.json();
-         //console.log('signup', response.entity);//DEBUG
-         nonce = response.entity.nonce;
-         wanted = response.entity.wanted;
-         urls = response.entity.urls;
-         expires = response.entity.expires;
-       } else {
-         throw response;
-       }
-     } catch(exc) {
-       console.log('signup', 'getInfo', exc);
-       error = message.badcaptcha;
-       progress = undefined;
-     }
-   }
- }
-
- function computeEnd (expires) {
-   if ( typeof document !== 'undefined' ) {
-     installHooks();
-     return Date.parse(expires);
-   }
- }
- 
  async function refreshCaptcha (event) {
    error = undefined;
-   await getInfo(true);
+   progress = message.building;
+   await getInfo();
+   await installHooks();
  }
 
- function installHooks () {
-   error = undefined;
-   // Leave time to #movecaptcha to be created:
-   setTimeout(doInstallHooks, 1000);
-   end = Date.parse(expires);
+ async function getInfo () {
+   try {
+     const response = await fetch('/api/signupinit.json');
+     //console.log(response);//DEBUG
+     if ( response.ok ) {
+       response.entity = await response.json();
+       //console.log('signup', response.entity);//DEBUG
+       nonce = response.entity.nonce;
+       wanted = response.entity.wanted;
+       urls = response.entity.urls;
+       expires = response.entity.expires;
+       end = Date.parse(expires);
+     } else {
+       throw response;
+     }
+   } catch(exc) {
+     console.log('signup', 'getInfo', exc);
+     error = message.badcaptcha;
+     progress = undefined;
+   }
  }
 
- function doInstallHooks () {
-   const movecaptcha = document.getElementById('movecaptcha');
+ class Captcha {
+   constructor (js) {
+     Object.assign(this, js);
+   }
+ }
+
+ async function installHooks () {
+   let problematic = false;
+   function loaderror () {
+     error = "Chargement d'images defectueux!";
+     problematic = true;
+     this.setAttribute('src', badImage);
+     dispatch('ready', null);
+   }
+   let loadedImages = 0;
+   function loadsuccess () {
+     loadedImages++;
+   }
+
+   // Fetch and stuff images...
+   let movecaptcha = undefined;
+   while ( true ) {
+     movecaptcha = document.getElementById('movecaptcha');
+     if ( movecaptcha ) break;
+     await sleep(0.5);
+   }
    const images = movecaptcha.getElementsByClassName('image');
    for ( let i=0 ; i<images.length ; i++) {
      const divimage = images.item(i);
      const image = divimage.firstElementChild;
+     image.onerror = loaderror;
+     image.onload = loadsuccess;
      image.setAttribute('src', urls[i]);
      image.addEventListener('dragstart', (event) => {
        error = undefined;
@@ -175,7 +189,8 @@ vous pouviez résoudre la captcha sont écoulées.`,
        return true;
      });
    }
-   
+
+   // Organize drag/drop images
    const targets = movecaptcha.getElementsByClassName('target');
    targetsArray = [];
    for ( let i=0 ; i<targets.length ; i++ ) {
@@ -190,13 +205,18 @@ vous pouviez résoudre la captcha sont écoulées.`,
      target.addEventListener("dragleave", tarnish);
      target.addEventListener("drop", drop);
    }
-   captcha = captcha || {
-     getResponse,
-     refresh: refreshCaptcha,
-     getCount: filledBoxes
-   };
    progress = undefined;
-   dispatch('ready', captcha);
+   
+   if ( ! problematic ) {
+     captcha = captcha || new Captcha({
+       getResponse,
+       refresh: refreshCaptcha,
+       getCount: filledBoxes,
+       loadedImages       
+     });
+     progress = undefined;
+     dispatch('ready', captcha);
+   }
  }
 
  function illuminate (event) {

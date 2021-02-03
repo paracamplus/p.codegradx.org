@@ -36,11 +36,13 @@
       <input type="text" bind:value={login} name='login'
              class:error={errorLogin} class="w3-input"
              on:keyup={hideproblem}
+             on:change={hideproblem}
              on:click={hideproblem}
              placeholder="{defaultlogin}" />
     </div>
   </div>
 
+  {#if goodcaptcha}
   <MoveCaptcha on:ready={setCaptcha}
                on:change={captchaChanged}
                on:timeout={captchaTimeout}
@@ -48,7 +50,8 @@
 
   <div class="w3-center w3-margin-top">
     <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
-            name="enroll"
+            name="enroll" disabled
+            bind:this={enrollButton}
             on:click={enroll}>
       Je m'inscris!
     </button>
@@ -60,6 +63,7 @@
     </button>
     {/if}
   </div>
+  {/if}
 
   {#if error}<Problem bind:error={error} />{/if}
 
@@ -86,8 +90,10 @@
  let error = undefined;
  let errorLogin = false;
  let helpshown = false;
+ let enrollButton;
  let captcha = null;
  let captchaComplete = false;
+ let goodcaptcha = true;
  let filledBoxes = 0;
  let showRefresh = false;
 
@@ -96,7 +102,7 @@
  }
 
  onMount(async () => {
-   return initializePerson();
+   await initializePerson();
  });
 
  async function enroll (event) {
@@ -150,9 +156,14 @@
    // Means that the captcha is visible although, perhaps, not yet solved.
    // event.detail is a captcha object with a getResponse method.
    captcha = event.detail;
-   filledBoxes = 0;
-   captchaComplete = false;
-   showRefresh = false;
+   if ( captcha ) {
+     filledBoxes = 0;
+     captchaComplete = false;
+     showRefresh = false;
+   } else {
+     goodcaptcha = false;
+     error = "Je ne peux réussir à construire la Captcha!";
+   }
  }
 
  function setCaptchaComplete (event) {
@@ -161,6 +172,7 @@
    let o = event.detail;
    captcha = o.captcha;
    captchaComplete = o.complete;
+   enrollButton.removeAttribute('disabled');
  }
 
  function captchaTimeout (event) {
