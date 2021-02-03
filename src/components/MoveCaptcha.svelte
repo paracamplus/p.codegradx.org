@@ -281,11 +281,12 @@ vous pouviez résoudre la captcha sont écoulées.`,
    let results = [];
    if ( targetsArray.some(target => {
      const src = target.getAttribute('src');
-     results.push(src.replace(/^.*\/(\w+)[.]png$/, '$1'));
+     results.push(src.replace(/^.*\?slug=(\w+)$/, '$1'));
      return target.getAttribute('src').match(/white[.]png/);
    }) ) {
      return false;
    } else {
+     //console.log({results});//DEBUG
      return results;
    }
  }
