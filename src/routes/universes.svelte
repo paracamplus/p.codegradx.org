@@ -10,6 +10,7 @@
  }
  li span.va {
    vertical-align: 0px;
+   width: 80vw;
  }
  .videoWrapper {
    height: 100px;
@@ -59,14 +60,15 @@
   
   {#if error}<Problem bind:error={error} />{/if}
   
-  <div class='w3-container w3-margin'>
+  <div class='w3-container'>
     <ul class='w3-ul'>
+      
       <li lang='fr'>
         <span class='va'>
           <a href='https://scm.codegradx.org/doc/exercises'
              on:click={go}
              class='w3-btn w3-round-xlarge w3-theme-l4' >Scheme</a> 
-          du <a href='https://programmation-recursive.net/'
+          exercices issus du <a href='https://programmation-recursive.net/'
                 class='w3-btn w3-round-xlarge w3-theme-l4' >
             MOOC « Programmation récursive »</a>
         </span>
@@ -83,24 +85,26 @@
                alt='Video du MOOC Programmation récursive' />
           {/if}
           </span>
-        </li>
+      </li>
+      
       <li lang='fr'>
         <span class='va'>
           <a href="https://unx.codegradx.org/"
              on:click={go}
            class='w3-btn w3-round-xlarge w3-theme-l4' > 
-          <tt>sh</tt> et autres utilitaires Unix (sed, tr, head, tail, cut,
-          grep, sh, etc.)
-          </a></span></li>
+          <tt>shell</tt>
+          </a> et autres utilitaires Unix (sed, tr, head, tail, cut,
+          grep, sh, etc.)</span></li>
+      
       <li lang='en'>
-        <span class='va'>
+        <span class='va'><em>
           <a href="https://js.codegradx.org/"
              on:click={go}
              class='w3-btn w3-round-xlarge w3-theme-l4' >
             Javascript </a>
-          from the <a href='https://diffusejavascript.codegradx.org/'
+          exercices from the <a href='https://diffusejavascript.codegradx.org/'
                       class='w3-btn w3-round-large w3-theme-l4'>
-            MOOC « Diffuse JavaScript »</a>
+            MOOC « Diffuse JavaScript »</a></em>
         </span>
         <span on:click={() => {showmoocjs = ! showmoocjs}}
               class='videoWrapper'>
@@ -115,28 +119,34 @@
                alt='Video of the MOOC Diffuse JavaScript' />
           {/if}
           </span>
-        </li>
+      </li>
+      
       <li lang='fr'>
         <span class='va'>
-          <a href="https://cc.codegradx.org/"
+          <a href="https://cnamcc.codegradx.org/"
              on:click={go}
              class='w3-btn w3-round-xlarge w3-theme-l4' >
             C
-          </a></span></li>
+          </a> exercices du <a href="https://www.fun-mooc.fr/courses/course-v1:itii+119003+session03/about" class='w3-btn w3-round-large w3-theme-l4'>
+            MOOC Socle informatique du CNAM </a>
+        </span></li>
+      
       <li lang='fr'>
         <span class='va'>
           <a href="https://python.codegradx.org/"
              on:click={go}
              class='w3-btn w3-round-xlarge w3-theme-l4' >
             Python
-          </a></span></li>
+          </a> exercices du cours IN101 : Algorithmique et programmation
+          de l'ENSTA ParisTech</span></li>
+      
       <li lang='fr'>
         <span class='va'>
           <a href="https://jfp.codegradx.org/"
              on:click={go}
              class='w3-btn w3-round-xlarge w3-theme-l4' >
-            Journées Franciliennes de Programmation (langage libre) 
-          </a></span></li>
+            Journées Franciliennes de Programmation
+          </a> (langage libre)</span></li>
     </ul>
   </div>
 </div>

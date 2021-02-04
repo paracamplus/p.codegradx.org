@@ -18,7 +18,7 @@
             on:click={showHelp}>&#x1f6c8;</span>
     </header>
 
-    {#if helpshown}<ConnectDoc />{/if}
+    {#if helpshown}<ConnectDoc bind:helpshown={helpshown} />{/if}
     
     <p>
       Si vous n'avez pas encore créé de compte sur CodeGradX, vous pouvez
