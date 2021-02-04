@@ -12,6 +12,10 @@
  tr.inactive {
    background-color: #eee;
  }
+ button.headerButton {
+   font-size: smaller;
+   margin-left: 2em;
+ }
 </style>
 
 <svelte:head>
@@ -24,13 +28,16 @@
   <div class='w3-margin-top w3-padding'>
     <header class='w3-center w3-large bold'>
       Mes informations
+      <button class="w3-btn w3-theme-d1 w3-round-xxlarge headerButton"
+              title="Modifier mes informations personnelles"
+              on:click={modify} >Modifier mes informations</button>
     </header>
 
     {#if $person}
     <div class='w3-container w3-padding'>
       <p> Votre adresse électronique est
         <span class='personName'>{$person.email}</span>
-        {#if $person.confirmedemail}(vous l'avez confirmée){/if}</p>
+        {#if $person.confirmedemail}(vous l'avez déjà confirmée){/if}</p>
       {#if $person.confirmedua === $person.uaversion}
       <p> Vous avez signé les conditions d'usage (v{$person.confirmedua})</p>
       {:else}
@@ -42,7 +49,7 @@
         <span class="personName">{$person.firstname}</span>
         et votre pseudo est
         <span class="personName">{$person.pseudo}</span></p>
-      <p> Votre nom de connexion est
+      <p> Votre nom de connexion (immuable) est
         <span class="personName">{$person.login}</span></p>
       {#if $person.logins.length > 1}
       <p> Vos autres noms de connexions sont:</p>
@@ -72,7 +79,7 @@
           <td><a href='{campaign.home_url}' title={campaign.title}>
             {campaign.name}</a>
             <span class='w3-right'>{#if campaign.isTeacher}
-              <span title="Vous êtes enseignant">🎓</span>{/if}</span></td>
+              <span title="Vous y êtes enseignant">🎓</span>{/if}</span></td>
           <td>{campaign.title}</td>
           <td class='w3-hide-small'>
             {campaign.starttime.replace(/T.*$/, '')}</td>
@@ -82,7 +89,6 @@
       </table>
       {/if}
         
-      
     </div>
         
     {:else}
@@ -116,5 +122,9 @@
      error = "Désolé, je ne vous connais pas!";
    }
  });
+
+ function modify (event) {
+   sapper.goto('/profile');
+ }
 
 </script>
