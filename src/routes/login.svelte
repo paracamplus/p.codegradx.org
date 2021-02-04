@@ -21,7 +21,7 @@
     <header class='w3-center w3-large bold'>
       Qui êtes vous ?
       <span class='w3-right w3-margin-left w3-xlarge'
-            on:click={showHelp}>&#x1f6c8;</span>
+            on:click={showHelp}><InformationSign /></span>
     </header>
 
     {#if helpshown}<ConnectDoc bind:helpshown={helpshown} />{/if}
@@ -55,6 +55,13 @@
             on:click={authenticate}>
       Je m'identifie!
     </button>
+    {#if showlostpassword}
+      <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+              name="lostpassword"
+              on:click={lostpassword}>
+        J'ai perdu mon mot de passe!
+      </button>
+    {/if}
   </div>
 </section>
 
@@ -62,6 +69,7 @@
 
 <script>
  import Header from '../components/Header.svelte';
+ import InformationSign from '../components/InformationSign.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
  import Bottom from '../components/Bottom.svelte';
@@ -80,6 +88,7 @@
  let errorLogin = false;
  let errorPassword = false;
  let helpshown = false;
+ let showlostpassword = false;
 
  function hideproblem (event) {
    error = errorLogin = errorPassword = undefined;
@@ -113,11 +122,16 @@
      }
    } catch (exc) {
      error = 'Courriel ou mot de passe incorrect!';
+     showlostpassword = true;
    }
  }
 
  function showHelp (event) {
    helpshown = true;
+ }
+ 
+ function lostpassword (event) {
+   sapper.goto('/lostpassword');
  }
 
 </script>

@@ -17,8 +17,6 @@
   <div class='w3-margin-top w3-padding'>
     <header class='w3-center w3-large bold'>
       Mot de passe perdu
-      <span class='w3-right w3-margin-left w3-xlarge'
-            on:click={showHelp}>&#x1f6c8;</span>
     </header>
     
     <p class='smallHint'>
@@ -50,6 +48,7 @@
 
 <script>
  import Header from '../components/Header.svelte';
+ import InformationSign from '../components/InformationSign.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
  import Bottom from '../components/Bottom.svelte';
@@ -59,19 +58,26 @@
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { getConfig, initializePerson } from '../client/lib.mjs';
+ import { sleep } from '../common/utils.mjs';
 
  let login = undefined;
  let defaultlogin = 'mon.email@a.moi';
  let error = undefined;
  let errorLogin = false;
- let helpshown = false;
 
  function hideproblem (event) {
    error = errorLogin = undefined;
  }
 
  onMount(async () => {
-   return initializePerson();
+   const maybeperson = await initializePerson();
+   if ( maybeperson ) {
+     $person = maybeperson;
+     error = `Bonjour ${$person.pseudo}, je vous épargne cette étape
+puisque je vous connais déjà !`;
+     await sleep(2);
+     await sapper.goto('/universes');
+   }
  });
  
  async function lostpassword (event) {
@@ -89,12 +95,8 @@
      // $person.token may be a *-mailconfirm or *-reconnect.
      sapper.goto('/mailsent');
    } catch (exc) {
-     error = "Je ne vois pas qui vous êtes !";
+     error = "Je n'ai pas réussi à envoyer de courriel à cette adresse !";
    }
- }
-
- function showHelp (event) {
-   helpshown = true;
  }
 
 </script>

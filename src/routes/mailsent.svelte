@@ -14,7 +14,7 @@
 <Header />
 
 {#if $person}
-<section class='w3-container'>
+<section class='w3-container w3-padding'>
   <p>
     Si <code class='personName'>{$person.login}</code> est connu
     de CodeGradX, alors un courriel vient de lui être adressé.
@@ -28,6 +28,7 @@
     Pensez éventuellement à vérifier votre spam!
   </p>
 
+  {#if 0}<!-- Don't give this information: -->
   <p> Pour rappel </p>
   <ul>
     {#if $person.confirmedemail}
@@ -42,6 +43,8 @@
     <li> Vous n'avez pas encore signé les conditions d'usage. </li>
     {/if}
   </ul>
+  {/if}
+  
 </section>
 
 {:else}

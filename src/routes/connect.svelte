@@ -15,7 +15,7 @@
     <header class='w3-center w3-large bold'>
       Qui êtes vous ?
       <span class='w3-right w3-margin-left w3-xlarge'
-            on:click={showHelp}>&#x1f6c8;</span>
+            on:click={showHelp}><InformationSign /></span>
     </header>
 
     {#if helpshown}<ConnectDoc bind:helpshown={helpshown} />{/if}
@@ -64,6 +64,7 @@
 
 <script>
  import Header from '../components/Header.svelte';
+ import InformationSign from '../components/InformationSign.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
  import Bottom from '../components/Bottom.svelte';
 

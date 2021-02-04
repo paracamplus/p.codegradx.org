@@ -21,7 +21,7 @@
     <header class='w3-center w3-large bold'>
       Inscription à CodeGradX
       <span class='w3-right w3-margin-left w3-xlarge'
-            on:click={showHelp}>&#x1f6c8;</span>
+            on:click={showHelp}><InformationSign /></span>
     </header>
 
     {#if helpshown}<ConnectDoc bind:helpshown={helpshown} />{/if}
@@ -74,6 +74,7 @@
 <script>
  import Header from '../components/Header.svelte';
  import Problem from '../components/Problem.svelte';
+ import InformationSign from '../components/InformationSign.svelte';
  import MoveCaptcha from '../components/MoveCaptcha.svelte';
  import RefreshSign from '../components/RefreshSign.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
@@ -124,9 +125,13 @@
          //console.log(captchaResponse);//DEBUG
          try {
            $person = await state.userEnroll(login, captchaResponse);
+           // $person is partial user with only:
+           // confirmedemail, confirmedua, uaversion, login, logins, expires
+           console.log($person);//DEBUG
            sapper.goto(`/resume/${$person.token}`);
          } catch (exc) {
            error = "Mauvaise réponse!";
+           captchaRefresh(null);
          }
        } else {
          throw new Error("void captchaResponse");
@@ -189,6 +194,7 @@
      captcha.refresh();
    }
    showRefresh = false;
+   enrollButton.setAttribute('disabled', true);
  }
 
  function showHelp (event) {

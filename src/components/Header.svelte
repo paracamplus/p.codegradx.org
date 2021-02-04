@@ -1,6 +1,7 @@
 <style>
  header {
    max-height: 2rem;
+   max-width: 100vw;
  }
 </style>
 

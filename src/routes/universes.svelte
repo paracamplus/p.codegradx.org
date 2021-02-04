@@ -32,10 +32,10 @@
 
 <Header />
 <div class='w3-container' on:click={hideProblem}>
-  <header class='w3-container w3-margin'>
+  <header>
     {#if $person}
-    <p>Bonjour <span class='personName'>{$person.pseudo}</span>,
-      sélectionnez l'univers d'exercices que vous souhaitez.
+      <p>Bonjour <span class='personName'>{$person.pseudo}</span>,
+        sélectionnez l'univers d'exercices que vous souhaitez.
       </p>
     {:else}
       <p> Sélectionnez,
