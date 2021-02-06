@@ -31,7 +31,9 @@
 </svelte:head>
 
 <Header />
-<div class='w3-container' on:click={hideProblem}>
+
+<section class='w3-container' on:click={hideProblem}>
+ <div class='w3-margin-top w3-padding'>
   <header>
     {#if $person}
       <p>Bonjour <span class='personName'>{$person.pseudo}</span>,
@@ -149,7 +151,9 @@
           </a> (langage libre)</span></li>
     </ul>
   </div>
-</div>
+
+  </div>
+</section>
 
 <Bottom />
 

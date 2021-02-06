@@ -14,7 +14,8 @@
 <Header />
 
 {#if $person}
-<section class='w3-container w3-padding'>
+<section class='w3-container'>
+ <div class='w3-margin-top w3-padding'>
   <p>
     Si <code class='personName'>{$person.login}</code> est connu
     de CodeGradX, alors un courriel vient de lui être adressé.
@@ -44,7 +45,8 @@
     {/if}
   </ul>
   {/if}
-  
+
+ </div>
 </section>
 
 {:else}

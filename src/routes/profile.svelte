@@ -46,7 +46,7 @@
         <label for='email'>Votre courriel:</label>
         <input type="email" bind:value={newperson.email} name='email'
                class="w3-input indent"
-               on:keyup={notifyChange}
+               on:change={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.email}" />
       </div>
@@ -55,7 +55,7 @@
         <label for='pseudo'>Votre pseudo:</label>
         <input type="text" bind:value={newperson.pseudo} name='pseudo'
                class="w3-input indent"
-               on:keyup={notifyChange}
+               on:change={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.pseudo}" />
       </div>
@@ -64,7 +64,7 @@
         <label for='firstname'>Votre prénom:</label>
         <input type="text" bind:value={newperson.firstname} name='firstname'
                class="w3-input indent"
-               on:keyup={notifyChange}
+               on:change={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.firstname}" />
       </div>
@@ -73,7 +73,7 @@
         <label for='lastname'>Votre prénom:</label>
         <input type="text" bind:value={newperson.lastname} name='lastname'
                class="w3-input indent" 
-               on:keyup={notifyChange}
+               on:change={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.lastname}" />
       </div>
@@ -82,7 +82,7 @@
         <label for='password1'>Votre mot de passe:</label>
         <input type="password" bind:value={password1} name='password1'
                class="w3-input indent" 
-               on:keyup={notifyChange}
+               on:change={notifyChange}
                on:invalid={badinput}
                placeholder="***" />
       </div>
@@ -91,7 +91,7 @@
         <label for='password2'>Et encore votre mot de passe:</label>
         <input type="password" bind:value={password2} name='password2'
                class="w3-input indent" 
-               on:keyup={notifyChange}
+               on:change={notifyChange}
                on:invalid={badinput}
                placeholder="***" />
       </div>

@@ -17,7 +17,7 @@
 <Header />
 
 <section class='w3-container'>
-  <div class='w3-card-4 w3-margin-top w3-padding'>
+  <div class='w3-margin-top w3-padding'>
     <header class='w3-center w3-large bold'>
       Qui êtes vous ?
       <span class='w3-right w3-margin-left w3-xlarge'

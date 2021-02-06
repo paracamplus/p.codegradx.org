@@ -8,12 +8,17 @@
 </style>
 
 <svelte:head>
-  <title>CodeGradX/CourrielConfirmé</title>
+  <title>CodeGradX/Courriel À confirmer</title>
 </svelte:head>
 
 <Header />
 
 <section class='w3-container'>
+  <div class='w3-margin-top w3-padding'>
+    <header class='w3-center w3-large bold'>
+      Confirmation de courriel
+    </header>
+    
   <p> Bonjour {#if $person}<span class='personName'>
     {$person.login || $person.email}</span>
     {/if}</p>
@@ -30,7 +35,9 @@
     {:else}
     <p> Vous n'avez pas encore signé les conditions d'usage. </p>
     {/if}
-  {/if}
+    {/if}
+    
+  </div>
 </section>
 
 <Bottom />
