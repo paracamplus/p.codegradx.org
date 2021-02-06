@@ -16,7 +16,7 @@ const reSpecialChars = new RegExp(`[${chars}]`);
 const reRejectedChars = new RegExp(`[^a-z0-9${chars}]`, 'i');
 
 export function checkPassword (password) {
-    if ( password.length < 12 ) {
+    if ( password.length < 8 ) {
         return false;
     }
     if ( ! password.match(/[A-Z]/) ) {

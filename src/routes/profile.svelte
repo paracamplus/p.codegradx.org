@@ -37,7 +37,7 @@
       confirmer ce nouveau courriel. Pour le mot de passe, vous avez
       le choix entre des lettres, des chiffres et les caractères
       suivants <code>{chars}</code> mais vous devez néanmoins panacher
-      ces trois catégories.
+      ces trois catégories et aligner au moins 8 caractères.
     </p>
 
     <div class="w3-margin-top">
@@ -46,7 +46,7 @@
         <label for='email'>Votre courriel:</label>
         <input type="email" bind:value={newperson.email} name='email'
                class="w3-input indent"
-               on:change={notifyChange}
+               on:keyup={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.email}" />
       </div>
@@ -55,7 +55,7 @@
         <label for='pseudo'>Votre pseudo:</label>
         <input type="text" bind:value={newperson.pseudo} name='pseudo'
                class="w3-input indent"
-               on:change={notifyChange}
+               on:keyup={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.pseudo}" />
       </div>
@@ -64,7 +64,7 @@
         <label for='firstname'>Votre prénom:</label>
         <input type="text" bind:value={newperson.firstname} name='firstname'
                class="w3-input indent"
-               on:change={notifyChange}
+               on:keyup={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.firstname}" />
       </div>
@@ -73,7 +73,7 @@
         <label for='lastname'>Votre prénom:</label>
         <input type="text" bind:value={newperson.lastname} name='lastname'
                class="w3-input indent" 
-               on:change={notifyChange}
+               on:keyup={notifyChange}
                on:invalid={badinput}
                placeholder="{$person.lastname}" />
       </div>
@@ -82,7 +82,7 @@
         <label for='password1'>Votre mot de passe:</label>
         <input type="password" bind:value={password1} name='password1'
                class="w3-input indent" 
-               on:change={notifyChange}
+               on:keyup={notifyChange}
                on:invalid={badinput}
                placeholder="***" />
       </div>
@@ -91,7 +91,7 @@
         <label for='password2'>Et encore votre mot de passe:</label>
         <input type="password" bind:value={password2} name='password2'
                class="w3-input indent" 
-               on:change={notifyChange}
+               on:keyup={notifyChange}
                on:invalid={badinput}
                placeholder="***" />
       </div>
@@ -166,7 +166,7 @@
    error = undefined;
    const elem = event.originalTarget;
    elem.classList.remove('bad');
-   saveButton.setAttribute('disabled', true);
+   const disabledState = saveButton.hasAttribute('disabled');
    const kind = event.originalTarget.attributes.name.value;
    
    function isChanged (kind) {
@@ -183,7 +183,9 @@
        elem.classList.add('bad');
        return;
      }
-     isChanged(kind) && saveButton.removeAttribute('disabled');
+     disabledState &&
+     isChanged(kind) &&
+     saveButton.removeAttribute('disabled');
      
    } else if ( kind.match(/^email$/) ) {
      if ( ! checkEmail(newperson.email) ) {
@@ -191,7 +193,9 @@
        elem.classList.add('bad');
        return;
      }
-     isChanged(kind) && saveButton.removeAttribute('disabled');
+     disabledState &&
+     isChanged(kind) &&
+     saveButton.removeAttribute('disabled');
      
    } else if ( kind.match(/^password[12]$/) ) {
      if ( typeof password1 === 'undefined' &&
@@ -216,7 +220,7 @@
        return;
      }
      if ( ! checkPassword(password1) ) {
-       error = "Mot de passe faible !";
+       error = "Mot de passe trop faible !";
        elem.classList.add('bad');
        return;
      }
