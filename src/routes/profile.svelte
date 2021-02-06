@@ -48,6 +48,7 @@
                class="w3-input indent"
                on:keyup={notifyChange}
                on:invalid={badinput}
+               bind:this={inputs.email}
                placeholder="{$person.email}" />
       </div>
       
@@ -57,6 +58,7 @@
                class="w3-input indent"
                on:keyup={notifyChange}
                on:invalid={badinput}
+               bind:this={inputs.pseudo}
                placeholder="{$person.pseudo}" />
       </div>
       
@@ -66,6 +68,7 @@
                class="w3-input indent"
                on:keyup={notifyChange}
                on:invalid={badinput}
+               bind:this={inputs.firstname}
                placeholder="{$person.firstname}" />
       </div>
       
@@ -75,24 +78,29 @@
                class="w3-input indent" 
                on:keyup={notifyChange}
                on:invalid={badinput}
+               bind:this={inputs.lastname}
                placeholder="{$person.lastname}" />
       </div>
       
       <div class='w3-container w3-padding'>
         <label for='password1'>Votre mot de passe:</label>
-        <input type="password" bind:value={password1} name='password1'
+        <input type="password" name='password1'
+               bind:value={newperson.password1} 
                class="w3-input indent" 
                on:keyup={notifyChange}
                on:invalid={badinput}
+               bind:this={inputs.password1}
                placeholder="***" />
       </div>
       
       <div class='w3-container w3-padding'>
         <label for='password2'>Et encore votre mot de passe:</label>
-        <input type="password" bind:value={password2} name='password2'
-               class="w3-input indent" 
+        <input type="password" name='password2'
+               bind:value={newperson.password2}
+               class="w3-input indent"
                on:keyup={notifyChange}
                on:invalid={badinput}
+               bind:this={inputs.password2}
                placeholder="***" />
       </div>
       
@@ -133,15 +141,23 @@
 
  let error = undefined;
  let saveButton;
- let password1 = undefined;
- let password2 = undefined;
  let newperson = {
    email: "mon.email@a.moi",
    firstname: "mon prénom",
    lastname: "mon nom",
-   pseudo: "mon pseudo"
+   pseudo: "mon pseudo",
+   password1: "***",
+   password2: "***"
  };
-
+ let inputs = {
+   email: undefined,
+   firstname: undefined,
+   lastname: undefined,
+   pseudo: undefined,
+   password1: undefined,
+   password2: undefined,
+ };
+ 
  onMount(async () => {
    if ( ! $person ) {
      $person = await CodeGradX.getCurrentUser();
@@ -163,70 +179,7 @@
  }
 
  function notifyChange (event) {
-   error = undefined;
-   const elem = event.originalTarget;
-   elem.classList.remove('bad');
-   const disabledState = saveButton.hasAttribute('disabled');
-   const kind = event.originalTarget.attributes.name.value;
-   
-   function isChanged (kind) {
-     const newvalue = newperson[kind];
-     let oldvalue = elem.placeholder;
-     //console.log({kind, newperson, elem});
-     return ( newvalue !== oldvalue );
-   }
-   
-   if ( kind.match(/^(firstname|lastname|pseudo)$/) ) {
-     const newname = sanitizeName(newperson[kind]);
-     if ( newname !== newperson[kind] ) {
-       error = "Ce nom semble mal formé !?";
-       elem.classList.add('bad');
-       return;
-     }
-     disabledState &&
-     isChanged(kind) &&
-     saveButton.removeAttribute('disabled');
-     
-   } else if ( kind.match(/^email$/) ) {
-     if ( ! checkEmail(newperson.email) ) {
-       error = "Votre courriel semble mal formé !?";
-       elem.classList.add('bad');
-       return;
-     }
-     disabledState &&
-     isChanged(kind) &&
-     saveButton.removeAttribute('disabled');
-     
-   } else if ( kind.match(/^password[12]$/) ) {
-     if ( typeof password1 === 'undefined' &&
-          typeof password2 === 'undefined' ) {
-       return;
-     }
-     const newpassword1 = sanitizePassword(password1);
-     if ( newpassword1 !== password1 ) {
-       error = "Caractère non supporté !";
-       elem.classList.add('bad');
-       return;
-     }
-     const newpassword2 = sanitizePassword(password2);
-     if ( newpassword2 !== password2 ) {
-       error = "Caractère non supporté !";
-       elem.classList.add('bad');
-       return;
-     }
-     if ( password1 !== password2 ) {
-       error = "Les mots de passe sont différents !?";
-       elem.classList.add('bad');
-       return;
-     }
-     if ( ! checkPassword(password1) ) {
-       error = "Mot de passe trop faible !";
-       elem.classList.add('bad');
-       return;
-     }
-     newperson.password = password1;
-     saveButton.removeAttribute('disabled');
-   }
+   checkAllInputs();
  }
 
  function badinput (event) {
@@ -235,8 +188,105 @@
    elem.classList.add('bad');
  }
 
+ function checkAllInputs () {
+   let result = true;
+   let changed = false;
+   
+   function isChanged (kind) {
+     const newvalue = newperson[kind];
+     let oldvalue = inputs[kind].placeholder;
+     //console.log({kind, newperson, elem});
+     return ( newvalue !== oldvalue );
+   }
+   
+   // reset
+   error = undefined;
+   saveButton.removeAttribute('disabled');
+   for ( const elem of Object.values(inputs) ) {
+     elem.classList.remove('bad');
+   }
+   
+   let kind = 'firstname';
+   let newname = sanitizeName(newperson[kind]);
+   if ( newname !== newperson[kind] ) {
+     error = "Ce nom semble mal formé !?";
+     inputs[kind].classList.add('bad');
+     result = false;
+   }
+   changed = changed || isChanged(kind);
+   
+   kind = 'lastname';
+   newname = sanitizeName(newperson[kind]);
+   if ( newname !== newperson[kind] ) {
+     error = "Ce nom semble mal formé !?";
+     inputs[kind].classList.add('bad');
+     result = false;
+   }
+   changed = changed || isChanged(kind);
+   
+   kind = 'pseudo';
+   newname = sanitizeName(newperson[kind]);
+   if ( newname !== newperson[kind] ) {
+     error = "Ce nom semble mal formé !?";
+     inputs[kind].classList.add('bad');
+     result = false;
+   }
+   changed = changed || isChanged(kind);
+   
+   kind = 'email';
+   if ( ! checkEmail(newperson[kind]) ) {
+     error = "Votre courriel semble mal formé !?";
+     inputs[kind].classList.add('bad');
+     result = false;
+   }
+   changed = changed || isChanged(kind);
+
+   if ( typeof newperson.password1 !== 'undefined' ||
+        typeof newperson.password2 !== 'undefined' ) {
+     kind = 'password1';
+     const newpassword1 = sanitizePassword(newperson[kind]);
+     if ( newpassword1 !== newperson[kind] ) {
+       error = "Caractère non supporté !";
+       inputs[kind].classList.add('bad');
+       result = false;
+       changed = true;
+     }
+     kind = 'password2';
+     const newpassword2 = sanitizePassword(newperson[kind]);
+     if ( newpassword2 !== newperson[kind] ) {
+       error = "Caractère non supporté !";
+       inputs[kind].classList.add('bad');
+       result = false;
+       changed = true;
+     }
+     if ( newpassword1 !== newpassword2 ) {
+       error = "Les mots de passe sont différents !?";
+       inputs.password1.classList.add('bad');
+       inputs.password2.classList.add('bad');
+       result = false;
+       changed = true;
+     } else {
+       if ( ! checkPassword(newpassword1) ) {
+         error = "Mot de passe trop faible !";
+         inputs.password1.classList.add('bad');
+         inputs.password2.classList.add('bad');
+         result = false;
+         changed = true;
+       } else {
+         changed = true;
+         newperson.password = newpassword1;
+       }
+     }
+   }
+
+   if ( ! changed ) {
+     saveButton.setAttribute('disabled', true);
+   }
+   return result;
+ }
+
  async function modify (event) {
-   if ( error ) {
+   if ( error || ! checkAllInputs() ) {
      error = "Corrigez d'abord les anomalies!";
      return;
    }

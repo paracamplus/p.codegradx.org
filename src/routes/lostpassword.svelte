@@ -5,6 +5,9 @@
  input.error {
    background-color: pink;
  }
+ input.indent {
+   margin-left: 2em;
+ }
 </style>
 
 <svelte:head>
@@ -25,7 +28,7 @@
     <div class="w3-margin-top">
       <label for="login">Votre courriel:</label>
       <input type="text" bind:value={login} name='login'
-             class:error={errorLogin} class="w3-input"
+             class:error={errorLogin} class="w3-input indent"
              on:keyup={hideproblem}
              on:click={hideproblem}
              placeholder="{defaultlogin}" />
