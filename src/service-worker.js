@@ -1,9 +1,10 @@
 import { files, shell } from '@sapper/service-worker';
+import { version } from './client/TS.mjs';
 
 // See https://sapper.svelte.dev/docs#Deploying_service_workers
 function getTimeStamp () {
     try {
-        return require('./TS.js');
+        return version;
     } catch (exc) {
         return process.env.SAPPER_TIMESTAMP;
     }
