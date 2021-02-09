@@ -9,9 +9,6 @@
  .bold {
    font-weight: bolder;
  }
- tr.inactive {
-   background-color: #eee;
- }
  button.headerButton {
    font-size: smaller;
    margin-left: 2em;
@@ -68,25 +65,10 @@
         {/each}
       </ul>
       {/if}
+      
       {#if $person.campaigns.length > 0 }
       <p> Vous êtes déjà inscrit dans les univers suivants:</p>
-      <table class='w3-table w3-border w3-hoverable'>
-        <tr class='w3-theme-d2'><th>Univers</th><th></th>
-          <th class='w3-hide-small'>Début</th>
-          <th class='w3-hide-small'>Fin</th></tr>
-        {#each $person.campaigns as campaign}
-        <tr class:inactive={! campaign.active}>
-          <td><a href='{campaign.home_url}' title={campaign.title}>
-            {campaign.name}</a>
-            <span class='w3-right'>{#if campaign.isTeacher}
-              <span title="Vous y êtes enseignant">🎓</span>{/if}</span></td>
-          <td>{campaign.title}</td>
-          <td class='w3-hide-small'>
-            {campaign.starttime.replace(/T.*$/, '')}</td>
-          <td class='w3-hide-small'>
-            {campaign.endtime.replace(/T.*$/, '')}</td></tr>
-        {/each}
-      </table>
+      <Universes campaigns={$person.campaigns} />
       {/if}
         
     </div>
@@ -104,6 +86,7 @@
  import Header from '../components/Header.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
+ import Universes from '../components/Universes.svelte';
  import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';

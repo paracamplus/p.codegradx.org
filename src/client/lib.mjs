@@ -46,14 +46,12 @@ export async function determineNextUserState (json) {
         if ( json.confirmedua < json.uaversion ) {
             return '/signua';
         }
-        // Make sure $person holds a User, not a PartiaUser
+        // Make sure $person holds a User, not a PartialUser
         if ( ! isUser(json) ) {
             $person = await CodeGradX.getCurrentUser();
         }
-        return '/universes';
-    } else {
-        return undefined;
     }
+    return undefined;
 }
 
 /**

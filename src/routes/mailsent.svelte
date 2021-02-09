@@ -16,35 +16,22 @@
 {#if $person}
 <section class='w3-container'>
  <div class='w3-margin-top w3-padding'>
-  <p>
-    Si <code class='personName'>{$person.login}</code> est connu
-    de CodeGradX, alors un courriel vient de lui être adressé.
-    {#if ! $person.confirmedemail}
-    Ce courriel contient un lien vous permettant de confirmer
-    votre adresse électronique.
-    {:else}
-    Ce courriel contient un lien vous permettant de vous connecter
-    à nouveau à CodeGradX.
-    {/if}
-    Pensez éventuellement à vérifier votre spam!
-  </p>
-
-  {#if 0}<!-- Don't give this information: -->
-  <p> Pour rappel </p>
-  <ul>
-    {#if $person.confirmedemail}
-    <li> Vous avez déjà confirmé votre adresse électronique. </li>
-    {:else}
-    <li> Vous n'avez pas encore confirmé votre adresse électronique. </li>
-    {/if}
-    
-    {#if $person.confirmedua === $person.uaversion}
-    <li> Vous avez déjà signé les conditions d'usage. </li>
-    {:else}
-    <li> Vous n'avez pas encore signé les conditions d'usage. </li>
-    {/if}
-  </ul>
-  {/if}
+   <header class='w3-center w3-large bold'>
+     Connexion à CodeGradX
+   </header>
+   <p>
+     Si <code class='personName'>{$person.login}</code> est connu
+     de CodeGradX, alors un courriel vient de lui être adressé.
+     {#if ! $person.confirmedemail}
+     Ce courriel contient un lien vous permettant de confirmer
+     votre adresse électronique. Pensez ensuite à vous munir
+     d'un mot de passe.
+     {:else}
+     Ce courriel contient un lien vous permettant de vous connecter
+     à nouveau à CodeGradX.
+     {/if}
+     Pensez éventuellement à vérifier votre spam! 
+   </p>
 
  </div>
 </section>

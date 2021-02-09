@@ -22,9 +22,7 @@
     
     <p>
       Si vous n'avez pas encore créé de compte sur CodeGradX, vous pouvez
-      cliquer sur le bouton « Je m'inscris » ou sur « via Google ». Dans
-      ce dernier cas, c'est votre courriel connu par Google qui deviendra
-      votre identifiant.
+      cliquer sur le bouton « Je m'inscris » ou sur « via Google ».
     </p>
 
     <div class="w3-center w3-margin-top">
@@ -33,7 +31,7 @@
               on:click={enroll}>
         Je m'inscris!
       </button>
-      <a href={oauth2url} name="viaGoogle"
+      <a href='/viagoogle' name="viaGoogle1"
          class="w3-btn w3-theme-d1 w3-round-xxlarge"
          >via Google</a>
     </div>
@@ -48,7 +46,7 @@
               on:click={authenticate}>
         Je m'identifie!
       </button>
-      <a href={oauth2url} name="viaGoogle"
+      <a href='/viagoogle' name="viaGoogle2"
          class="w3-btn w3-theme-d1 w3-round-xxlarge"
          >via Google</a>
       <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
@@ -74,19 +72,10 @@
  import { CodeGradX } from 'codegradx';
  import { getConfig, initializePerson } from '../client/lib.mjs';
 
- let oauth2url = '/to/be/filled';
  let helpshown = false;
 
  onMount(async () => {
    return initializePerson()
-     .then(async () => {
-     // compute the url "via Google":
-     oauth2url = getConfig().x.url;
-     oauth2url += `/googleopenid`;
-     oauth2url += `?homeUrl=${origin}`;
-     oauth2url += `&nofinalredir=1`;
-     oauth2url += `&origin=${origin}`;
-   });
  });
 
  function enroll (event) {

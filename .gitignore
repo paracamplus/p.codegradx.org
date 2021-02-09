@@ -10,3 +10,6 @@ secrets/
 auth.json
 config.json
 export/
+
+# Local Netlify folder
+.netlify
