@@ -15,12 +15,14 @@
       <div class='w3-bar-item w3-button'
            on:click={universes} >voir les univers</div>
       {#if isUser($person) }
-      <div class='w3-bar-item w3-button'
-           on:click={whoami} >qui suis-je ?</div>
       {#if $campaign}
+      <div class='w3-bar-item w3-button'
+           on:click={universe} >l'univers {$campaign.name}</div>
       <div class='w3-bar-item w3-button'
            on:click={history} >mon historique</div>
       {/if}
+      <div class='w3-bar-item w3-button'
+           on:click={whoami} >qui suis-je ?</div>
       <div class='w3-bar-item w3-button'
            on:click={logout} >me déconnecter</div>
       {:else}
@@ -54,12 +56,16 @@
    sapper.goto('/universes');
  }
 
+ async function universe (event) {
+   sapper.goto(`/universe/${$campaign.name}`);
+ }
+
  async function whoami (event) {
    sapper.goto('/whoami');
  }
 
  async function history (event) {
-   sapper.goto(`/history?campaign=${$campaign.name}`);
+   sapper.goto(`/history/${$campaign.name}`);
  }
  
 </script>

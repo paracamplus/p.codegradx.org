@@ -49,18 +49,18 @@
 </Page>
 
 <script>
- import Page from '../components/Page.svelte';
- import Problem from '../components/Problem.svelte';
- import WaitingImage from '../components/WaitingImage.svelte';
- import JobReport from '../components/JobReport.svelte';
+ import Page from '../../components/Page.svelte';
+ import Problem from '../../components/Problem.svelte';
+ import WaitingImage from '../../components/WaitingImage.svelte';
+ import JobReport from '../../components/JobReport.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person, campaign } from '../stores.mjs';
+ import { person, campaign } from '../../stores.mjs';
  import { CodeGradX } from 'codegradx/campaign';
  import { CodeGradX as cx } from 'codegradx/campaignlib';
- import { initializePerson } from '../client/lib.mjs';
- import { doSortColumn } from '../client/sortlib.mjs';
+ import { initializePerson } from '../../client/lib.mjs';
+ import { doSortColumn } from '../../client/sortlib.mjs';
  import queryString from 'query-string';
 
  let error = undefined;
@@ -88,7 +88,8 @@
    } catch (exc) {
      // ignore, a campaign may be mentioned in the query string:
    }
-   const campaignName = queryString.parse(window.location.search).campaign;
+   let uri = window.document.location.pathname;
+   const campaignName = uri.replace(/^(.*\/)?history\/([^\/]+)/, '$2');
    if ( campaignName ) {
      try {
        $campaign = await person.getCampaign(campaignName);
