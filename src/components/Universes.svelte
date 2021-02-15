@@ -44,14 +44,21 @@
 <script>
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
+ import { campaign } from '../stores.mjs';
+ import { initializePerson } from '../client/lib.mjs';
  
  export let campaigns = [];
 
- function see (campaign) {
+ onMount(async () => {
+   $campaign = undefined;
+ });
+
+ function see (thecampaign) {
    return function (event) {
      event.preventDefault();
      event.stopPropagation();
-     sapper.goto(`/universe/${campaign.name}`);
+     $campaign = thecampaign;
+     sapper.goto(`/universe/${thecampaign.name}`);
    };
  }
   

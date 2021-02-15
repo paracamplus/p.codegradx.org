@@ -8,9 +8,6 @@
  input.indent {
    margin-left: 2em;
  }
- p.smallHint {
-   color: #aaa;
- }
 </style>
 
 <svelte:head>

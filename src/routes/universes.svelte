@@ -1,7 +1,4 @@
 <style>
- p.smallHint {
-   color: #aaa;
- }
  .personName {
    color: #334191;
    padding: 0.1em 0.5em 0.1em 0.5em;
@@ -28,6 +25,8 @@
 </svelte:head>
 
 <Header />
+
+<Warning />
 
 <section class='w3-container'>
  <div class='w3-margin-top w3-padding'>
@@ -148,6 +147,7 @@
 <script>
  import Header from '../components/Header.svelte';
  import Bottom from '../components/Bottom.svelte';
+ import Warning from '../components/Warning.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

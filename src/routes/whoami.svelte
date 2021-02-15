@@ -1,13 +1,13 @@
 <style>
+ header {
+   font-weight: bolder;
+ }
  .personName {
    color: #334191;
    padding: 0.1em 0.5em 0.1em 0.5em;
    margin: 0em 0.1em 0em 0.1em;
    border-radius: 0.5em;
    border: solid 1px #334191;
- }
- .bold {
-   font-weight: bolder;
  }
  button.headerButton {
    font-size: smaller;
@@ -21,16 +21,15 @@
 
 <Header />
 
-<section class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
-    <header class='w3-center w3-large bold'>
-      Mes informations
-      <button class="w3-btn w3-theme-d1 w3-round-xxlarge headerButton"
-              title="Modifier mes informations personnelles"
-              on:click={modify} >Modifier mes informations</button>
-    </header>
+<section class='w3-container w3-margin-top w3-padding'>
+  <header class='w3-center w3-large w3-margin-bottom'>
+    Mes informations
+    <button class="w3-btn w3-theme-d1 w3-round-xxlarge headerButton"
+            title="Modifier mes informations personnelles"
+            on:click={modify} >Modifier mes informations</button>
+  </header>
 
-    {#if $person}
+  {#if $person}
     <div class='w3-container w3-padding'>
       <p> Votre adresse électronique est
         <span class='personName'>{$person.email}</span>
@@ -77,7 +76,6 @@
     {#if error}<Problem bind:error={error} />{/if}
     {/if}
 
-  </div>
 </section>
 
 <Bottom />
@@ -105,7 +103,7 @@
      error = "Désolé, je ne vous connais pas!";
    }
  });
-
+ 
  function modify (event) {
    sapper.goto('/profile');
  }

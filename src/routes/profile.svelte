@@ -2,9 +2,6 @@
  header.bold {
    font-weight: bold;
  }
- p.smallHint {
-   color: #aaa;
- }
  input.indent {
    margin-left: 2em;
  }

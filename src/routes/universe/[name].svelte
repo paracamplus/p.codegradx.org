@@ -6,7 +6,7 @@
 </style>
 
 <svelte:head>
-  <title>CodeGradX/{name}</title>
+  <title>CodeGradX/{campaignName}</title>
 </svelte:head>
 
 <Header />
@@ -14,22 +14,22 @@
 <section class='w3-container'>
  <div class='w3-margin-top w3-padding'>
    <header class='w3-center'>
-     {#if ! campaign}
-     <span>Les exercices de {name}</span>
+     {#if ! $campaign}
+     <span>Les exercices de {campaignName}</span>
      {:else}
      <div class='bold'>
-       {campaign.title}
+       {$campaign.title}
      </div>
      <div>
-       du {CodeGradX.Date2str(campaign.starttime).replace(/ .*$/, '')}
-       au {CodeGradX.Date2str(campaign.endtime).replace(/ .*$/, '')}
+       du {CodeGradX.Date2str($campaign.starttime).replace(/ .*$/, '')}
+       au {CodeGradX.Date2str($campaign.endtime).replace(/ .*$/, '')}
      </div>
      {/if}
   </header>
 
   <div transition:fade><Problem bind:error={error} /></div>
 
-  {#if showAuthentication}
+  {#if showAuthentication && ! $person}
   <div class='w3-container'>
     <div class='w3-center w3-animate-zoom'>
       <a class='w3-btn w3-center w3-round-xlarge w3-theme-d4'
@@ -40,8 +40,8 @@
   </div>
   {/if}
 
-  {#if campaign}
-  <ExercisesList campaign={campaign} on:authenticate={authenticate} />
+  {#if $campaign}
+  <ExercisesList on:authenticate={authenticate} />
   {/if}
 
  </div>
@@ -60,18 +60,20 @@
  import { CodeGradX } from 'codegradx/campaign';
  import { sleep } from '../../common/utils.mjs';
  import { fade } from 'svelte/transition';
+ import { person, campaign } from '../../stores.mjs';
+ import { initializePerson } from '../../client/lib.mjs';
 
  let error = undefined;
- let name = undefined;
- let campaign = undefined;
+ let campaignName = undefined;
  let showAuthentication = false;
  
  onMount(async () => {
    try {
+     $person = await initializePerson();
      let uri = window.document.location.pathname;
-     name = uri.replace(/^(.*\/)?universe\/([^\/]+)/, '$2');
-     campaign = await fetchCampaign(name);
-     if ( ! campaign ) {
+     campaignName = uri.replace(/^(.*\/)?universe\/([^\/]+)/, '$2');
+     $campaign = await fetchCampaign(campaignName);
+     if ( ! $campaign ) {
        error = "Je ne vois pas d'univers ainsi nommé!";
      }
    } catch (exc) {
@@ -80,11 +82,20 @@
    } 
  });
 
- async function fetchCampaign (name) {
+ async function fetchCampaign (campaignName) {
    const state = CodeGradX.getCurrentState();
-   const campaigns = await state.getOpenCampaigns();
-   const campaign = campaigns[name];
-   return campaign;
+   if ( $person ) {
+     try {
+       const campaign = await $person.getCampaign(campaignName);
+       return campaign;
+     } catch (_) {
+       return undefined;
+     }
+   } else {
+     const campaigns = await state.getOpenCampaigns();
+     const campaign = campaigns[campaignName];
+     return campaign;
+   }
  }
 
  async function authenticate (event) {

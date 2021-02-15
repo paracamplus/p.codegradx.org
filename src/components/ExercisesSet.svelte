@@ -12,13 +12,11 @@
       {#each exercisesSet.exercises as exercise}
         {#if exercise instanceof CodeGradX.ExercisesSet}
           <svelte:self exercisesSet={exercise} 
-                       campaign={campaign}
                        on:authenticate />
   
         {:else if exercise instanceof CodeGradX.Exercise}
-          <Exercise exercise={exercise}
-                    campaign={campaign}
-                    on:authenticate />
+          <ExerciseTitle exercise={exercise}
+                         on:authenticate />
 
         {:else}
           <div></div>
@@ -34,10 +32,9 @@
 {/if}
 
 <script>
- import Exercise from './Exercise.svelte';
+ import ExerciseTitle from './ExerciseTitle.svelte';
  import { CodeGradX } from 'codegradx/campaign';
 
  export let exercisesSet = null;
- export let campaign = undefined;
 </script>
 

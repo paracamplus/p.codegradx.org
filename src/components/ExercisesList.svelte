@@ -3,13 +3,11 @@
     {#each exercisesSet.exercises as es}
       {#if es instanceof CodeGradX.ExercisesSet}
         <ExercisesSet exercisesSet={es} 
-                      campaign={campaign}
                       on:authenticate />
       {:else if es instanceof CodeGradX.Exercise}
         <div class='w3-container w3-section'>
-          <Exercise exercise={es} 
-                    campaign={campaign}
-                    on:authenticate />
+          <ExerciseTitle exercise={es} 
+                         on:authenticate />
         </div>
       {:else}
         <div></div>
@@ -20,20 +18,24 @@
 
 <script>
  import ExercisesSet from './ExercisesSet.svelte';
- import Exercise from './Exercise.svelte';
+ import ExerciseTitle from './ExerciseTitle.svelte';
 
+ import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/campaignlib';
+ import { sleep } from '../common/utils.mjs';
+ import { person, campaign } from '../stores.mjs';
  
- export let campaign;
  let exercisesSet = undefined;
  let error = undefined;
  
  onMount(async () => {
-   if ( campaign ) {
-     await fetchExercisesSet(campaign);
+   if ( $campaign ) {
+     await fetchExercisesSet($campaign);
    } else {
      error = "Je n'arrive pas à récupérer les exercices afférents!";
+     await sleep(5);
+     sapper.goto('/universes');
    }
  });
 

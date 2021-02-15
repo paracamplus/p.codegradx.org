@@ -22,9 +22,6 @@
       Mot de passe perdu
     </header>
     
-    <p class='smallHint'>
-      
-    </p>
     <div class="w3-margin-top">
       <label for="login">Votre courriel:</label>
       <input type="text" bind:value={login} name='login'

@@ -17,6 +17,10 @@
       {#if isUser($person) }
       <div class='w3-bar-item w3-button'
            on:click={whoami} >qui suis-je ?</div>
+      {#if $campaign}
+      <div class='w3-bar-item w3-button'
+           on:click={history} >mon historique</div>
+      {/if}
       <div class='w3-bar-item w3-button'
            on:click={logout} >me déconnecter</div>
       {:else}
@@ -29,7 +33,7 @@
 
 <script>
  import * as sapper from '@sapper/app';
- import { person } from '../stores.mjs';
+ import { person, campaign } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { isUser } from '../client/lib.mjs';
 
@@ -52,6 +56,10 @@
 
  async function whoami (event) {
    sapper.goto('/whoami');
+ }
+
+ async function history (event) {
+   sapper.goto(`/history?campaign=${$campaign.name}`);
  }
  
 </script>
