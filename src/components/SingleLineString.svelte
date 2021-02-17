@@ -14,7 +14,7 @@
              bind:value={value} />
     </div>
     <div class='w3-center w3-padding-16'>
-      <button class='w3-button w3-round-xxlarge w3-theme-l4'
+      <button class='w3-btn w3-round-xxlarge w3-theme-l4'
               name='SuBmIt' on:click={sendString} >
         Noter ma réponse
       </button>

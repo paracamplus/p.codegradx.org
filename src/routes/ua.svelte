@@ -1,8 +1,8 @@
 <style>
 </style>
 
-<UAframe withButton={false} />
+<UA />
 
 <script>
- import UAframe from '../components/UAframe.svelte';
+ import UA from '../components/UA.svelte';
 </script>

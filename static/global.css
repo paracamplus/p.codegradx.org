@@ -253,7 +253,18 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 
 .w3-hover-theme:hover {color:#fff !important; background-color:#3f51b5 !important}
 .w3-hover-text-theme:hover {color:#3f51b5 !important}
-.w3-hover-border-theme:hover {border-color:#3f51b5 !important}.smallHint {
+.w3-hover-border-theme:hover {border-color:#3f51b5 !important}/* global styles */
+.smallHint {
     color: #aaa;
     font-size: smaller;
+}
+#mainSection header {
+    font-weight: bolder;
+    font-size: 24px !important;
+}
+.personName {
+    color: #334191;
+    padding: 0.1em 0.5em 0.1em 0.5em;
+    border-radius: 0.5em;
+    border: solid 1px #334191;
 }

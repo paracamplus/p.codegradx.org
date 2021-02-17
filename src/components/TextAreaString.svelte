@@ -24,12 +24,12 @@
         >{value}</textarea>
     </div>
     <div class='w3-center w3-padding-16'>
-      <button class='w3-button w3-round-xxlarge w3-theme-l4'
+      <button class='w3-btn w3-round-xxlarge w3-theme-l4'
               title="Envoyer ma réponse au serveur pour notation"
               name='SuBmIt' on:click={sendTextarea} >
         Noter ma réponse
       </button>
-      <button class='w3-button w3-round-xxlarge w3-theme-l4'
+      <button class='w3-btn w3-round-xxlarge w3-theme-l4'
               title="Stocker ma réponse sur mon ordinateur"
               on:click={storeTextarea} >
         Archiver ma réponse

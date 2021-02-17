@@ -1,8 +1,14 @@
+<style>
+ div.bold {
+   font-weight: bolder;
+ }
+</style>
+
 {#if exercisesSet}
   <div class='w3-card-4 w3-margin'>
-    <header class='w3-container w3-theme-l4 w3-margin-top'>
+    <div class='w3-container w3-theme-l4 w3-margin-top bold'>
        {@html exercisesSet.title || ''}
-    </header>
+    </div>
     <div class='w3-container'>
       {#if exercisesSet.prologue}
       <p class='prologue'>{@html exercisesSet.prologue}</p>

@@ -45,7 +45,6 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { campaign } from '../stores.mjs';
- import { initializePerson } from '../client/lib.mjs';
  
  export let campaigns = [];
 

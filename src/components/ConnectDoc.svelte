@@ -7,7 +7,7 @@
 <section class='w3-container w3-center w3-modal'
          style='display:block' >
   <div class='w3-modal-content w3-animate-top w3-border'>
-    <header class='w3-xlarge w3-theme-l2 padding'>
+    <header class='w3-xlarge w3-theme-l4 padding'>
       <span> Comment s'enregistrer... </span>
       <span class='w3-right w3-margin-left'
             on:click={close}>&#x2716;</span>

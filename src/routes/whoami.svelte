@@ -1,7 +1,4 @@
 <style>
- header {
-   font-weight: bolder;
- }
  .personName {
    color: #334191;
    padding: 0.1em 0.5em 0.1em 0.5em;
@@ -9,24 +6,21 @@
    border-radius: 0.5em;
    border: solid 1px #334191;
  }
- button.headerButton {
+ .headerButton {
    font-size: smaller;
    margin-left: 2em;
  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Profil</title>
-</svelte:head>
+<Page shortTitle="Profil"
+      title="Mes informations"
+      showheader={false} >
 
-<Header />
-
-<section class='w3-container w3-margin-top w3-padding'>
   <header class='w3-center w3-large w3-margin-bottom'>
     Mes informations
-    <button class="w3-btn w3-theme-d1 w3-round-xxlarge headerButton"
-            title="Modifier mes informations personnelles"
-            on:click={modify} >Modifier mes informations</button>
+    <a class="w3-btn w3-theme-d1 w3-round-xxlarge headerButton"
+       title="Modifier mes informations personnelles"
+       href='/profile' >Modifier mes informations</a>
   </header>
 
   {#if $person}
@@ -76,36 +70,28 @@
     {#if error}<Problem bind:error={error} />{/if}
     {/if}
 
-</section>
-
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
+ import Page from '../components/Page.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
  import Universes from '../components/Universes.svelte';
- import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
- import { CodeGradX } from 'codegradx';
+ import { person, campaign } from '../stores.mjs';
  import { initializePerson } from '../client/lib.mjs';
 
  let error = undefined;
 
  onMount(async () => {
    if ( ! $person ) {
-     $person = await CodeGradX.getCurrentUser();
+     $person = await initializePerson();
    }
    if ( ! $person ) {
      error = "Désolé, je ne vous connais pas!";
    }
  });
  
- function modify (event) {
-   sapper.goto('/profile');
- }
-
 </script>

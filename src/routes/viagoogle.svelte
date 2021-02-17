@@ -1,21 +1,10 @@
 <style>
- header.bold {
-   font-weight: bold;
- }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Identification</title>
-</svelte:head>
-
-<Header />
-
-<section class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
-    <header class='w3-center w3-large bold'>
-      Se connecter via Google
-    </header>
-
+<Page shortTitle="Identification"
+      title="Se connecter via Google" >
+  
+  <div>
     <p>
       S'inscrire ou s'identifier via Google est aisé, facile, pratique
       mais a des conséquences. CodeGradX n'affiche pas de publicité et
@@ -25,8 +14,8 @@
     <p>
       Si vous passez par Google, votre nom de connexion sera le
       courriel connu par Google. Au passage, CodeGradX récupèrera vos
-      nom, prénom et courriel. Vous gagnerez aussi quelques cookies
-      que CodeGradX n'exploite pas.
+      nom, prénom et courriel. Vous y gagnerez aussi quelques cookies
+      que Google utilise mais que CodeGradX n'exploite pas.
     </p>
     
     <div class="w3-center w3-margin-top">
@@ -34,17 +23,14 @@
          class="w3-btn w3-theme-d1 w3-round-xxlarge"
          >via Google</a>
     </div>
-    
   </div>
-</section>
 
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
+ import Page from '../components/Page.svelte';
  import InformationSign from '../components/InformationSign.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
- import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

@@ -138,7 +138,7 @@
      // imin3 = org.example.li314.java.3 -> textarea + initialcontent
      // default -> multiple files -> tgz
      chooseEditor(exercise);
-     console.log({singleline, multiline, language, file}); // DEBUG
+     //console.log({singleline, multiline, language, file}); // DEBUG
    }
  });
 

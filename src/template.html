@@ -3,8 +3,32 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
-	<meta name="theme-color" content="#333333">
+	<meta name="theme-color" content="#334191">
 
+        <meta name="robots" content="index, follow" />
+    <meta name="googlebot"
+          content="index, follow, max-snippet:-1, max-video-preview:-1" />
+    <!-- meta name="google-site-verification" content="" -->
+    <meta name="author" content="Christian Queinnec" />
+    <meta name='keywords' content='
+Exercices de programmation avec notation automatisée,
+Infrastructure de notation de programmes,
+Outil pour MOOC,
+SARL Paracamplus,
+CodeGradX,
+Shell, Unix utilities, Linux, Recursive programmation, 
+Scheme, Javascript, etc. '/>
+    <meta name='description' content='
+Infrastructure de notation automatisée de programmes,
+Exercices de programmation avec notation automatisée,
+Outils pour MOOC,
+SARL Paracamplus,
+CodeGradX,
+Shell, Unix utilities, Linux, Recursive programmation, 
+Scheme, Javascript, etc. '/>
+    <link rel="alternate" type="text/html" href="/universes" />
+    <link rel="canonical" type="text/html" 
+    
 	%sapper.base%
 
 	<link rel="stylesheet" href="global.css">
@@ -30,4 +54,81 @@
 	     because `src/client.js` references it -->
 	<div id="sapper">%sapper.html%</div>
 </body>
+
+<script type='application/ld+json'>
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "CodeGradX",
+    "url": "https://codegradx.org/",
+    "logo": "https://codegradx.org/fw4ex.svg",
+    "email": "info@codegradx.org",
+    "description": "CodeGradX est une infrastructure de notation automatisée de programmes informatiques. CodeGradX accompagne avec succès des cours ou des MOOCs. De nombreux exercices de programmation sont disponibles gratuitement dans de nombreux langages de programmation (C, Scheme, JavaScript, etc.) ou utilitaires d'Unix. ",
+    "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "itemListElement": [
+            {
+                "@type": "Offer",
+                "price": 0,
+                "priceCurrency": "EUR",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "Exercices autour d'UNIX",
+                    "description": "Plein d'exercices autour des utilitaires classiques d'UNIX (tr, sort, uniq, head, tail, cut, grep, sed, bash, etc.)",
+                    "url": "https://f.codegradx.org/campaign/unx2"
+                }
+            },
+            {
+                "@type": "Offer",
+                "price": 0,
+                "priceCurrency": "EUR",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "Exercices du MOOC Programmation récursive",
+                    "description": "Les exercices du MOOC Programmation récursive utilisent un sous-ensemble réduit du langage Scheme.",
+                    "url": "https://f.codegradx.org/campaign/scm"
+                }
+            },
+            {
+                "@type": "Offer",
+                "price": 0,
+                "priceCurrency": "EUR",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "Les épreuves des JFP (Journées Franciliennes de Programmation)",
+                    "description": "Tous les ans ont lieu les JFP (Journées Franciliennes de Programmation) où des étudiants de licence confrontent amicalement leurs talents en programmation.",
+                    "url": "https://f.codegradx.org/campaign/jfp"
+                }
+            },
+            {
+                "@type": "Offer",
+                "price": 0,
+                "priceCurrency": "EUR",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "Exercises of the MOOC Diffuse JavaScript",
+                    "description": "The MOOC Diffuse JavaScript proposes a number of programming exercises in JavaScript.",
+                    "url": "https://f.codegradx.org/campaign/js"
+                }
+            }
+        ]
+    },
+    "funder": {
+        "@type": "Corporation",
+        "name": "Paracamplus",
+        "legalName": "SARL Paracamplus",
+        "logo": "https://paracamplus.com/Books/biglogo.png",
+        "url": "https://paracamplus.com/",
+        "email": "contact@paracamplus.com",
+        "foundingDate": "2005-09-20",
+        "founder": {
+                "familyName": "Queinnec",
+                "givenName": "Christian",
+                "jobTitle": "gerant"
+        },
+        "description": "Fournisseur de ressources pédagogiques para-universitaires"
+    }
+}
+</script>
+
 </html>

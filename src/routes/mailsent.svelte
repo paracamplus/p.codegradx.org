@@ -1,21 +1,10 @@
 <style>
- .personName {
-   color: #334191;
-   padding: 0.1em 0.5em 0.1em 0.5em;
-   border-radius: 0.5em;
-   border: solid 1px #334191;
- }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/ConfirmationCourriel</title>
-</svelte:head>
-
-<Header />
+<Page shortTitle="ConfirmationCourriel"
+      title="Connexion à CodeGradX" >
 
 {#if $person}
-<section class='w3-container'>
- <div class='w3-margin-top w3-padding'>
    <header class='w3-center w3-large bold'>
      Connexion à CodeGradX
    </header>
@@ -33,24 +22,20 @@
      Pensez éventuellement à vérifier votre spam! 
    </p>
 
- </div>
-</section>
-
 {:else}
-<section class='w3-container'>
+
   <p> Je ne sais qui vous êtes aussi vous redirige-je vers la
     page appropriée...
   </p>
-</section>
+
 {/if}
 
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
+ import Page from '../components/Page.svelte';
  import Problem from '../components/Problem.svelte';
  import ShowStore from '../components/ShowStore.svelte';
- import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

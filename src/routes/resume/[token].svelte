@@ -7,17 +7,8 @@
  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Courriel À confirmer</title>
-</svelte:head>
-
-<Header />
-
-<section class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
-    <header class='w3-center w3-large bold'>
-      Confirmation de courriel
-    </header>
+<Page shortTitle="Courriel à confirmer"
+      title="Confirmation de courriel" >
     
   <p> Bonjour {#if $person}<span class='personName'>
     {$person.login || $person.email}</span>
@@ -37,16 +28,12 @@
     {/if}
     {/if}
     
-  </div>
-</section>
-
-<Bottom />
+</Page>
 
 <script>
- import Header from '../../components/Header.svelte';
+ import Page from '../../components/Page.svelte';
  import Problem from '../../components/Problem.svelte';
  import ShowStore from '../../components/ShowStore.svelte';
- import Bottom from '../../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

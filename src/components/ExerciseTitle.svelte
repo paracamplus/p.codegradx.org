@@ -31,33 +31,27 @@
 
 <script>
  import * as sapper from '@sapper/app';
- import { onMount, createEventDispatcher } from 'svelte';
+ import { createEventDispatcher } from 'svelte';
  const dispatch = createEventDispatcher();
- import { initializePerson } from '../client/lib.mjs';
  import { person, current_exercise } from '../stores.mjs';
 
  export let exercise = undefined;
 
- onMount(async () => {
-   $person = await initializePerson();
- });
-
  async function showStem (event) {
+   if ( ! $person ) {
+     const error = `Pour en savoir plus sur cet exercice, 
+il faut d'abord vous identifier!`; //'
+     dispatch('authenticate', error);
+     return;
+   }
+   
    let div = event.target;
    while ( div.nodeName !== 'DIV' ) {
      div = div.parentNode;
    }
    //console.log(div);//DEBUG
-   
-   if ( ! $person ) {
-     const error = `Pour en savoir plus sur cet exercice, 
-il faut d'abord vous identifier!`;
-     dispatch('authenticate', error);
-     return;
-   }
-   
    $current_exercise = new CodeGradX.Exercise(div.dataset);
-   console.log($current_exercise); // DEBUG
+   //console.log($current_exercise); // DEBUG
    sapper.goto(`/exercise/${$current_exercise.safecookie}`);
  }
 </script>

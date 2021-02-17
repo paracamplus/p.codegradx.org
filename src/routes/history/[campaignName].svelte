@@ -7,7 +7,7 @@
   <section class='w3-container w3-center w3-modal'
            style='display:block' >
     <div class='w3-modal-content w3-animate-top w3-border'>
-      <JobReport bind:job={currentJob} />
+      <JobReport bind:job={currentJob} attempts={2} />
     </div>
   </section>
   {/if}

@@ -15,17 +15,8 @@
  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Modification Profil</title>
-</svelte:head>
-
-<Header />
-
-<section class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
-    <header class='w3-center w3-large bold'>
-      Modifier mes informations
-    </header>
+<Page shortTitle="Modification profil"
+      title="Modifier mes informations" >
 
     {#if $person}
     <p class='smallHint'>
@@ -117,16 +108,12 @@
     {#if error}<Problem bind:error={error} />{/if}
     {/if}
 
-  </div>
-</section>
-
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
+ import Page from '../components/Page.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
- import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

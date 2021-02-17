@@ -1,17 +1,22 @@
 <style>
- header.bold {
-   font-weight: bolder;
- }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Exercice</title>
-</svelte:head>
+<Page shortTitle="Exercice"
+      title=""
+      showheader={false} >
 
-<Header />
-
-<div class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
+  <Problem bind:error={error} />
+   
+  {#if showAuthentication && ! $person}
+  <div class='w3-container'>
+    <div class='w3-center w3-animate-zoom'>
+      <a class='w3-btn w3-center w3-round-xlarge w3-theme-d4'
+         href='/connect'>
+        Je m'identifie...
+      </a>
+    </div>
+  </div>
+  {/if}
 
   {#if showExercise}
    <header class='w3-center w3-large bold'>
@@ -36,16 +41,16 @@
    {#if job}<JobReport bind:job={job} />{/if}
 
   {:else}
-   <p> Chargement de l'exercice ... </p>
-   <WaitingImage />
+    {#if ! showAuthentication}
+      <p> Chargement de l'exercice ... </p>
+      <WaitingImage />
+    {/if}
   {/if}
- </div>
-</div>
 
-<Bottom />
+</Page>
 
 <script>
- import Header from '../../components/Header.svelte';
+ import Page from '../../components/Page.svelte';
  import InformationSign from '../../components/InformationSign.svelte';
  import Problem from '../../components/Problem.svelte';
  import ExerciseInfo from '../../components/ExerciseInfo.svelte';
@@ -54,7 +59,6 @@
  import Equipment from '../../components/Equipment.svelte';
  import Answer from '../../components/Answer.svelte';
  import JobReport from '../../components/JobReport.svelte';
- import Bottom from '../../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
@@ -68,9 +72,17 @@
  let showinfo = false;
  let job = undefined;
  let showExercise = false;
+ let showAuthentication = false;
  
  onMount(async () => {
+   showAuthentication = showExercise = showinfo = false;
+   error = job = undefined;
    $person = await initializePerson();
+   if ( ! $person ) {
+     error = "Pour pratiquer cet exercice, vous devez d'abord vous identifier!";
+     showAuthentication = true;
+     return;
+   }
    try {
      if ( ! $current_exercise ) {
        let uri = window.document.location.pathname;

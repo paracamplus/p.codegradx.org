@@ -1,7 +1,4 @@
 <style>
- header.bold {
-   font-weight: bold;
- }
  input.error {
    background-color: pink;
  }
@@ -10,41 +7,37 @@
  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Identification</title>
-</svelte:head>
+<Page shortTitle="Identification"
+      title="Qui êtes vous ?"
+      showheader={false} >
 
-<Header />
+  <header class='w3-center w3-large bold'>
+    Qui êtes vous ?
+    <span class='w3-right w3-margin-left w3-xlarge'
+          on:click={showHelp}><InformationSign /></span>
+  </header>
 
-<section class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
-    <header class='w3-center w3-large bold'>
-      Qui êtes vous ?
-      <span class='w3-right w3-margin-left w3-xlarge'
-            on:click={showHelp}><InformationSign /></span>
-    </header>
-
-    {#if helpshown}<ConnectDoc bind:helpshown={helpshown} />{/if}
+  {#if helpshown}<ConnectDoc bind:helpshown={helpshown} />{/if}
     
-    <p class='smallHint'>
-      Renseignez votre nom de connexion et votre mot de passe:
-    </p>
-    <div class="w3-margin-top">
+  <p class='smallHint'>
+    Renseignez votre nom de connexion et votre mot de passe:
+  </p>
+
+  <div class="w3-margin-top">
       <label for="login">Votre courriel:</label>
       <input type="text" bind:value={login} name='login'
              class:error={errorLogin} class="w3-input indent"
              on:keyup={hideproblem}
              on:click={hideproblem}
              placeholder="{defaultlogin}" />
-    </div>
-    <div class="w3-margin-top" >
+  </div>
+  <div class="w3-margin-top" >
       <label for="password">Votre mot de passe:</label>
       <input type="password" bind:value={password} name='password'
-             class:error={errorPassword} class="w3-input"
+             class:error={errorPassword} class="w3-input indent"
              on:keyup={hideproblem}
              on:click={hideproblem}
              placeholder="{defaultpassword}" />
-    </div>
   </div>
 
   {#if error}<Problem bind:error={error} />{/if}
@@ -63,16 +56,14 @@
       </button>
     {/if}
   </div>
-</section>
 
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
+ import Page from '../components/Page.svelte';
  import InformationSign from '../components/InformationSign.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
- import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

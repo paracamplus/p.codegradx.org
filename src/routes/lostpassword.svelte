@@ -1,7 +1,4 @@
 <style>
- header.bold {
-   font-weight: bold;
- }
  input.error {
    background-color: pink;
  }
@@ -10,26 +7,16 @@
  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Mot de passe perdu</title>
-</svelte:head>
-
-<Header />
-
-<section class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
-    <header class='w3-center w3-large bold'>
-      Mot de passe perdu
-    </header>
+<Page shortTitle="Mot de passe perdu"
+      title="Mot de passe perdu" >
     
-    <div class="w3-margin-top">
-      <label for="login">Votre courriel:</label>
-      <input type="text" bind:value={login} name='login'
-             class:error={errorLogin} class="w3-input indent"
-             on:keyup={hideproblem}
-             on:click={hideproblem}
-             placeholder="{defaultlogin}" />
-    </div>
+  <div class="w3-margin-top">
+    <label for="login">Votre courriel:</label>
+    <input type="text" bind:value={login} name='login'
+           class:error={errorLogin} class="w3-input indent"
+           on:keyup={hideproblem}
+           on:click={hideproblem}
+           placeholder="{defaultlogin}" />
   </div>
 
   {#if error}<Problem bind:error={error} />{/if}
@@ -42,16 +29,13 @@
     </button>
   </div>
 
-</section>
-
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
+ import Page from '../components/Page.svelte';
  import InformationSign from '../components/InformationSign.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
- import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

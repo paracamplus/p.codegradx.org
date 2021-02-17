@@ -1,39 +1,64 @@
 <style>
- header {
+ header.firstLine {
    max-height: 2rem;
    max-width: 100vw;
  }
+ header.firstLine div.w3-dropdown-content {
+   font-weight: initial;
+   font-size: 1rem;
+}
 </style>
 
-<header class='w3-container w3-theme-d2'>
-  <div class='w3-dropdown-hover w3-theme-d2'>
-    <span class=''>CodeGradX</span>
-    {#if isUser($person) }
-    <span class='w3-margin-left'>{$person.pseudo}</span>
-    {/if}
-    <div class='w3-dropdown-content w3-bar-block w3-card-4'>
-      <div class='w3-bar-item w3-button'
-           on:click={universes} >voir les univers</div>
-      {#if isUser($person) }
-      {#if $campaign}
-      <div class='w3-bar-item w3-button'
-           on:click={universe} >l'univers {$campaign.name}</div>
-      <div class='w3-bar-item w3-button'
-           on:click={history} >mon historique</div>
-      {/if}
-      <div class='w3-bar-item w3-button'
-           on:click={whoami} >qui suis-je ?</div>
-      <div class='w3-bar-item w3-button'
-           on:click={logout} >me déconnecter</div>
-      {:else}
-      <div class='w3-bar-item w3-button'
-           on:click={login} >m'identifier</div>
-      {/if}
+<header class='w3-container w3-theme-d2 firstLine'>
+  <div class='w3-cell-row'>
+    <div class='w3-container w3-cell w3-third'>
+      <div class='w3-dropdown-hover w3-theme-d2'>
+        <MenuSign />
+        <div class='w3-dropdown-content w3-bar-block w3-card-4'>
+          <a class='w3-bar-item w3-btn'
+             href='/apropos'>à propos</a>
+          <a class='w3-bar-item w3-btn'
+             href='/universes'>
+            {#if $campaign}autres{:else}voir les {/if} univers</a>
+      
+          {#if $campaign}
+          <a class='w3-bar-item w3-btn'
+             href='/universe/{$campaign.name}'>l'univers {$campaign.name}</a>
+          {/if}
+      
+          {#if isUser($person)}
+            {#if $campaign}
+              <a class='w3-bar-item w3-btn'
+                 href='/history/{$campaign.name}' >mon historique</a>
+            {/if}
+            <a class='w3-bar-item w3-btn'
+               href='/whoami' >qui suis-je ?</a>
+            <div class='w3-bar-item w3-btn'
+                 on:click={logout} >me déconnecter</div>
+          {:else}
+            <a class='w3-bar-item w3-btn'
+               href='/connect' >m'identifier</a>
+          {/if}
+        </div>
+      </div>
+    </div>
+
+    <!-- if a logo here, then adjust max-height ! -->
+    <div class='w3-container w3-cell w3-third'>CodeGradX</div>
+
+    <div class='w3-container w3-cell w3-third w3-hide-small'>
+      <div class='w3-right'>
+        {#if isUser($person) }
+        <span class='w3-margin-left'>{$person.pseudo}</span>
+        {:else}???{/if}
+      </div>
     </div>
   </div>
 </header>
 
 <script>
+ import MenuSign from './MenuSign.svelte';
+ 
  import * as sapper from '@sapper/app';
  import { person, campaign } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
@@ -46,26 +71,6 @@
      await CodeGradX.getCurrentState().userDisconnect();
    }
    sapper.goto('/universes');
- }
-
- async function login (event) {
-   sapper.goto('/connect');
- }
-
- async function universes (event) {
-   sapper.goto('/universes');
- }
-
- async function universe (event) {
-   sapper.goto(`/universe/${$campaign.name}`);
- }
-
- async function whoami (event) {
-   sapper.goto('/whoami');
- }
-
- async function history (event) {
-   sapper.goto(`/history/${$campaign.name}`);
  }
  
 </script>

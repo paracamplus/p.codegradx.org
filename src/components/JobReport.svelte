@@ -39,7 +39,7 @@
 
 {#if job}
 <div class='w3-container'>
-  <h3 class='w3-center'>Rapport de notation
+  <h3>Rapport de notation
     {#if showReport}
     <span class='w3-right mark'>
       {massageMark(job.mark)}/{massageMark(job.totalMark)}</span>
@@ -79,6 +79,7 @@
  import { sleep } from '../common/utils.mjs';
 
  export let job;
+ export let attempts = undefined;
  let error = undefined;
  let showReport = false;
  let showinfo = false;
@@ -93,11 +94,19 @@
  onMount(async () => {
    //console.log({job});
    try {
-     await job.getReport();
+     const parameters = {};
+     if ( attempts ) {
+       parameters.attempts = +(attempts);
+     }
+     await job.getReport(parameters);
      showReport = true;
    } catch (exc) {
      console.log("jobReport", exc);
-     error = exc.toString();
+     if ( exc.message.match(/waitedTooMuch/i) ) {
+       error = 'Désolé mais je ne trouve pas ce rapport de notation!';
+     } else {
+       error = exc.toString();
+     }
    }
  });
 

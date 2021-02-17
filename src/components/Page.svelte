@@ -1,7 +1,4 @@
 <style>
- header {
-   font-weight: bolder;
- }
 </style>
 
 <svelte:head>
@@ -10,10 +7,12 @@
 
 <Header />
 
-<section class='w3-container w3-margin-top w3-padding'>
-  <header class='w3-center w3-large w3-margin-bottom'>
+<section id='mainSection' class='w3-container w3-margin-top w3-padding'>
+  {#if showheader}
+  <header class='w3-center w3-margin-bottom'>
     {title}
   </header>
+  {/if}
 
   <slot>
     <p> Page en construction... </p>
@@ -28,15 +27,9 @@
 
  import { onMount } from 'svelte';
  import { person, campaign } from '../stores.mjs';
- import { initializePerson } from '../client/lib.mjs';
 
  export let title;
  export let shortTitle;
+ export let showheader = true;
  
- onMount(async () => {
-   if ( ! $person ) {
-     $person = await initializePerson();
-   }
- });
-
 </script>

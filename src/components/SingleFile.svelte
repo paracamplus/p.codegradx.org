@@ -32,7 +32,7 @@
           accept-charset='UTF-8' enctype='multipart/form-data'>
       <input type='file' name='content' class='file' id='answerFile'
              on:change={displayChosenFileName} />
-      <label class='w3-button w3-round-xxlarge w3-theme-d1'
+      <label class='w3-btn w3-round-xxlarge w3-theme-d1'
              on:click={initializeChooseFileButton}
              for='answerFile' >
         Choisir fichier
@@ -40,7 +40,7 @@
 
       <div class:shown={chosenfile} class:hidden={! chosenfile} >
         <span>{chosenfile}</span>
-        <button class='w3-button w3-round-xxlarge w3-theme-d1'
+        <button class='w3-btn w3-round-xxlarge w3-theme-d1'
                 bind:this={sendFileButton} disabled
                 on:click={sendFile} >Noter mon fichier</button>
       </div>

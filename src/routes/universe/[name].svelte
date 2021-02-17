@@ -1,19 +1,11 @@
 <style>
- .bold {
-   font-weight: bolder;
-   font-size: 120%;
-  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/{campaignName}</title>
-</svelte:head>
+<Page shortTitle={campaignName}
+      title=""
+      showheader={false} >
 
-<Header />
-
-<section class='w3-container'>
- <div class='w3-margin-top w3-padding'>
-   <header class='w3-center'>
+   <header class='w3-center w3-margin-bottom'>
      {#if ! $campaign}
      <span>Les exercices de {campaignName}</span>
      {:else}
@@ -42,18 +34,17 @@
 
   {#if $campaign}
   <ExercisesList on:authenticate={authenticate} />
+  {:else}
+  <WaitingImage />
   {/if}
 
- </div>
-</section>
-
-<Bottom />
+</Page>
 
 <script>
- import Header from '../../components/Header.svelte';
+ import Page from '../../components/Page.svelte';
  import Problem from '../../components/Problem.svelte';
+ import WaitingImage from '../../components/WaitingImage.svelte';
  import ExercisesList from '../../components/ExercisesList.svelte';
- import Bottom from '../../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
@@ -64,7 +55,7 @@
  import { initializePerson } from '../../client/lib.mjs';
 
  let error = undefined;
- let campaignName = undefined;
+ let campaignName = '...';
  let showAuthentication = false;
  
  onMount(async () => {

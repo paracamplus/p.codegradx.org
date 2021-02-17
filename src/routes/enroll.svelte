@@ -1,7 +1,4 @@
 <style>
- header.bold {
-   font-weight: bold;
- }
  input.error {
    background-color: pink;
  }
@@ -10,15 +7,12 @@
  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Inscription</title>
-</svelte:head>
+<Page shortTitle='Inscription'
+      title="Inscription à CodeGradX"
+      showheader={false}>
 
-<Header />
-
-<section class='w3-container'>
-  <div class='w3-margin-top w3-padding'>
-    <header class='w3-center w3-large bold'>
+  <section class='w3-container w3-margin-top w3-padding'>
+    <header class='w3-center w3-margin-bottom'>
       Inscription à CodeGradX
       <span class='w3-right w3-margin-left w3-xlarge'
             on:click={showHelp}><InformationSign /></span>
@@ -40,7 +34,6 @@
              on:click={hideproblem}
              placeholder="{defaultlogin}" />
     </div>
-  </div>
 
   {#if goodcaptcha}
   <MoveCaptcha on:ready={setCaptcha}
@@ -69,16 +62,15 @@
 
 </section>
 
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
+ import Page from '../components/Page.svelte';
  import Problem from '../components/Problem.svelte';
  import InformationSign from '../components/InformationSign.svelte';
  import MoveCaptcha from '../components/MoveCaptcha.svelte';
  import RefreshSign from '../components/RefreshSign.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
- import Bottom from '../components/Bottom.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

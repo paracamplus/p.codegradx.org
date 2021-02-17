@@ -13,12 +13,16 @@
         <div></div>
       {/if}
     {/each}
+  {:else}
+     <div>Chargement de la liste d'exercices</div>
+     <WaitingImage />
   {/if}
 </section>
 
 <script>
  import ExercisesSet from './ExercisesSet.svelte';
  import ExerciseTitle from './ExerciseTitle.svelte';
+ import WaitingImage from './WaitingImage.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

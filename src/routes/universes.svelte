@@ -20,29 +20,25 @@
  }
 </style>
 
-<svelte:head>
-  <title>CodeGradX/Univers</title>
-</svelte:head>
-
-<Header />
+<Page shortTitle="Univers"
+      title="Univers de programmation" >
 
 <Warning />
 
 <section class='w3-container'>
  <div class='w3-margin-top w3-padding'>
-  <header>
-    {#if $person}
-      <p>Bonjour <span class='personName'>{$person.pseudo}</span>,
-        sélectionnez l'univers d'exercices que vous souhaitez explorer.
-      </p>
-    {:else}
-      <p> Sélectionnez, après vous être identifié,
-        l'univers d'exercices que vous souhaitez explorer. <br />
-    {/if}
-    <p class='smallHint'>
-      Le titre indique s'il est en anglais ou en français.
+   {#if $person}
+    <p>Bonjour <span class='personName'>{$person.pseudo}</span>,
+      sélectionnez l'univers d'exercices que vous souhaitez explorer.
     </p>
-  </header>
+   {:else}
+    <p> Sélectionnez, après vous être identifié,
+        l'univers d'exercices que vous souhaitez explorer. <br />
+   {/if}
+
+   <p class='smallHint'>
+     Le titre indique s'il est en anglais ou en français.
+   </p>
 
   {#if ! $person}
   <div class='w3-container'>
@@ -142,23 +138,25 @@
   </div>
 </section>
 
-<Bottom />
+</Page>
 
 <script>
- import Header from '../components/Header.svelte';
- import Bottom from '../components/Bottom.svelte';
+ import Page from '../components/Page.svelte';
  import Warning from '../components/Warning.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { fade } from 'svelte/transition';
- import { person } from '../stores.mjs';
+ import { person, campaign } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { initializePerson } from '../client/lib.mjs';
 
  let showmoocjs = false;
  let showmoocprogrec = false;
  
- onMount(initializePerson);
+ onMount(async () => {
+   $person = await initializePerson();
+   $campaign = undefined;
+ });
 
 </script>

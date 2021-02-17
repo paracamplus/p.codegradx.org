@@ -17,7 +17,7 @@
           {#if tgzurl}<a class='w3-btn w3-round-xlarge w3-theme-l4'
                          download
                          title='Télécharger votre réponse'
-                         href={tgzurl}>&#x2B73;</a>{/if}
+                         href={tgzurl}><DownloadSign /></a>{/if}
         </li>
       </ul>
       <p class='smallHint'>
@@ -29,6 +29,8 @@
 </section>
     
 <script>
+ import DownloadSign from './DownloadSign.svelte';
+ 
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/src/job';
  
