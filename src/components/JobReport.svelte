@@ -61,7 +61,7 @@
     {#if showReport}
       {@html job.HTMLreport}
     {:else}
-      <WaitingImage />
+      {#if ! error}<WaitingImage />{/if}
     {/if}
   </div>
   <Problem bind:error={error} />

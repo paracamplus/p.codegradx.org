@@ -52,11 +52,14 @@
  }
 
  onMount(async () => {
-   return initializePerson()
-   .then(async () => {
+   $person = await initializePerson();
+   const host = window.document.location.hostname
+          .replace(/^([^.]+)[.].*$/, '$1');
+   if ( host.match(/^(test)?p$/) ) {
      return sapper.goto('/universes');
-   });
+   } else {
+     return sapper.goto(`/universe/${host}`);
+   }
  });
-
  
 </script>

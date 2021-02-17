@@ -66,6 +66,8 @@
      $campaign = await fetchCampaign(campaignName);
      if ( ! $campaign ) {
        error = "Je ne vois pas d'univers ainsi nommé!";
+       await sleep(3);
+       sapper.goto('/universes');
      }
    } catch (exc) {
      error = exc.toString();
