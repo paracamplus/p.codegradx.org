@@ -26,7 +26,7 @@
 <!-- Warning / -->
 
 <section class='w3-container'>
- <div class='w3-margin-top w3-padding'>
+ <div class='w3-padding'>
    {#if $person}
     <p>Bonjour <span class='personName'>{$person.pseudo}</span>,
       sélectionnez l'univers d'exercices que vous souhaitez explorer.
@@ -40,7 +40,7 @@
      Le titre indique s'il est en anglais ou en français.
    </p>
 
-  {#if ! $person}
+  {#if showauthentication}
   <div class='w3-container'>
     <div class='w3-center w3-animate-zoom'>
       <a class='w3-btn w3-center w3-round-xlarge w3-theme-d4'
@@ -153,9 +153,13 @@
 
  let showmoocjs = false;
  let showmoocprogrec = false;
+ let showauthentication = false;
  
  onMount(async () => {
    $person = await initializePerson();
+   if ( ! $person ) {
+     showauthentication = true;
+   }
    $campaign = undefined;
  });
 

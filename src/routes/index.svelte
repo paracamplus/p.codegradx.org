@@ -15,7 +15,7 @@
 
 <div class='w3-container background'
      on:click={go} >
-  <center>
+  <div class='w3-center'>
     <div class='text' style='padding-top: 10vh;'>
       CodeGradX
     </div>
@@ -34,7 +34,7 @@
       Découvrez ses exercices de programmation à notation
       automatique...
     </p>
-  </center>
+  </div>
 </div>
 
 <script>
