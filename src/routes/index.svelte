@@ -43,13 +43,7 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person, config } from '../stores.mjs';
- import { CodeGradX } from 'codegradx';
- import { isUser, initializePerson, configureConfig } from '../client/lib.mjs';
- import { sleep } from '../common/utils.mjs';
-
- function go (event) {
-   sapper.goto('/universes');
- }
+ import { initializePerson, configureConfig } from '../client/lib.mjs';
 
  onMount(async () => {
    $config = configureConfig();
