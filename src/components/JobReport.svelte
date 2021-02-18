@@ -61,7 +61,10 @@
     {#if showReport}
       {@html job.HTMLreport}
     {:else}
-      {#if ! error}<WaitingImage />{/if}
+      {#if ! error}
+      <p class='waitingMessage'>Chargement du rapport de notation...</p>
+      <WaitingImage />
+      {/if}
     {/if}
   </div>
   <Problem bind:error={error} />

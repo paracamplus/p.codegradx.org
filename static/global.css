@@ -255,11 +255,12 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 .w3-hover-text-theme:hover {color:#3f51b5 !important}
 .w3-hover-border-theme:hover {border-color:#3f51b5 !important}/* global styles */
 :root {
-    --color-theme-d4: #26316d; /* w3-theme-d4 */
+    --color-theme-d4: #26316d; /* w3-theme-d4 darker blue*/
     --color-theme-d2: #334191; /* w3-theme-d2 */
     --color-theme-l4: #d8dcf1; /* w3-theme-l4 */
     --color-dark-gray: #aaa;
     --color-hover-gray: #eee;
+    --color-waiting-message: #a2f2bd;  /* light green */
 }
 .smallHint {
     color: var(--color-dark-gray);
@@ -274,4 +275,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
     padding: 0.1em 0.5em 0.1em 0.5em;
     border-radius: 0.5em;
     border: solid 1px var(--color-theme-d2);
+}
+.waitingMessage {
+    color: var(--color-waiting-message);
+    background-color: white;
 }

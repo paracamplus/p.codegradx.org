@@ -1,9 +1,8 @@
 <!-- -*- coding: utf-8 -*- -->
 
 {#if urls.length === 0 }
-  <div></div>
-  {#if progress}<div class='w3-center w3-green'>{progress}</div>{/if}
-
+  <p class='waitingMessage'>Construction d'une Captcha...</p>
+  <WaitingImage />
 {:else}
 
 <div id='movecaptcha' class='w3-container w3-center'>
@@ -12,7 +11,7 @@
     suite {#each wanted as w}{w} {/each}.
   </p>
   
-  {#if progress}<div class='w3-green'>{progress}</div>{/if}
+  {#if progress}<div class='waitingMessage'>{progress}</div>{/if}
   
   <div class='images'>
     <!-- first row- -->
@@ -47,7 +46,6 @@
 
 {#if error}<Problem bind:error={error} />{/if}
   
-
 <style>
  div.targets {
    margin-top: 4em;
@@ -83,12 +81,13 @@
    height: 3em;
  }
  :global( img.targeted ) {
-   border: solid #334191 4px;
+   border: solid var(--color-theme-d2) 4px;
  }
 </style>
 
 <script>
  import Problem from '../components/Problem.svelte';
+ import WaitingImage from '../components/WaitingImage.svelte';
  
  import { onMount, createEventDispatcher, afterUpdate } from 'svelte';
  const dispatch = createEventDispatcher();
@@ -144,7 +143,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
      }
    } catch(exc) {
      console.log('signup', 'getInfo', exc);
-     error = message.badcaptcha;
+     error = "Je n'arrive pas à construire la Captcha"
      progress = undefined;
    }
  }

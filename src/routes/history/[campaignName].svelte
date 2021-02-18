@@ -39,7 +39,7 @@
          {/each}
       {:else}
           <tr><td colspan='4'>
-            <p> Chargement de l'historique en cours...</p>
+            <p class='waitingMessage'> Chargement de l'historique en cours...</p>
             <WaitingImage />
           </td></tr>
       {/if}

@@ -10,6 +10,7 @@
     {@html ua}
   </div>
   {:else}
+    <p class='waitingMessage'>Chargement des conditions d'utilisation ...</p>
     <WaitingImage />
   {/if}
 </section>

@@ -1,10 +1,4 @@
 <style>
- .personName {
-   color: #334191;
-   padding: 0.1em 0.5em 0.1em 0.5em;
-   border-radius: 0.5em;
-   border: solid 1px #334191;
- }
  li span.va {
    vertical-align: 0px;
    width: 80vw;
@@ -22,8 +16,6 @@
 
 <Page shortTitle="Univers"
       title="Univers de programmation" >
-
-<!-- Warning / -->
 
 <section class='w3-container'>
  <div class='w3-padding'>
@@ -123,7 +115,8 @@
           <a href="/universe/python"
              class='w3-btn w3-round-xlarge w3-theme-l4' >
             Python
-          </a> exercices du cours IN101 : Algorithmique et programmation
+          </a> exercices en Python du cours IN101 :
+          Algorithmique et programmation
           de l'ENSTA ParisTech</span></li>
       
       <li lang='fr'>

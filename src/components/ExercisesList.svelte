@@ -14,7 +14,7 @@
       {/if}
     {/each}
   {:else}
-     <div>Chargement de la liste d'exercices</div>
+     <div class='waitingMessage'>Chargement de la liste d'exercices...</div>
      <WaitingImage />
   {/if}
 </section>

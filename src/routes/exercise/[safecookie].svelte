@@ -42,7 +42,7 @@
 
   {:else}
     {#if ! showAuthentication}
-      <p> Chargement de l'exercice ... </p>
+      <p class='waitingMessage'> Chargement de l'exercice ... </p>
       <WaitingImage />
     {/if}
   {/if}

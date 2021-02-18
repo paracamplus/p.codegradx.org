@@ -1,11 +1,4 @@
 <style>
- .personName {
-   color: #334191;
-   padding: 0.1em 0.5em 0.1em 0.5em;
-   margin: 0em 0.1em 0em 0.1em;
-   border-radius: 0.5em;
-   border: solid 1px #334191;
- }
  .headerButton {
    font-size: smaller;
    margin-left: 2em;

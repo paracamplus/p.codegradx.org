@@ -1,10 +1,4 @@
 <style>
- .personName {
-   color: #334191;
-   padding: 0.1em 0.5em 0.1em 0.5em;
-   border-radius: 0.5em;
-   border: solid 1px #334191;
- }
 </style>
 
 <Page shortTitle="Courriel à confirmer"

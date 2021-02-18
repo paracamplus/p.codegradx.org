@@ -7,7 +7,7 @@
    text-decoration : none;
  }
  div.hidden {
-   color: #334191;
+   color: var(--color-theme-d2);
  }
  div.hidden :hover {
    color: white !important;

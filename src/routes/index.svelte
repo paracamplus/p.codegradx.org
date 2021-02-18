@@ -1,6 +1,6 @@
 <style>
  div.background {
-   background-color: #20295b;
+   background-color: var(--color-theme-d4);
    min-height: 100vh;
  }
  p.text, div.text {
@@ -13,8 +13,7 @@
   <title>CodeGradX</title>
 </svelte:head>
 
-<div class='w3-container background'
-     on:click={go} >
+<div class='w3-container background' >
   <div class='w3-center'>
     <div class='text' style='padding-top: 10vh;'>
       CodeGradX
@@ -43,11 +42,15 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person, config } from '../stores.mjs';
- import { initializePerson, configureConfig } from '../client/lib.mjs';
+ import { isUser, initializePerson, configureConfig } from '../client/lib.mjs';
 
  onMount(async () => {
    $config = configureConfig();
    $person = await initializePerson();
+   return go();
+ });
+
+ function go (event) {
    const host = window.document.location.hostname
           .replace(/^([^.]+)[.].*$/, '$1');
    if ( host.match(/^(test)?p$/) ) {
@@ -55,6 +58,7 @@
    } else {
      return sapper.goto(`/universe/${host}`);
    }
- });
+ }
+   
  
 </script>
