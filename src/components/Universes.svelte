@@ -1,6 +1,6 @@
 <style>
  tr.obsolete {
-   background-color: #eee;
+   background-color: var(--color-hover-gray);
  }
  a.internal {
    text-decoration: none;

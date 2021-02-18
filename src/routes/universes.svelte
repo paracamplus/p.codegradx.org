@@ -23,7 +23,7 @@
 <Page shortTitle="Univers"
       title="Univers de programmation" >
 
-<Warning />
+<!-- Warning / -->
 
 <section class='w3-container'>
  <div class='w3-margin-top w3-padding'>
@@ -142,7 +142,7 @@
 
 <script>
  import Page from '../components/Page.svelte';
- import Warning from '../components/Warning.svelte';
+ //import Warning from '../components/Warning.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

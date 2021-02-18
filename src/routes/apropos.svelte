@@ -16,7 +16,7 @@
   </p>
 
   <p class='w3-center'>
-    <a class="w3-btn w3-theme-d1 w3-round-xxlarge headerButton"
+    <a class="w3-btn w3-theme-d2 w3-round-xxlarge headerButton"
        href='https://codegradx.org/'>Pour en savoir plus</a>
   </p>
 

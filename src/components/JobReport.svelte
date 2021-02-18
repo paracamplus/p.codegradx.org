@@ -1,17 +1,17 @@
 <style>
  span.mark {
    padding: 0.25em;
-   border: solid 1px #26316d; /* w3-theme-d4 */
+   border: solid 1px var(--color-theme-d4);
    margin-left: 2em;
  }
  :global(pre) {
-   background-color: #eee;
+   background-color: var(--color-hover-gray);
    padding-left: 0.5em;
    padding-right: 0.5em;
  }
  :global(pre .fw4ex_lineNumber) {
    font-size: 50%;
-   color: #26316d; /* w3-theme-d4 */
+   color: var(--color-theme-d4);
  }
  :global(.fw4ex_error) {
    color: red;
@@ -32,7 +32,7 @@
  }
  :global(.fw4ex_mark) {
    color: white;
-   background-color: #26316d; /* w3-theme-d4 */
+   background-color: var(--color-theme-d4);
    padding: 0.3em;
  }
 </style>
@@ -40,16 +40,16 @@
 {#if job}
 <div class='w3-container'>
   <h3>Rapport de notation
+    <span class='w3-right w3-margin-left'
+          on:click={() => job = undefined}>&#x2716;</span>
     {#if showReport}
-    <span class='w3-right mark'>
-      {massageMark(job.mark)}/{massageMark(job.totalMark)}</span>
     <span class='w3-right w3-margin-left'
           title="Information administrative"
           on:click={() => showinfo = true}>
           <InformationSign /></span>
+    <span class='w3-right mark'>
+      {massageMark(job.mark)}/{massageMark(job.totalMark)}</span>
     {/if}
-    <span class='w3-right w3-margin-left'
-          on:click={() => job = undefined}>&#x2716;</span>
   </h3>
 
   {#if showinfo}

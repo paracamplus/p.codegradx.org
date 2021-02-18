@@ -6,7 +6,7 @@
    font-weight: bolder;
  }
  div.line:hover {
-   background-color: #eee;
+   background-color: var(--color-hover-gray);
    cursor: pointer;
  }
  span.summary {

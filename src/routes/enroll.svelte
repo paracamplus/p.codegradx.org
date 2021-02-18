@@ -42,14 +42,14 @@
                on:complete={setCaptchaComplete} />
 
   <div class="w3-center w3-margin-top">
-    <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
             name="enroll" disabled
             bind:this={enrollButton}
             on:click={enroll}>
       Je m'inscris!
     </button>
     {#if showRefresh}
-    <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
             title="Rafraîchir la captcha..."
             on:click={captchaRefresh} >
       <RefreshSign color='white' size='2em' />
@@ -76,7 +76,7 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { getConfig, initializePerson } from '../client/lib.mjs';
+ import { initializePerson } from '../client/lib.mjs';
 
  let login = undefined;
  let defaultlogin = 'mon.email@a.moi';

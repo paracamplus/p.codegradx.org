@@ -22,7 +22,7 @@
   {#if error}<Problem bind:error={error} />{/if}
 
   <div class="w3-center w3-margin-top">
-    <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
             name="lostpassword"
             on:click={lostpassword}>
       J'ai perdu mon mot de passe!
@@ -41,7 +41,7 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { getConfig, initializePerson } from '../client/lib.mjs';
+ import { initializePerson } from '../client/lib.mjs';
  import { sleep } from '../common/utils.mjs';
 
  let login = undefined;

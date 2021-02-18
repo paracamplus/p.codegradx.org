@@ -58,7 +58,7 @@
  }
  div.targets div.target {
    width: 3em;
-   background-color: #eee;
+   background-color: var(--color-hover-gray);
  }
  div.targets div.target img {
    width: 3em;

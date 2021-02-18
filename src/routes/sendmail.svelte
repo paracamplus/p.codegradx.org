@@ -12,7 +12,7 @@
     votre inscription à CodeGradX. 
   </p>
   <div class='w3-center'>
-    <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
             on:click={lostpassword} >
       M'envoyer un courriel
     </button>
@@ -24,7 +24,7 @@
     bouton ci-dessous après avoir confirmé votre adresse électronique.
   </p>
   <div class='w3-center'>
-    <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
             on:click={resume} >
       Je continue
     </button>
@@ -45,7 +45,7 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { getConfig, initializePerson } from '../client/lib.mjs';
+ import { initializePerson } from '../client/lib.mjs';
  import { sleep } from '../common/utils.mjs';
 
  let href = '/connect';

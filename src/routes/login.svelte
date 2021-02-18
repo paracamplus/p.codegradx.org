@@ -44,12 +44,12 @@
 
   <div class="w3-center w3-margin-top">
     <button type="submit" name="signin" 
-            class="w3-btn w3-theme-d1 w3-round-xxlarge"
+            class="w3-btn w3-theme-d2 w3-round-xxlarge"
             on:click={authenticate}>
       Je m'identifie!
     </button>
     {#if showlostpassword}
-      <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+      <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
               name="lostpassword"
               on:click={lostpassword}>
         J'ai perdu mon mot de passe!
@@ -69,7 +69,7 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { getConfig, initializePerson } from '../client/lib.mjs';
+ import { initializePerson } from '../client/lib.mjs';
 
  let login = undefined;
  let password = undefined;

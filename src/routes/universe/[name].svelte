@@ -35,7 +35,7 @@
   {#if $campaign}
   <ExercisesList on:authenticate={authenticate} />
   {:else}
-  <WaitingImage />
+    {#if ! error}<WaitingImage />{/if}
   {/if}
 
 </Page>

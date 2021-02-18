@@ -42,7 +42,7 @@
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { sleep } from '../common/utils.mjs';
- import { getConfig, isUser, initializePerson } from '../client/lib.mjs';
+ import { isUser, initializePerson } from '../client/lib.mjs';
 
  let path = undefined;
 

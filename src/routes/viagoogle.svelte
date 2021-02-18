@@ -20,7 +20,7 @@
     
     <div class="w3-center w3-margin-top">
       <a href={oauth2url} name="viaGoogle"
-         class="w3-btn w3-theme-d1 w3-round-xxlarge"
+         class="w3-btn w3-theme-d2 w3-round-xxlarge"
          >via Google</a>
     </div>
   </div>
@@ -36,7 +36,7 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { getConfig, initializePerson } from '../client/lib.mjs';
+ import { initializePerson } from '../client/lib.mjs';
 
  let oauth2url = '/to/be/filled';
 

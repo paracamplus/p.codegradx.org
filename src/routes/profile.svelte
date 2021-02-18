@@ -1,7 +1,4 @@
 <style>
- header.bold {
-   font-weight: bold;
- }
  input.indent {
    margin-left: 2em;
  }
@@ -95,7 +92,7 @@
       {#if error}<Problem bind:error={error} />{/if}
       
       <div class='w3-center w3-margin-top'>
-        <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+        <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
                 bind:this={saveButton}
                 disabled
                 title="Sauvegarder mes modifications"

@@ -18,7 +18,7 @@
 
   <header class='w3-center w3-large w3-margin-bottom'>
     Mes informations
-    <a class="w3-btn w3-theme-d1 w3-round-xxlarge headerButton"
+    <a class="w3-btn w3-theme-d2 w3-round-xxlarge headerButton"
        title="Modifier mes informations personnelles"
        href='/profile' >Modifier mes informations</a>
   </header>

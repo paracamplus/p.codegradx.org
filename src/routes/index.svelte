@@ -42,9 +42,9 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, config } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { isUser, initializePerson } from '../client/lib.mjs';
+ import { isUser, initializePerson, configureConfig } from '../client/lib.mjs';
  import { sleep } from '../common/utils.mjs';
 
  function go (event) {
@@ -52,6 +52,7 @@
  }
 
  onMount(async () => {
+   $config = configureConfig();
    $person = await initializePerson();
    const host = window.document.location.hostname
           .replace(/^([^.]+)[.].*$/, '$1');

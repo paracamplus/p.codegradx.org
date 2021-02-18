@@ -22,7 +22,7 @@
 
 {#if withButton}
 <div class='w3-container w3-center w3-margin-bottom'>
-  <button class="w3-btn w3-theme-d1 w3-round-xxlarge"
+  <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
           on:click={sign}>
     J'accepte ces conditions!
   </button>

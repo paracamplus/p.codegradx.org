@@ -5,30 +5,39 @@
 */
 
 import { get } from 'svelte/store';
-import { person } from '../stores.mjs';
+import { person, config } from '../stores.mjs';
 import * as sapper from '@sapper/app';
 import { CodeGradX } from 'codegradx';
 
-/*
-function apisapper (href, opts) {
-    if ( ! href.match(/^\/api\/p/\/) ) {
-        href = `/api/p/${href}`.replace(/\/\/+/g, '/');
-    }
-    return sapper.goto(href, opts);
+export function setConfig ($config) {
+    config.set($config);
+    return $config;
 }
-export { apisapper as sapper };
-*/
 
-let dev = false;
-
-const config = {
-    x: {
-        url: 'https://x.codegradx.org'
+export async function configureConfig () {
+    const hostname = window.document.location.hostname;
+    let $config = get(config);
+    if ( $config.from === hostname ) {
+        console.log(`already fetched config from ${hostname}`);//DEBUG
+        return $config;
     }
-};
-
-export function getConfig () {
-    return config;
+    try {
+        $config = { hostname };
+        const response = await fetch(`/${hostname}.json`);
+        if ( response.ok ) {
+            $config = await response.json();
+            console.log(`fetched config from ${hostname}`);//DEBUG
+            // Note to avoid repeating the previous fetch
+            $config.from = hostname;
+        }
+    } catch (exc) {
+        // ignore
+        console.log(`fetch  config problem from ${hostname}`, exc);//DEBUG
+    } finally {
+        config.set($config);
+        console.log($config);//DEBUG
+    }
+    return $config;
 }
 
 /**
@@ -69,6 +78,7 @@ export async function initializePerson () {
         person.set($person);
     }
     if ( $person ) {
+        // Redirect towards email confirmation or UA signature if needed:
         const href = await determineNextUserState($person);
         const where = document.location.pathname.replace(/^.*(\/\w+)/, '$1');
         if ( href && href !== where ) {
