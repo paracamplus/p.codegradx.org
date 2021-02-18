@@ -63,7 +63,7 @@
                   frameborder='0'
                   allowfullscreen ></iframe>
           {:else}
-          <img src='/moocprogrec.png' 
+          <img src='/moocprogrec.webp' 
                alt='Video du MOOC Programmation récursive' />
           {/if}
           </span>
@@ -95,7 +95,7 @@
                   frameborder='0'
                   allowfullscreen ></iframe>
           {:else}
-          <img src='/moocjs.png' 
+          <img src='/moocjs.webp' 
                alt='Video of the MOOC Diffuse JavaScript' />
           {/if}
           </span>

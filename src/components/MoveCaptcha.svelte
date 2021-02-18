@@ -16,28 +16,28 @@
   <div class='images'>
     <!-- first row- -->
     <div></div>
-    <div class='image'><img alt='11' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='12' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='13' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='14' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='15' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='11' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='12' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='13' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='14' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='15' src='/_digits/bad.webp' /></div>
     <div></div>
     
     <div></div>
-    <div class='image'><img alt='21' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='22' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='23' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='24' src='/_digits/bad.png' /></div>
-    <div class='image'><img alt='25' src='/_digits/bad.png' /></div>
+    <div class='image'><img alt='21' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='22' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='23' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='24' src='/_digits/bad.webp' /></div>
+    <div class='image'><img alt='25' src='/_digits/bad.webp' /></div>
     <div></div>
   </div>
 
   <div class='targets'>
     <div></div>
-    <div class='target'><img alt='a1' src='/_digits/white.png'/></div>
-    <div class='target'><img alt='a2' src='/_digits/white.png'/></div>
-    <div class='target'><img alt='a3' src='/_digits/white.png'/></div>
-    <div class='target'><img alt='a4' src='/_digits/white.png'/></div>
+    <div class='target'><img alt='a1' src='/_digits/white.webp'/></div>
+    <div class='target'><img alt='a2' src='/_digits/white.webp'/></div>
+    <div class='target'><img alt='a3' src='/_digits/white.webp'/></div>
+    <div class='target'><img alt='a4' src='/_digits/white.webp'/></div>
     <div></div>
   </div>
 </div>
@@ -108,8 +108,8 @@ vous pouviez résoudre la captcha sont écoulées.`,
  let urls = [];
  let expires = undefined;
 
- const whiteImage = '/_digits/white.png';
- const badImage = '/_digits/bad.png';
+ const whiteImage = '/_digits/white.webp';
+ const badImage = '/_digits/bad.webp';
  let targetsArray = [];
  let error = undefined;
  let progress = undefined;

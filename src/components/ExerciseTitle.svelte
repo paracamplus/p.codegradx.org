@@ -1,16 +1,18 @@
 <style>
  span.rest {
-   color: red;
+   font-style: italic;
+   margin-right: 1em;
  }
  span.title {
    font-weight: bolder;
+   margin-right: 1em;
  }
  div.line:hover {
    background-color: var(--color-hover-gray);
    cursor: pointer;
  }
  span.summary {
-   font-style: italics;
+   font-style: initial;
  }
 </style>
 

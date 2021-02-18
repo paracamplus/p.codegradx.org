@@ -74,7 +74,7 @@ export async function get(req, res, next) {
 
         let pngfile = undefined;
         for ( const pngDir of pngDirs ) {
-            const badfile = `${pngDir}/bad.png`;
+            const badfile = `${pngDir}/bad.webp`;
             if ( fs.existsSync(badfile) ) {
                 pngfile = badfile;
                 break;
@@ -88,7 +88,7 @@ export async function get(req, res, next) {
                 // There was an MV cookie (therefore not expired!):
                 for ( let i=0 ; i<images.length ; i++ ) {
                     if ( images[i] === slug ) {
-                        const file = `${pngDir}/${i}.png`;
+                        const file = `${pngDir}/${i}.webp`;
                         if ( fs.existsSync(file) ) {
                             pngfile = file;
                             break;

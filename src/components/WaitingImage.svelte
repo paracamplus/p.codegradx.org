@@ -2,7 +2,7 @@
 
 <div class='w3-center'>
   <!-- ParacamplusLogo /-->
-  <img src='/fw4ex-512x512.png' width='100px' alt='logo' />
+  <img src='/fw4ex-512x512.webp' width='100px' alt='logo' />
 </div>
 
 <style>
