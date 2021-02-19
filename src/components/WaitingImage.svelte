@@ -2,7 +2,7 @@
 
 <div class='w3-center'>
   <!-- ParacamplusLogo /-->
-  <img src='/fw4ex-512x512.webp' width='100px' alt='logo' />
+  <Picture image='/fw4ex-512x512' alt='logo' />
 </div>
 
 <style>
@@ -10,10 +10,7 @@
    animation: rotation 9s infinite linear;
    margin: auto;
    z-index: 99;
- }
- img {
-   margin: 0;
-   padding: 0;
+   height: 100px;
  }
  @keyframes rotation {
    from {
@@ -26,5 +23,6 @@
 </style>
 
 <script>
+  import Picture from './Picture.svelte';
  //import ParacamplusLogo from './ParacamplusLogo.svelte';
 </script>

@@ -34,22 +34,20 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
- import { CodeGradX } from 'codegradx';
+ import { person, config } from '../stores.mjs';
  import { initializePerson } from '../client/lib.mjs';
 
  let oauth2url = '/to/be/filled';
 
- onMount(async () => {
-   return initializePerson()
-     .then(async () => {
-     // compute the url "via Google":
-     oauth2url = getConfig().x.url;
-     oauth2url += `/googleopenid`;
-     oauth2url += `?homeUrl=${origin}`;
-     oauth2url += `&nofinalredir=1`;
-     oauth2url += `&origin=${origin}`;
-   });
+ onMount(() => {
+   //await initializePerson();
+   // compute the url "via Google":
+   oauth2url = 'https://x.codegradx.org';
+   oauth2url += `/googleopenid`;
+   oauth2url += `?homeUrl=${origin}`;
+   oauth2url += `&nofinalredir=1`;
+   oauth2url += `&origin=${origin}`;
  });
+ // NOTA use x.codegradx.org or use CodeGradX.sendXserver ?
 
 </script>

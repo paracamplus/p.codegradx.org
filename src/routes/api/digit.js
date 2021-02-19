@@ -67,14 +67,14 @@ export async function get(req, res, next) {
         if ( MVcontent ) {
             const fields = decrypt(MVcontent).split(',');
             images = fields.slice(2);
-2        } else {
+        } else {
             throw "Missing MV cookie";
         }
         //console.log({images, slug});//DEBUG
 
         let pngfile = undefined;
         for ( const pngDir of pngDirs ) {
-            const badfile = `${pngDir}/bad.webp`;
+            const badfile = `${pngDir}/bad.png`;
             if ( fs.existsSync(badfile) ) {
                 pngfile = badfile;
                 break;
@@ -88,7 +88,7 @@ export async function get(req, res, next) {
                 // There was an MV cookie (therefore not expired!):
                 for ( let i=0 ; i<images.length ; i++ ) {
                     if ( images[i] === slug ) {
-                        const file = `${pngDir}/${i}.webp`;
+                        const file = `${pngDir}/${i}.png`;
                         if ( fs.existsSync(file) ) {
                             pngfile = file;
                             break;

@@ -6,7 +6,7 @@
  .videoWrapper {
    height: 100px;
  }
- .videoWrapper iframe, .videoWrapper img {
+ .videoWrapper iframe {
    top: 0;
    left: 0;
    width: 20%;
@@ -63,8 +63,8 @@
                   frameborder='0'
                   allowfullscreen ></iframe>
           {:else}
-          <img src='/moocprogrec.webp' 
-               alt='Video du MOOC Programmation récursive' />
+            <Picture image='/moocprogrec'
+                     alt='Video du MOOC Programmation récursive' />
           {/if}
           </span>
       </li>
@@ -95,8 +95,8 @@
                   frameborder='0'
                   allowfullscreen ></iframe>
           {:else}
-          <img src='/moocjs.webp' 
-               alt='Video of the MOOC Diffuse JavaScript' />
+            <Picture image='/moocjs' 
+                     alt='Video of the MOOC Diffuse JavaScript' />
           {/if}
           </span>
       </li>
@@ -135,6 +135,7 @@
 
 <script>
  import Page from '../components/Page.svelte';
+ import Picture from '../components/Picture.svelte';
  //import Warning from '../components/Warning.svelte';
 
  import * as sapper from '@sapper/app';

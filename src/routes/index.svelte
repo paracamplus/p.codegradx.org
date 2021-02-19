@@ -45,6 +45,7 @@
  import { isUser, initializePerson, configureConfig } from '../client/lib.mjs';
 
  onMount(async () => {
+   /* no await */ sapper.prefetchRoutes(['/universes']);
    $config = configureConfig();
    $person = await initializePerson();
    return go();
