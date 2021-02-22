@@ -7,8 +7,9 @@
 
 <div id='movecaptcha' class='w3-container w3-center'>
   { installHooks(), '' }
-  <p> Déplacez les chiffres dans les cases vides afin de former la
-    suite {#each wanted as w}{w} {/each}.
+  <p> À la souris, déplacez les chiffres dans les cases vides afin de
+    former la suite {#each wanted as w}{w} {/each}. Sur tablette,
+    tapotez un chiffre puis tapotez la case où l'insérer.
   </p>
   
   {#if progress}<div class='waitingMessage'>{progress}</div>{/if}
@@ -41,6 +42,12 @@
     <div></div>
   </div>
 </div>
+
+{#if eventscount }
+<ul>
+  {#each events as e}<li>{JSON.stringify(e)}</li>{/each}
+</ul>
+{/if}
 
 {/if}
 
@@ -108,9 +115,12 @@ vous pouviez résoudre la captcha sont écoulées.`,
  let urls = [];
  let expires = undefined;
 
+ let events = []; // DEBUG
+ let eventscount = 0; // DEBUG eventscount = events.length 
+
  const whiteImage = '/_digits/white.png';
  const badImage = '/_digits/bad.png';
- let targetsArray = [];
+ let targets = [];
  let error = undefined;
  let progress = undefined;
  let end = undefined;
@@ -154,6 +164,95 @@ vous pouviez résoudre la captcha sont écoulées.`,
    }
  }
 
+ function showevent (event) {
+   return; /*
+   const e = {
+     type: event.type,
+     pointerType: event.pointerType,
+     button: event.button,
+     buttons: event.buttons,
+     targetName: event.target.getAttribute('alt'),
+     timeStamp: event.timeStamp
+   };
+   eventscount = events.unshift(e);
+   events = events.concat([]);
+   console.log(event);
+*/
+ }
+
+ function prepareDragAndDropHooks (images, targets) {
+   for ( const image of images ) {
+     image.addEventListener('dragstart', (event) => {
+       showevent(event);
+       error = undefined;
+       event.dataTransfer.setData("text/plain", event.target.src);
+       event.dataTransfer.effectAllowed = 'copy';
+       return true;
+     });
+     image.addEventListener('pointerdown', (event) => {
+       showevent(event);
+       error = undefined;
+       const url = event.target.src;
+       function listener (event) {
+         showevent(event);
+         event.dataTransfer = new DataTransfer();
+         event.dataTransfer.setData('text/plain', url);
+         drop(event);
+         //setTargetImage(event.target, url);
+         for ( const target of targets ) {
+           target.removeEventListener('pointerenter', listener);
+         }
+       }
+       for ( const target of targets ) {
+         target.addEventListener('pointerenter', listener);
+       }
+       return true;
+     });
+     image.addEventListener('touchstart', showevent);
+     //image.addEventListener('touchmove', showevent);
+     image.addEventListener('touchend', showevent);
+     image.addEventListener('touchcancel', showevent);
+     image.addEventListener('pointerover', showevent);
+     image.addEventListener('pointerenter', showevent);
+     //image.addEventListener('pointerdown', showevent);
+     //image.addEventListener('pointermove', showevent);
+     image.addEventListener('pointerup', showevent);
+     image.addEventListener('pointercancel', showevent);
+     //image.addEventListener('pointerout', showevent);
+     //image.addEventListener('pointerleave', showevent);
+     image.addEventListener('gotpointercapture', showevent);
+     image.addEventListener('lostpointercapture', showevent);
+   }
+   for ( const target of targets ) {
+     target.addEventListener("dragenter", illuminate);
+     target.addEventListener("pointerover", illuminate);
+     target.addEventListener("pointerenter", illuminate);
+     target.addEventListener('pointerout', tarnish);
+     target.addEventListener('pointerleave', tarnish);
+     /*target.addEventListener("dragover", (event) => {   // USELESS
+       showevent(event);
+       event.preventDefault();
+     });*/
+     target.addEventListener("dragleave", tarnish);
+     target.addEventListener("drop", drop);
+     //target.setPointerCapture(pointerID???);
+     target.addEventListener('touchstart', showevent);
+     //target.addEventListener('touchmove', showevent);
+     target.addEventListener('touchend', showevent);
+     target.addEventListener('touchcancel', showevent);
+     //target.addEventListener('pointerover', showevent);
+     //target.addEventListener('pointerenter', showevent);
+     target.addEventListener('pointerdown', showevent);
+     //target.addEventListener('pointermove', showevent);
+     target.addEventListener('pointerup', showevent);
+     target.addEventListener('pointercancel', showevent);
+     //target.addEventListener('pointerout', showevent);
+     //target.addEventListener('pointerleave', showevent);
+     target.addEventListener('gotpointercapture', showevent);
+     target.addEventListener('lostpointercapture', showevent);
+   }
+ }
+
  async function installHooks () {
    let problematic = false;
    function loaderror () {
@@ -162,6 +261,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
      this.setAttribute('src', badImage);
      dispatch('ready', null);
    }
+   let imagesToLoad = 0;
    let loadedImages = 0;
    function loadsuccess () {
      loadedImages++;
@@ -174,38 +274,38 @@ vous pouviez résoudre la captcha sont écoulées.`,
      if ( movecaptcha ) break;
      await sleep(0.5);
    }
-   const images = movecaptcha.getElementsByClassName('image');
-   for ( let i=0 ; i<images.length ; i++) {
-     const divimage = images.item(i);
+   const divimages = movecaptcha.getElementsByClassName('image');
+   const images = [];
+   for ( let i=0 ; i<divimages.length ; i++) {
+     const divimage = divimages.item(i);
      const image = divimage.firstElementChild;
+     images.push(image);
      image.onerror = loaderror;
      image.onload = loadsuccess;
+     imagesToLoad++;
      image.setAttribute('src', urls[i]);
-     image.addEventListener('dragstart', (event) => {
-       error = undefined;
-       event.dataTransfer.setData("text/plain", event.target.src);
-       event.dataTransfer.effectAllowed = 'copy';
-       return true;
-     });
    }
 
-   // Organize drag/drop images
-   const targets = movecaptcha.getElementsByClassName('target');
-   targetsArray = [];
-   for ( let i=0 ; i<targets.length ; i++ ) {
-     const target = targets.item(i);
+   // Organize target images...
+   const divtargets = movecaptcha.getElementsByClassName('target');
+   targets = [];
+   for ( let i=0 ; i<divtargets.length ; i++ ) {
+     const target = divtargets.item(i);
      const targetImage = target.firstElementChild;
-     targetsArray.push(targetImage);
+     targets.push(targetImage);
+     targetImage.onerror = loaderror;
+     targetImage.onload = loadsuccess;
+     imagesToLoad++;
      targetImage.setAttribute('src', whiteImage);
-     target.addEventListener("dragenter", illuminate);
-     target.addEventListener("dragover", (event) => {
-       event.preventDefault();
-     });
-     target.addEventListener("dragleave", tarnish);
-     target.addEventListener("drop", drop);
    }
-   progress = undefined;
+
+   prepareDragAndDropHooks(images, targets);
    
+   progress = undefined;
+
+   while ( ! problematic && loadedImages < imagesToLoad ) {
+     await sleep(0.5);
+   }
    if ( ! problematic ) {
      captcha = captcha || new Captcha({
        getResponse,
@@ -219,11 +319,11 @@ vous pouviez résoudre la captcha sont écoulées.`,
  }
 
  function illuminate (event) {
-   event.preventDefault();
+   showevent(event);
+   //event.preventDefault();
    if ( Date.now() < end ) {
      const target = event.target;
-     const classes = target.getAttribute('class') + ' targeted';
-     target.setAttribute('class', classes);
+     target.classList.add('targeted');
    } else {
      error = message.finished;
      event.preventDefault();
@@ -234,29 +334,36 @@ vous pouviez résoudre la captcha sont écoulées.`,
    }
  }
  function tarnish (event) {
-   event.preventDefault();
+   showevent(event);
+   //event.preventDefault();
    const target = event.target;
-   const classes = target.getAttribute('class').replace(/ targeted/, '');
-   target.setAttribute('class', classes);
+   target.classList.remove('targeted');
  }
  function drop (event) {
+   showevent(event);
+   tarnish(event);
+   setTargetImage(event.target, event.dataTransfer.getData("text/plain"));
+   //event.preventDefault();
+   //event.stopPropagation();
+ }
+ function setTargetImage (target, url) {
    if ( Date.now() < end ) {
-     tarnish(event);
-     event.target.setAttribute('src', event.dataTransfer.getData("text/plain"));
-     dispatch('change', {
-       captcha,
-       count: filledBoxes()
-     });
-     if ( isComplete() ) {
-       dispatch('complete', {
+     target.setAttribute('src', url);
+     // leave time to target to display the new URL:
+     setTimeout(() => {
+       dispatch('change', {
          captcha,
-         complete: true
+         count: filledBoxes()
        });
-     }
+       if ( isComplete() ) {
+         dispatch('complete', {
+           captcha,
+           complete: true
+         });
+       }
+     }, 0);
    } else {
      error = message.finished;
-     event.preventDefault();
-     event.stopPropagation();
      dispatch('timeout', {
        captcha,
      });
@@ -266,7 +373,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
  // Return the number of filled boxes:
  function filledBoxes () {
    let count = 0;
-   targetsArray.forEach(target => {
+   targets.forEach(target => {
      const src = target.getAttribute('src');
      if ( ! target.getAttribute('src').match(/white[.]png/) ) {
        count++;
@@ -278,7 +385,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
  // semi-predicate returning the set of images filling boxes:
  function isComplete () {
    let results = [];
-   if ( targetsArray.some(target => {
+   if ( targets.some(target => {
      const src = target.getAttribute('src');
      results.push(src.replace(/^.*\?slug=(\w+)$/, '$1'));
      return target.getAttribute('src').match(/white[.]png/);
