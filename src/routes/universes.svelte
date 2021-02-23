@@ -73,7 +73,7 @@
         <span class='va'>
           <a href="/universe/unx"
            class='w3-btn w3-round-xlarge w3-theme-l4' > 
-          <tt>shell</tt>
+          <code>shell</code>
           </a> et autres utilitaires Unix (sed, tr, head, tail, cut,
           grep, sh, etc.)</span></li>
       

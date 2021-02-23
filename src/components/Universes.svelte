@@ -3,6 +3,7 @@
    background-color: var(--color-hover-gray);
  }
  a.internal {
+   color: black;
    text-decoration: none;
  }
 </style>
