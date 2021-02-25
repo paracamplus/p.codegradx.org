@@ -35,7 +35,7 @@ export async function configureConfig () {
         console.log(`fetch  config problem from ${hostname}`, exc);//DEBUG
     } finally {
         config.set($config);
-        console.log($config);//DEBUG
+        //console.log($config);//DEBUG
     }
     return $config;
 }

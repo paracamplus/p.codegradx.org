@@ -1,5 +1,6 @@
 import { files, shell } from '@sapper/service-worker';
 import { version } from './client/TS.mjs';
+import { extraURLS } from './client/URL2cache.mjs';
 
 // See https://sapper.svelte.dev/docs#Deploying_service_workers
 function getTimeStamp () {
@@ -19,15 +20,24 @@ const to_cache = shell.concat(files);
 const staticAssets = new Set(to_cache);
 
 self.addEventListener('install', event => {
+    console.log(`SW: installing ...`); // DEBUG
 	event.waitUntil(
 		caches
 			.open(ASSETS)
-			.then(cache => cache.addAll(to_cache))
+            .then(cache => cache.addAll(to_cache))
 			.then(() => {
+                console.log(`SW: cache filled`); // DEBUG
 				self.skipWaiting();
+                console.log(`SW: skip waited`); // DEBUG
+                /* no await */ cacheExtraURLS(extraURLS);
 			})
 	);
 });
+
+function cacheExtraURLS (extraURLS) {
+    return Promise.allSettled(
+        extraURLS.map(url => fetchAndCache(url)) );
+}
 
 self.addEventListener('activate', event => {
 	event.waitUntil(
@@ -62,35 +72,78 @@ async function fetchAndCache(request) {
 	}
 }
 
+function isCodeGradXRequest (url) {
+    // We already know that it is an https? GET request:
+    if ( url.hostname.match(/^[xes]\d*[.]codegradx[.]org/ ) ) {
+        return true;
+    }
+    return false;
+}
+
+function shouldCacheCodeGradXRequest (url) {
+    if ( url.hostname.match(/^x\d*[.]/ ) ) {
+        if ( url.pathname.match(/^\/exercisesset\/path\//) ) {
+            return true;
+        }
+        if ( url.pathname.match(/^\/fromp\/getua/) &&
+             url.search.match(/lang=fr/) ) {
+            return true;
+        }
+    }
+    if ( url.hostname.match(/^e\d*[.]/ ) ) {
+        if ( url.pathname.match(/^\/exercisecontent\/U.{80,}\/content/) ) {
+            return true;
+        }
+    }
+    if ( url.hostname.match(/^s\d*[.]/ ) ) {
+        if ( url.pathname.match(/\/^s\/.*[.]xml/) ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 self.addEventListener('fetch', event => {
-	if (event.request.method !== 'GET' || event.request.headers.has('range')) return;
+	if (event.request.method !== 'GET' ||
+        event.request.headers.has('range')) return;
 
 	const url = new URL(event.request.url);
 
 	// don't try to handle e.g. data: URIs
 	const isHttp = url.protocol.startsWith('http');
-	const isDevServerRequest = url.hostname === self.location.hostname && url.port !== self.location.port;
-	const isStaticAsset = url.host === self.location.host && staticAssets.has(url.pathname);
-	const skipBecauseUncached = event.request.cache === 'only-if-cached' && !isStaticAsset;
+	const isDevServerRequest = url.hostname === self.location.hostname &&
+          url.port !== self.location.port;
+	const isStaticAsset = url.host === self.location.host &&
+          staticAssets.has(url.pathname);
+	const skipBecauseUncached = event.request.cache === 'only-if-cached' &&
+          !isStaticAsset;
 
 	if (isHttp && !isDevServerRequest && !skipBecauseUncached) {
 		event.respondWith(
 			(async () => {
-				// always serve static files and bundler-generated assets from cache.
-				// if your application has other URLs with data that will never change,
-				// set this variable to true for them and they will only be fetched once.
-				const cachedAsset = isStaticAsset && await caches.match(event.request);
+				// always serve static files and bundler-generated
+				// assets from cache.
+                if ( isStaticAsset ) {
+				    const cachedAsset = await caches.match(event.request);
+                    return cachedAsset || fetchAndCache(event.request);
+                }
 
-				// for pages, you might want to serve a shell `service-worker-index.html` file,
-				// which Sapper has generated for you. It's not right for every
-				// app, but if it's right for yours then uncomment this section
-				/*
-				if (!cachedAsset && url.origin === self.origin && routes.find(route => route.pattern.test(url.pathname))) {
-					return caches.match('/service-worker-index.html');
-				}
-				*/
+                if ( isCodeGradXRequest(url) ) {
+                    console.log(`ConstellationCache? ${url.href}`); //DEBUG
+                    if ( shouldCacheCodeGradXRequest(url) ) {
+                        console.log(`ConstellationCacheYes! ${url.href}`); //DEBUG
+                        const cachedResponse =
+                              await caches.match(event.request);
+                        if ( cachedResponse ) {
+                            console.log(`ConstellationCacheUsed ${url.href}`); //DEBUG
+                        }
+                        return cachedResponse || fetchAndCache(event.request);
+                    } else {
+                        return fetch(event.request);
+                    }
+                }
 
-				return cachedAsset || fetchAndCache(event.request);
+				return fetchAndCache(event.request);
 			})()
 		);
 	}
