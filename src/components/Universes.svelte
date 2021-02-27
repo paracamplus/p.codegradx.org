@@ -33,9 +33,9 @@
             <span title="Vous y êtes enseignant">🎓</span>{/if}</span></td>
         <td>{campaign.title}</td>
         <td class='w3-hide-small'>
-          {campaign.starttime.replace(/T.*$/, '')}</td>
+          {CodeGradX.Date2str(campaign.starttime).replace(/T.*$/, '')}</td>
         <td class='w3-hide-small'>
-          {campaign.endtime.replace(/T.*$/, '')}</td>
+          {CodeGradX.Date2str(campaign.endtime).replace(/T.*$/, '')}</td>
       </tr>
       {/each}
     </tbody>
@@ -46,13 +46,14 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { campaign } from '../stores.mjs';
+ import { CodeGradX } from 'codegradx';
  
  export let campaigns = [];
 
  onMount(async () => {
    $campaign = undefined;
  });
-
+ 
  function see (thecampaign) {
    return function (event) {
      event.preventDefault();
