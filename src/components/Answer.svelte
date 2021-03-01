@@ -8,10 +8,16 @@
                       on:jobPromise />
   {:else if multiline && file }
     {#if language }
-      <Editor language={language}
-              file={file}
-              exercise={exercise}
-              on:jobPromise />
+      {#if language === 'javascript'}
+        <EditorJS file={file}
+                  exercise={exercise}
+                  on:jobPromise />
+      {:else}
+        <Editor language={language}
+                file={file}
+                exercise={exercise}
+                on:jobPromise />
+      {/if}
     {:else}
       <TextAreaString file={file}
                       exercise={exercise}
@@ -31,6 +37,7 @@
  import TextAreaString from '../components/TextAreaString.svelte';
  import SingleLineString from '../components/SingleLineString.svelte';
  import Editor from '../components/Editor.svelte';
+ import EditorJS from '../components/EditorJS.svelte';
  
  export let exercise = null;
  let singleline = false;

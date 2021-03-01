@@ -1,6 +1,6 @@
 {
     "name": "p.codegradx.org",
-    "version": "0.1.25",
+    "version": "0.1.26",
     "description": "General CodeGradX Portal",
     "keywords": [
         "CodeGradX",
@@ -15,7 +15,7 @@
         "vercel": "Scripts/vercel-build.sh -l"
     },
     "dependencies": {
-        "codegradx": "^3.0.50",
+        "codegradx": "^3.0.51",
         "codemirror": "^5.59.2",
         "compression": "^1.7.1",
         "events": "^3.2.0",

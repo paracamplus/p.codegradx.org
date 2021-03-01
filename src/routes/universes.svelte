@@ -1,6 +1,6 @@
 <style>
  li span.va {
-   vertical-align: 0px;
+   /* vertical-align: 0px; */
    width: 80vw;
  }
  .videoWrapper {

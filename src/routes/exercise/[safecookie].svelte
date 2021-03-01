@@ -84,11 +84,11 @@
      return;
    }
    try {
+     let exercise = undefined;
      if ( ! $current_exercise ) {
        let uri = window.document.location.pathname;
        const safecookie = uri.replace(/\/exercise\/(U.{50,})$/, '$1');
-       const exercise = new CodeGradX.Exercise({safecookie});
-       $current_exercise = exercise;
+       $current_exercise = new CodeGradX.Exercise({safecookie});
      }
      await $current_exercise.getDescription();
      //console.log($current_exercise);//DEBUG
