@@ -31,6 +31,10 @@
               <a class='w3-bar-item w3-btn'
                  href='/history/{$campaign.name}' >mon historique</a>
             {/if}
+            {#if $person.isauthor}
+              <a class='w3-bar-item w3-btn'
+                 href='/myexercises' >mes exercices</a>
+            {/if}
             <a class='w3-bar-item w3-btn'
                href='/whoami' >qui suis-je ?</a>
             <div class='w3-bar-item w3-btn'

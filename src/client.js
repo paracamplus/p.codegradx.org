@@ -9,6 +9,7 @@ import { configureConfig } from './client/lib.mjs';
 window.CodeGradX = CodeGradX; // Make CodeGradX global!
 
 function customizer (state) {
+    // Cache is performed in service-worker:
     state.cacher = plugCache(CodeGradX, 'NoCache');
     state.mkCacheFor('Exercise');
     state.mkCacheFor('Job');

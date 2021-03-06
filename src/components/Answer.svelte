@@ -31,90 +31,22 @@
 </section>
 
 <script>
- import { onMount } from 'svelte';
- import { CodeGradX } from 'codegradx/exercise';
  import SingleFile from '../components/SingleFile.svelte';
  import TextAreaString from '../components/TextAreaString.svelte';
  import SingleLineString from '../components/SingleLineString.svelte';
  import Editor from '../components/Editor.svelte';
  import EditorJS from '../components/EditorJS.svelte';
+ //import EditorSCM from '../components/EditorSCM.svelte';
+
+ import { onMount } from 'svelte';
+ import { CodeGradX } from 'codegradx/exercise';
+ import { chooseProgrammingLanguage } from '../client/editorlib.mjs';
  
  export let exercise = null;
  let singleline = false;
  let multiline = false;
  let language = undefined;
  let file = undefined;
-
- function chooseProgrammingLanguageFromTags (tags) {
-   for ( let tag of tags ) {
-     if ( tag.match(/^(sh|bash|shell)$/i) ) {
-       return 'shell';
-     } else if ( tag.match(/^(c|java)$/i) ) {
-       return 'clike';
-     } else if ( tag.match(/^(js|javascript)$/i) ) {
-       return 'javascript';
-     } else if ( tag.match(/^((o?ca)?ml)$/) ) {
-       return 'mllike';
-     } else if ( tag.match(/^python3?$/) ) {
-       return 'python';
-     } else if ( tag.match(/^(scheme|perl|php|sql)$/i) ) {
-       return tag.toLowerCase();
-     }
-   }
- }
-
- function chooseProgrammingLanguageFromExtension (filename) {
-   const extension = filename.replace(/^.*[.][^.]+$/, '');
-   if ( extension.match(/^sh$/) ) {
-     return 'shell';
-   } else if ( extension.match(/^(c|cc|java)$/) ) {
-     return 'clike';
-   } else if ( extension.match(/^js$/) ) {
-     return 'javascript';
-   } else if ( extension.match(/^scm$/) ) {
-     return 'scheme';
-   } else if ( extension.match(/^py$/) ) {
-     return 'python';
-   } else if ( extension.match(/^pr?[lm]/) ) {
-     return 'perl';
-   } else if ( extension.match(/^php$/) ) {
-     return 'php';
-   } else if ( extension.match(/^ml$/) ) {
-     return 'mllike';
-   }
- }
-
- function chooseProgrammingLanguageFromExpectations (expectations) {
-   if ( expectations && expectations.file ) {
-     let file = expectations.file;
-     if ( file.initial && file.initial.language ) {
-       return file.initial.language;
-     }
-   }
- }
-
- function chooseProgrammingLanguage (exercise) {
-   //console.log(exercise);//DEBUG
-   if ( exercise.expectations ) {
-     language = chooseProgrammingLanguageFromExpectations(exercise.expectations);
-     if ( language ) {
-       return language;
-     }
-   }
-   if ( exercise.tags ) {
-     language = chooseProgrammingLanguageFromTags(exercise.tags);
-     if ( language ) {
-       return language;
-     }
-   }
-   if ( exercise.inlineFileName ) {
-     language = chooseProgrammingLanguageFromExtension(exercise.inlineFileName);
-     if ( language ) {
-       return language;
-     }
-   }
-   return 'clike';
- }
 
  function chooseEditor (exercise) {
    singleline = multiline = false;

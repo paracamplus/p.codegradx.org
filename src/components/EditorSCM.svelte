@@ -24,24 +24,15 @@
     utiliser tout autre moyen pour produire un fichier
     {#if exercise.inlineFileName}nommé
     <code>{exercise.inlineFileName}</code>{/if} puis cliquer sur le
-    bouton « noter ma réponse ». Enfin, s'agissant de JavaScript, vous
-    pouvez demander l'évaluation de votre code. Vous pouvez utiliser
-    <code>console.log</code> mais pas <code>require</code>.
+    bouton « noter ma réponse ». ...
   </div>
 
   <form class='w3-form w3-padding-16 w3-center'
         accept-charset='UTF-8' enctype='multipart/form-data'>
-    {#if preferFile}
-    <div bind:this={filechooser}>
-      <FileChooser
-         on:chosenfile={sendFile}
-         labelChoose={`Sélectionner fichier ${exercise.inlineFileName || ''}`}
-      labelChosen="Noter ce fichier" />
-    </div>
-    {:else}
     <div bind:this={textareaParent}
          class='w3-border textareaParent'>
-      <textarea bind:this={textareaInput}></textarea>
+      <textarea bind:this={textareaInput}
+                autocomplete="off"></textarea>
     </div>
 
     <div class='w3-center w3-padding-16'>
@@ -49,12 +40,6 @@
               title="Envoyer ma réponse au serveur pour notation"
               name='SuBmIt' on:click={sendEditorContent} >
         Noter ma réponse
-      </button>
-      <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-              title="Envoyer un fichier au serveur pour notation"
-              on:click={() => preferFile = true} >
-        Choisir fichier {#if exercise.inlineFileName}
-        <code>{exercise.inlineFileName}</code>{/if}
       </button>
       <button class='w3-btn w3-round-xxlarge w3-theme-l4'
               title="Stocker ma réponse sur mon ordinateur"
@@ -67,7 +52,6 @@
         Évaluer localement ma réponse
       </button>
     </div>
-    {/if}
   </form>
 
   {#if result}
@@ -81,31 +65,27 @@
 </section>
 
 <script>
- import Problem from '../components/Problem.svelte';
- import FileChooser from './FileChooser.svelte';
-
  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
  const dispatch = createEventDispatcher();
+ import Problem from '../components/Problem.svelte';
  import { CodeGradX } from 'codegradx';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { makeInitializeEditor,
           makeStoreEventHandler,
           makeSendEditorContent,
-          makeSendFile,
           HTMLize,
           customizeEditorForLanguage }
     from '../client/editorlib.mjs';
+ import { Parser, defaultEnvironment, Evaluator }
+   from "../client/MrScheme/index.mjs";
 
  export let exercise;
  export let file;
- export let language = 'javascript';
+ export let language = 'scheme';
  let editor = undefined;
  let error = undefined;
  let textareaParent;
  let textareaInput;
- let filechooser;
- let chosenfile;
- let preferFile = false;
  let result = undefined;
 
  onMount(async () => {
@@ -116,75 +96,58 @@
    return editor.getValue();
  }
 
- function wrap (f) {
-   return function (event) {
-     error = undefined;
-     if ( ! navigator.onLine ) {
-       error = "Pas d'accès à Internet!";
-     } else {
-       try {
-         return f(event);
-       } catch (exc) {
-         error = exc;
-       }
-     }
-   };
- }
- 
  const storeEditorContent = makeStoreEventHandler(exercise, getAnswer);
- const sendEditorContent =
-   wrap(makeSendEditorContent(exercise, getAnswer, dispatch));
- const sendFile = wrap(makeSendFile(exercise, dispatch));
+ const sec = makeSendEditorContent(exercise, getAnswer, dispatch);
+ function sendEditorContent (event) {
+   try {
+     return sec(event);
+   } catch (exc) {
+     error = exc;
+   }
+ }
 
  function evaluateEditorContent (event) {
+   // See Servers/w.scm/Paracamplus-FW4EX-SCM/Templates/mrscheme.tt
    event.preventDefault();
    event.stopPropagation();
    error = undefined;
    result = '';
-   const lib = {};
-   lib.console = {
-     log: function lib_console_log (...args) {
-       for ( const arg of args ) {
-         result += `${arg} `;
-       }
-       result += "\n";
+   const prog = getAnswer(0);
+   const parser = new Parser(prog);
+   const exprs = [];
+   while ( true ) {
+     const expr = parser.parseNext();
+     if ( expr.type === 'parseError' ) {
+       error = "parse pb";
+     } else if ( expr.type !== 'unit' ) {
+       exprs.push(expr);
+     } else {
+       break;
      }
-   };
-   lib.require = function lib_require (pkg) {
-     // Maybe take inspiration from
-     //   Servers/w.js/Paracamplus-FW4EX-JS/js/helpers/js-exercise.js 
-     throw "require() n'est pas disponible!";
-   };
-   try {
-     const answer = getAnswer();
-     const evaluator = window['ev' + 'al'];
-     const jsprogram = `
-(function () {
-   return function (console, require) {
-     ${answer};
-   };
-})();
-`;
-     const f = evaluator(jsprogram);
-     const value = f(lib.console, lib.require);
-     result += HTMLize(value);
-   } catch (exc) {
-     result += exc.toString();
    }
+   const penv = defaultEnvironment();
+   const evaluator = new Evaluator(penv);
+   for ( const expr of exprs ) {
+     try {
+       const value = evaluator.eval(expr, false);
+       if ( value.type === 'evalError' ) {
+         error = value;
+         break;
+       }
+       result += value.toHTML();
+     } catch (exc) {
+       error = exc.toString();
+       break;
+     }
+   }
+       
  }
 
-/*
 
-function min3 (a, b, c) {
-  console.log(a,b)
-  return a;
-}
-
-console.log(min3(1,2,3));
-console.log('<', min3(11,2,3));
-//require('lodash');
+ /*
 
 
  */
- 
+
 </script>
+

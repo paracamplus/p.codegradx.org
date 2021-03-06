@@ -1,6 +1,6 @@
 {
     "name": "p.codegradx.org",
-    "version": "0.1.26",
+    "version": "0.1.27",
     "description": "General CodeGradX Portal",
     "keywords": [
         "CodeGradX",
@@ -19,6 +19,7 @@
         "codemirror": "^5.59.2",
         "compression": "^1.7.1",
         "events": "^3.2.0",
+        "mrscheme": "file:../MrScheme",
         "node-fetch": "^2.6.1",
         "polka": "next",
         "query-string": "^5.1.1",
