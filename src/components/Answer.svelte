@@ -57,6 +57,9 @@
        if ( +(file.initial.$.height) === 1 ) {
          // single line editor:
          singleline = true;
+       } else if ( ! file.initial._ || file.initial._.match(/^( |\n)*$/) ) {
+         // height is specified but there is no initialcontent!
+         // submit a single file with a file chooser:
        } else {
          // multiple lines editor (possibly tailored to some language):
          multiline = true;

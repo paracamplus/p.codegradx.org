@@ -1,3 +1,9 @@
+<!--
+      Display the exercises of a campaign. It does not require
+      to be authenticated however to discover the stem of an exercise
+      require to be authenticated.
+-->
+
 <style>
 </style>
 
@@ -5,7 +11,7 @@
       title=""
       showheader={false} >
 
-   <header class='w3-center w3-margin-bottom'>
+   <header class='w3-center w3-margin-bottom bold'>
      {#if ! $campaign}
      <span>Les exercices de {campaignName}</span>
      {:else}
@@ -19,26 +25,24 @@
      {/if}
   </header>
 
-  <div transition:fade><Problem bind:error={error} /></div>
+  {#if error}<div transition:fade><Problem bind:error={error} /></div>{/if}
 
   {#if showAuthentication && ! $person}
   <div class='w3-container'>
     <div class='w3-center w3-animate-zoom'>
       <a class='w3-btn w3-center w3-round-xlarge w3-theme-d4'
-         href='/connect'>
+         href={buildGoto('connect')}>
         Je m'identifie...
       </a>
     </div>
   </div>
   {/if}
 
-  {#if $campaign}
-  <ExercisesList on:authenticate={authenticate} />
-  {:else}
-    {#if ! error}
+  {#if isCampaign($campaign)}
+    <ExercisesList on:authenticate={authenticate} />
+  {:else if ! error}
      <p class='waitingMessage'>Chargement de la liste d'exercices...</p>
      <WaitingImage />
-    {/if}
   {/if}
 
 </Page>
@@ -52,47 +56,34 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/campaign';
- import { sleep } from '../../common/utils.mjs';
+ import { sleep, onClient } from '../../common/utils.mjs';
  import { fade } from 'svelte/transition';
- import { person, campaign } from '../../stores.mjs';
- import { initializePerson } from '../../client/lib.mjs';
+ import { person, campaign, lastmessage } from '../../stores.mjs';
+ import { initializePerson, isCampaign, goto } from '../../client/lib.mjs';
+ import { fetchCampaign } from '../../client/campaignlib.mjs';
+ import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { buildGoto } from '../../client/lib.mjs';
 
  let error = undefined;
  let campaignName = '...';
  let showAuthentication = false;
  
- onMount(async () => {
+ onClient(async () => {
+   const uri = window.document.location.pathname;
+   campaignName = uri.replace(/^(.*\/)?universe\/([^\/]+)/, '$2');
    try {
      $person = await initializePerson();
-     let uri = window.document.location.pathname;
-     campaignName = uri.replace(/^(.*\/)?universe\/([^\/]+)/, '$2');
-     $campaign = await fetchCampaign(campaignName);
+     $campaign = await fetchCampaign($person, campaignName);
      if ( ! $campaign ) {
-       error = "Je ne vois pas d'univers ainsi nommé!";
-       await sleep(3);
-       sapper.goto('/universes');
+       $lastmessage = `Je ne vois pas d'univers ainsi nommé!
+Veuillez donc choisir un nouvel univers.`; //'
+       goto('/universes');
      }
    } catch (exc) {
-     error = exc.toString();
-     console.log(exc);
-   } 
- });
-
- async function fetchCampaign (campaignName) {
-   const state = CodeGradX.getCurrentState();
-   if ( $person ) {
-     try {
-       const campaign = await $person.getCampaign(campaignName);
-       return campaign;
-     } catch (_) {
-       return undefined;
-     }
-   } else {
-     const campaigns = await state.getOpenCampaigns();
-     const campaign = campaigns[campaignName];
-     return campaign;
+     console.log('universe', {exc});
+     error = parseAnomaly(exc);
    }
- }
+ });
 
  async function authenticate (event) {
    error = event.detail;

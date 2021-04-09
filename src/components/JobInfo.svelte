@@ -10,10 +10,10 @@
     <div class='w3-container w3-margin w3-left-align w3-padding-24'>
       <ul>
         <li> Identifiant: {job.jobid} </li>
-        <li> archivage: {massageDate(job.archived)} </li>
-        <li> début de notation: {massageDate(job.started)} </li>
-        <li> fin de notation: {massageDate(job.ended)} </li>
-        <li> stockage: {massageDate(job.finished)}
+        <li> archivage: {CodeGradX.Date2str(job.archived)} </li>
+        <li> début de notation: {CodeGradX.Date2str(job.started)} </li>
+        <li> fin de notation: {CodeGradX.Date2str(job.ended)} </li>
+        <li> stockage: {CodeGradX.Date2str(job.finished)}
           {#if tgzurl}<a class='w3-btn w3-round-xlarge w3-theme-l4'
                          download
                          title='Télécharger votre réponse'
@@ -21,7 +21,7 @@
         </li>
       </ul>
       <p class='smallHint'>
-        Votre réponse est dans le répertoire <code>content</code>
+        La réponse est dans le répertoire <code>content</code>
         du fichier <code>.tgz</code> que vous pouvez télécharger.
       </p>
     </div>
@@ -47,12 +47,6 @@
  
  function close (event) {
    showinfo = false;
- }
-
- function massageDate (d) {
-   d = `${d.toString()}`;
-   d = d.replace(/ GMT.*$/, '');
-   return d;
  }
 
 </script>

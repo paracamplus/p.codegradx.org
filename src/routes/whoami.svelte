@@ -1,3 +1,7 @@
+<!--
+       Display the profile of the user
+-->
+
 <style>
  .headerButton {
    font-size: smaller;
@@ -11,9 +15,11 @@
 
   <header class='w3-center w3-large w3-margin-bottom'>
     Mes informations
+    {#if $person}
     <a class="w3-btn w3-theme-d2 w3-round-xxlarge headerButton"
        title="Modifier mes informations personnelles"
-       href='/profile' >Modifier mes informations</a>
+       href={buildGoto('profile')} >Modifier mes informations</a>
+    {/if}
   </header>
 
   {#if $person}
@@ -53,14 +59,20 @@
       {/if}
       
       {#if $person.campaigns.length > 0 }
-      <p> Vous êtes déjà inscrit dans les univers suivants:</p>
+      <p>
+        Vous êtes déjà inscrit dans les univers suivants
+        {#if $campaign}
+        et, actuellement, vous êtes dans l'univers
+        <code>{$campaign.name}</code>
+        {/if}:
+      </p>
       <Universes campaigns={$person.campaigns} />
       {/if}
         
     </div>
         
-    {:else}
-    {#if error}<Problem bind:error={error} />{/if}
+    {:else if error}
+      <Problem bind:error={error} />
     {/if}
 
 </Page>
@@ -68,13 +80,12 @@
 <script>
  import Page from '../components/Page.svelte';
  import Problem from '../components/Problem.svelte';
- import ConnectDoc from '../components/ConnectDoc.svelte';
+// import ConnectDoc from '../components/ConnectDoc.svelte';
  import Universes from '../components/Universes.svelte';
 
- import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person, campaign } from '../stores.mjs';
- import { initializePerson } from '../client/lib.mjs';
+ import { initializePerson, buildGoto } from '../client/lib.mjs';
 
  let error = undefined;
 
@@ -84,6 +95,7 @@
    }
    if ( ! $person ) {
      error = "Désolé, je ne vous connais pas!";
+     return;
    }
  });
  

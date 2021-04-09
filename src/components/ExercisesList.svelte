@@ -1,3 +1,6 @@
+<style>
+</style>
+
 <section class='w3-container'>
   {#if exercisesSet && exercisesSet.exercises}
     {#each exercisesSet.exercises as es}
@@ -13,9 +16,11 @@
         <div></div>
       {/if}
     {/each}
-  {:else}
+  {:else if ! error}
      <div class='waitingMessage'>Chargement de la liste d'exercices...</div>
      <WaitingImage />
+  {:else}
+     <Problem bind:error={error} />
   {/if}
 </section>
 
@@ -23,32 +28,37 @@
  import ExercisesSet from './ExercisesSet.svelte';
  import ExerciseTitle from './ExerciseTitle.svelte';
  import WaitingImage from './WaitingImage.svelte';
+ import Problem from './Problem.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/campaignlib';
  import { sleep } from '../common/utils.mjs';
- import { person, campaign } from '../stores.mjs';
+ import { campaign, lastmessage } from '../stores.mjs';
+ import { parseAnomaly } from '../client/errorlib.mjs';
+ import { goto } from '../client/lib.mjs';
  
  let exercisesSet = undefined;
  let error = undefined;
  
  onMount(async () => {
    if ( $campaign ) {
-     await fetchExercisesSet($campaign);
+     exercisesSet = await fetchExercisesSet($campaign);
    } else {
-     error = "Je n'arrive pas à récupérer les exercices afférents!";
-     await sleep(5);
-     sapper.goto('/universes');
+     //error = "Je n'arrive pas à récupérer les exercices afférents!";
+     //await sleep(5);
+     $lastmessage = `Je n'ai pu récupérer les exercices de
+${$campaign.name}, veuillez choisir un autre univers!`;
+     goto('/universes');
    }
  });
 
  async function fetchExercisesSet (campaign) {
-   return campaign.getExercisesSet().then((es) => {
-     exercisesSet = es;
-   }).catch((exc) => {
-     error = exc.message;
-   });
+   try {
+     return campaign.getExercisesSet();
+   } catch (exc) {
+     error = parseAnomaly(exc);
+   }
  }
 
 </script>

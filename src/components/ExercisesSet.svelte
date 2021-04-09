@@ -1,7 +1,4 @@
 <style>
- div.bold {
-   font-weight: bolder;
- }
 </style>
 
 {#if exercisesSet}

@@ -41,6 +41,30 @@ export async function configureConfig () {
 }
 
 /**
+   An enhanced sapper.goto taking care of the common URL prefix.
+
+   @returns Promise
+*/
+
+export function goto (uri) {
+    return sapper.goto(buildGoto(uri));
+}
+
+/*
+  Build an URL taking care of the common URL prefix.
+
+  @returns {String} - url where to go 
+*/
+
+export function buildGoto (uri) {
+    let $config = get(config);
+    let prefix = $config.urlPrefix || '/';
+    prefix = prefix.replace(/\/*$/, '');
+    uri = uri.replace(/^\/*/, '');
+    return `${prefix}/${uri}`;
+}
+
+/**
    Determine what the user has to complete.
 
    json is a User or a PartialUser. They both have the
@@ -66,9 +90,13 @@ export async function determineNextUserState (json) {
 /**
    When accessing a page in the sequence (connect, sendmail, mailsent, 
    signua, universes) try to determine the status of the user and
-   redirect it to the appropriate step.
+   redirect it to the appropriate step. 
 
-   @return {Promise<User>}
+   returns a Promise. Either a Promise yielding a User or a Promise
+   navigating to an appropriate page when the user has not fulfilled
+   its registration.
+
+   @returns {Promise<User>}
 */
 
 export async function initializePerson () {
@@ -83,7 +111,7 @@ export async function initializePerson () {
         const where = document.location.pathname.replace(/^.*(\/\w+)/, '$1');
         if ( href && href !== where ) {
             console.log(`From ${where}: goto ${href}`);
-            return sapper.goto(href);
+            return goto(href);
         }
     }
     return Promise.resolve($person);
@@ -98,6 +126,33 @@ export async function initializePerson () {
 
 export function isUser (o) {
     return o && o instanceof CodeGradX.User && o.pseudo;
+}
+
+/**
+   remember that components (in the html part) are loaded before
+   onMount so, from time to time, some objects are not instance of
+   the right class even if they have the same fields. TO BE DEEPENED!!!
+*/
+
+export function isCampaign (o) {
+    return o && o instanceof CodeGradX.Campaign;
+}
+
+export function isTeacher (campaign, person) {
+    if ( campaign && person ) {
+        if ( person._all_campaigns ) {
+            let c = person._all_campaigns[campaign.name];
+            if ( c ) {
+                return !!c.isTeacher;
+            }
+        } else if ( person._campaigns ) {
+            let c = person._campaigns[campaign.name];
+            if ( c ) {
+                return !!c.isTeacher;
+            }
+        }
+    }
+    return false;
 }
 
 // end of client/lib.mjs

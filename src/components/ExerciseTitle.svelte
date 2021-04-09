@@ -36,6 +36,7 @@
  import { createEventDispatcher } from 'svelte';
  const dispatch = createEventDispatcher();
  import { person, current_exercise } from '../stores.mjs';
+ import { goto } from '../client/lib.mjs';
 
  export let exercise = undefined;
 
@@ -54,6 +55,6 @@ il faut d'abord vous identifier!`; //'
    //console.log(div);//DEBUG
    $current_exercise = new CodeGradX.Exercise(div.dataset);
    //console.log($current_exercise); // DEBUG
-   sapper.goto(`/exercise/${$current_exercise.safecookie}`);
+   goto(`/exercise/${$current_exercise.safecookie}`);
  }
 </script>

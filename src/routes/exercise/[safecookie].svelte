@@ -1,3 +1,7 @@
+<!--
+  Display a stem and provide means to answer the exercise.
+-->
+
 <style>
 </style>
 
@@ -5,13 +9,13 @@
       title=""
       showheader={false} >
 
-  <Problem bind:error={error} />
+  {#if error}<Problem bind:error={error} />{/if}
    
   {#if showAuthentication && ! $person}
   <div class='w3-container'>
     <div class='w3-center w3-animate-zoom'>
       <a class='w3-btn w3-center w3-round-xlarge w3-theme-d4'
-         href='/connect'>
+         href={buildGoto('connect')}>
         Je m'identifie...
       </a>
     </div>
@@ -20,7 +24,7 @@
 
   {#if showExercise}
    <header class='w3-center w3-large bold'>
-     Exercice {$current_exercise.nickname}
+     Exercice {exerciseTitle}
      <span class='w3-right w3-margin-left w3-xlarge'
            title={"Information sur l'exercice"}
            on:click='{() => showinfo = true}'><InformationSign /></span>
@@ -40,11 +44,9 @@
 
    {#if job}<JobReport bind:job={job} />{/if}
 
-  {:else}
-    {#if ! showAuthentication}
-      <p class='waitingMessage'> Chargement de l'exercice ... </p>
-      <WaitingImage />
-    {/if}
+  {:else if ! error && ! showAuthentication}
+    <p class='waitingMessage'> Chargement de l'exercice ... </p>
+    <WaitingImage />
   {/if}
 
 </Page>
@@ -67,47 +69,40 @@
  import { sleep } from '../../common/utils.mjs';
  import { fade } from 'svelte/transition';
  import { person, current_exercise, campaign } from '../../stores.mjs';
+ import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { buildGoto } from '../../client/lib.mjs';
 
  let error = undefined;
  let showinfo = false;
  let job = undefined;
  let showExercise = false;
+ let exerciseTitle = '...';
  let showAuthentication = false;
  
  onMount(async () => {
-   showAuthentication = showExercise = showinfo = false;
-   error = job = undefined;
-   $person = await initializePerson();
+   const uri = window.document.location.pathname;
+   const safecookie = uri.replace(/\/exercise\/(U.{50,})$/, '$1');
+   if ( ! $person ) {
+     $person = await initializePerson();
+   }
    if ( ! $person ) {
      error = "Pour pratiquer cet exercice, vous devez d'abord vous identifier!";
      showAuthentication = true;
      return;
    }
+   let exercise = undefined;
+   if ( ! $current_exercise ) {
+     $current_exercise = new CodeGradX.Exercise({safecookie});
+   }
    try {
-     let exercise = undefined;
-     if ( ! $current_exercise ) {
-       let uri = window.document.location.pathname;
-       const safecookie = uri.replace(/\/exercise\/(U.{50,})$/, '$1');
-       $current_exercise = new CodeGradX.Exercise({safecookie});
-     }
      await $current_exercise.getDescription();
      //console.log($current_exercise);//DEBUG
+     exerciseTitle = $current_exercise.nickname;
      showExercise = true;
    } catch (exc) {
      console.log('exercise', exc);
-     error = exc.toString();
-   }
-
-   if ( ! $current_exercise ) {
-     if ( $campaign ) {
-       error = "Je ne vois pas de quel exercice vous parlez ?";
-       await sleep(3);
-       sapper.goto(`/campaign/${$campaign.name}`);
-     } else {
-       error = "Quel univers voulez-vous explorer ?";
-       await sleep(3);
-       sapper.goto('/universes');
-     }
+     error = parseAnomaly(exc);
+     return;
    }
  });
 

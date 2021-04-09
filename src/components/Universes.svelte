@@ -9,22 +9,26 @@
 </style>
 
 <div class='w3-container'>
+  <p class='smallHint'>Cliquer sur la ligne présente les exercices que
+    procure l'univers. Cliquer sur le lien si présent mène au site
+    original de l'univers concerné. </p>
   <table class='w3-table w3-hoverable'>
     <thead>
-      <tr class='w3-theme-d2'><th>Univers</th><th></th>
+      <tr class='w3-theme-l3'><th>Univers</th><th></th>
         <th class='w3-hide-small'>Début</th>
         <th class='w3-hide-small'>Fin</th></tr>
     </thead>
     <tbody>
       {#each campaigns as campaign}
       <tr class:obsolete={! campaign.active}
-          title="Voir les exercices..."
+          title={`Voir les exercices de ${campaign.name}`}
           on:click={see(campaign)} >
         <td>{#if ! campaign.open}
-             <a href='{campaign.home_url}' title={campaign.title}>
-               {campaign.name}</a>
+              <a href={campaign.home_url}
+                 title={`Voir le site original ${campaign.title}`}>
+                {campaign.name}</a>
             {:else}
-             <a href='/universe/{campaign.name}'
+             <a href={buildGoto(`universe/${campaign.name}`)}
                 class='internal'
                 title={campaign.title}>
                {campaign.name}</a>
@@ -47,6 +51,8 @@
  import { onMount } from 'svelte';
  import { campaign } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
+ import { goto } from '../client/lib.mjs';
+ import { buildGoto } from '../client/lib.mjs';
  
  export let campaigns = [];
 
@@ -59,7 +65,7 @@
      event.preventDefault();
      event.stopPropagation();
      $campaign = thecampaign;
-     sapper.goto(`/universe/${thecampaign.name}`);
+     goto(`/universe/${thecampaign.name}`);
    };
  }
   

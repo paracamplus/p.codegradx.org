@@ -2,7 +2,7 @@
 
 <div class='w3-center'>
   <!-- ParacamplusLogo /-->
-  <Picture image='/fw4ex-512x512' alt='logo' />
+  <Picture image='/fw4ex-512x512' alt='logo' height={height} />
 </div>
 
 <style>
@@ -25,4 +25,6 @@
 <script>
   import Picture from './Picture.svelte';
  //import ParacamplusLogo from './ParacamplusLogo.svelte';
+
+ export let height = '100px';
 </script>

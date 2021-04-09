@@ -18,6 +18,9 @@
         {#if exercise.uuid}
         <li> UUID: <b>{exercise.uuid}</b> </li>
         {/if}
+        {#if exercise.date}
+          <li>Créé le {CodeGradX.Date2str(exercise.date)}</li>
+        {/if}
         {#if exercise.authorship}
         <li> Créé par 
           {#each exercise.authorship as author}
@@ -32,17 +35,21 @@
         {/if}
       </ul>
 
+      {#if exercise.authorship}
       <div class='w3-panel'>
         Si vous voyez un problème avec la formulation de cet énoncé ou
         si vous détectez une anomalie dans la notation, signalez-la
         s'il vous plait au premier des auteurs de cet exercice. Merci!
       </div>
+      {/if}
 
     </div>
   </div>
 </section>
     
 <script>
+ import { CodeGradX } from 'codegradx';
+ 
  export let exercise = undefined;
  export let showinfo = false;
 

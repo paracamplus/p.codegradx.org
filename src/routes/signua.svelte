@@ -1,8 +1,16 @@
+<!--
+        Display the User's Agreement
+-->
+
 <style>
 </style>
+
 <Page shortTitle="ConditionsUsage"
       title="Conditions d'usage" >
 
+ {#if error}<Problem bind:error={error} />{/if}
+
+ {#if showPage}
   {#if withButton}
   <p>
     Vous pouvez maintenant finaliser votre inscription en prenant
@@ -18,16 +26,20 @@
     à améliorer leurs exercices.
   </p>
 
-<UA />
+  <UA />
 
-{#if withButton}
-<div class='w3-container w3-center w3-margin-bottom'>
-  <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
-          on:click={sign}>
-    J'accepte ces conditions!
-  </button>
-</div>
-{/if}
+  {#if withButton}
+  <div class='w3-container w3-center w3-margin-bottom'>
+    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
+            on:click={sign}>
+      J'accepte ces conditions!
+    </button>
+  </div>
+  {/if}
+
+ {:else}
+  <WaitingImage /> 
+ {/if}
 
 </Page>
 
@@ -35,17 +47,30 @@
  import UA from '../components/UA.svelte';
  import Page from '../components/Page.svelte';
  import Problem from '../components/Problem.svelte';
+ import WaitingImage from '../components/WaitingImage.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { onClient } from '../common/utils.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson } from '../client/lib.mjs';
+ import { initializePerson, goto } from '../client/lib.mjs';
+ import { parseAnomaly } from '../client/errorlib.mjs';
 
  export let withButton = true;
+ let error = undefined;
+ let showPage = false;
 
- onMount(async () => {
-   return initializePerson();
+ onClient(async () => {
+   $person = await initializePerson();
+   if ( $person ) {
+     showPage = true;
+   } else {
+     $lastmessage = `\
+Veuillez d'abord vous identifier avant de pouvoir signer
+les conditions d'utilisation.`;
+     goto('/connect');
+   }
  });
 
  async function sign (event) {
@@ -60,12 +85,14 @@
      });
      if ( response.ok ) {
        $person = new CodeGradX.User(response.entity);
-       return sapper.goto('/universes');
+       return goto('/universes');
      } else {
-       return "Problème d'accès au serveur!";
+       throw response;
      }
    } catch (exc) {
-     console.log({exc});//DEBUG
+     console.log('signua', {exc}); //DEBUG
+     error = parseAnomaly(exc) ||
+       "Problème d'accès au serveur!";
    }
  }
  

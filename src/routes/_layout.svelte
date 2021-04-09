@@ -1,4 +1,10 @@
 <script>
+ import { config } from '../stores.mjs';
+ import { configureConfig } from '../client/lib.mjs';
+
+ if ( typeof window !== 'undefined' ) {
+   $config = configureConfig();
+ }
 </script>
 
 <style>

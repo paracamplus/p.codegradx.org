@@ -1,7 +1,10 @@
 // Common utilities for editors
 
+import { htmlencode } from 'codegradx/src/htmlencode';
+
 export async function makeInitializeEditor (language, file, textareaInput) {
     const CodeMirrorPromise = import('codemirror');
+    import('codemirror/addon/edit/matchbrackets');
     const cm = await CodeMirrorPromise;
     if ( ! language ) {
         language = chooseProgrammingLanguage(exercise);
@@ -14,7 +17,7 @@ export async function makeInitializeEditor (language, file, textareaInput) {
     let options = {
         lineNumbers: true,
         lineWrapping: false,
-        indentWithTabs: false,
+        matchBrackets : true,
         indentUnit: 2,
         tabSize: 2,
         //viewportMargin: Infinity,
@@ -177,7 +180,8 @@ export function chooseProgrammingLanguage (exercise) {
         }
     }
     if ( exercise.inlineFileName ) {
-        language = chooseProgrammingLanguageFromExtension(exercise.inlineFileName);
+        language = chooseProgrammingLanguageFromExtension(
+            exercise.inlineFileName);
         if ( language ) {
             return language;
         }
@@ -209,7 +213,8 @@ export function makeSendFile (exercise, dispatch) {
         }
         try {
             dispatch('jobPromise', {jobPromise: null});
-            const jobPromise = exercise.sendFileFromDOM(FileChooserForm, chosenfile)
+            const jobPromise = exercise.sendFileFromDOM(
+                FileChooserForm, chosenfile)
             dispatch('jobPromise', {jobPromise});
         } catch (exc) {
             console.log('SingleFile sendFile', exc);

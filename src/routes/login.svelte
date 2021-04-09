@@ -1,3 +1,7 @@
+<!--
+        Authentication form (login, password) 
+-->
+
 <style>
  input.error {
    background-color: pink;
@@ -46,7 +50,7 @@
     <button type="submit" name="signin" 
             class="w3-btn w3-theme-d2 w3-round-xxlarge"
             on:click={authenticate}>
-      Je m'identifie!
+      Je me connecte!
     </button>
     {#if showlostpassword}
       <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
@@ -69,7 +73,7 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson } from '../client/lib.mjs';
+ import { initializePerson, goto } from '../client/lib.mjs';
 
  let login = undefined;
  let password = undefined;
@@ -105,11 +109,18 @@
      return;
    }
    try {
-     $person = await CodeGradX
+     const newperson = await CodeGradX
            .getCurrentState()
            .getAuthenticatedUser(login, password);
-     if ( $person ) {
-       sapper.goto('/universes');
+     if ( newperson ) {
+       $person = newperson;
+       if ( ! newperson.confirmedemail ) {
+         goto('/sendmail');
+       } else if ( newperson.confirmedua < newperson.uaversion ) {
+         goto('/signua');
+       } else {
+         goto('/universes');
+       }
      }
    } catch (exc) {
      error = 'Courriel ou mot de passe incorrect!';
@@ -122,7 +133,7 @@
  }
  
  function lostpassword (event) {
-   sapper.goto('/lostpassword');
+   goto('/lostpassword');
  }
 
 </script>

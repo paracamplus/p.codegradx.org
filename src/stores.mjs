@@ -7,5 +7,6 @@ export const person = writable(undefined);
 export const campaign = writable(undefined);
 export const current_exercise = writable(undefined);
 export const config = writable({});
+export const lastmessage = writable(undefined);
 
 // end of stores.mjs

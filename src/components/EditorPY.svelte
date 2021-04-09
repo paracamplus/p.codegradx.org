@@ -16,7 +16,7 @@
  }
 </style>
 
-<link rel='stylesheet' href='/codemirror.css' />
+<link rel='stylesheet' href={buildGoto('codemirror.css')} />
 
 <section class='w3-container'>
   <div class='smallHint'>
@@ -77,6 +77,7 @@
           HTMLize,
           customizeEditorForLanguage }
     from '../client/editorlib.mjs';
+ import { buildGoto } from '../client/lib.mjs';
 
  export let exercise;
  export let file;

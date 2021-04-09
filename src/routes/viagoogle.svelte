@@ -1,3 +1,8 @@
+<!--
+       Button to process authentication via Google.
+       With a foreword to warn about cookies.
+-->
+
 <style>
 </style>
 

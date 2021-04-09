@@ -25,7 +25,7 @@
         </li>
         <li> Une fois votre adresse électronique confirmée, vous aurez
           à signer les
-          <a href='/ua'>
+          <a href={buildGoto('ua')}>
             conditions d'usage</a> de
           CodeGradX (en gros, vous donnez à la Science, vos réponses
           aux exercices proposés). </li>
@@ -39,6 +39,8 @@
 </section>
 
 <script>
+ import { buildGoto } from '../client/lib.mjs';
+ 
  export let helpshown;
   
  function close (event) {

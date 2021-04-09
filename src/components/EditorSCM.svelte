@@ -16,7 +16,7 @@
  }
 </style>
 
-<link rel='stylesheet' href='/codemirror.css' />
+<link rel='stylesheet' href={buildGoto('codemirror.css')} />
 
 <section class='w3-container'>
   <div class='smallHint'>
@@ -78,6 +78,7 @@
     from '../client/editorlib.mjs';
  import { Parser, defaultEnvironment, Evaluator }
    from "../client/MrScheme/index.mjs";
+ import { buildGoto } from '../client/lib.mjs';
 
  export let exercise;
  export let file;

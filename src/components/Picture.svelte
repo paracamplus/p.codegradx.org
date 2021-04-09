@@ -10,7 +10,7 @@
  }
 </style>
 
-<picture class='videoWrapper'>
+<picture class='videoWrapper' style='height: {height}'>
   <source srcset='{image}.webp' type='image/webp' />
   <img src='{image}.png' alt={alt} />
 </picture>
@@ -18,4 +18,5 @@
 <script>
  export let image = '';
  export let alt = '';
+ export let height = '100px';
 </script>

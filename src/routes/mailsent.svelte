@@ -1,3 +1,7 @@
+<!--
+      Information asking to confirm email
+-->
+
 <style>
 </style>
 
@@ -24,7 +28,7 @@
 
 {:else}
 
-  <p> Je ne sais qui vous êtes aussi vous redirige-je vers la
+  <p> Je ne sais qui vous êtes aussi vous redirigé-je vers la
     page appropriée...
   </p>
 
@@ -42,7 +46,7 @@
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { sleep } from '../common/utils.mjs';
- import { isUser, initializePerson } from '../client/lib.mjs';
+ import { isUser, initializePerson, goto } from '../client/lib.mjs';
 
  let path = undefined;
 
@@ -72,7 +76,7 @@
    // If coming from /connect, then $person is a partial user:
    if ( ! $person ) {
      await sleep(1);
-     sapper.goto('/connect');
+     goto('/connect');
    }
  });
 

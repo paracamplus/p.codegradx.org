@@ -1,3 +1,7 @@
+<!--
+      Form to declare a lost password
+-->
+
 <style>
  input.error {
    background-color: pink;
@@ -41,7 +45,7 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson } from '../client/lib.mjs';
+ import { initializePerson, goto } from '../client/lib.mjs';
  import { sleep } from '../common/utils.mjs';
 
  let login = undefined;
@@ -60,7 +64,7 @@
      error = `Bonjour ${$person.pseudo}, je vous épargne cette étape
 puisque je vous connais déjà !`;
      await sleep(2);
-     await sapper.goto('/universes');
+     await goto('/universes');
    }
  });
  
@@ -77,7 +81,7 @@ puisque je vous connais déjà !`;
      // mailsent will have to handle $person and its specific state
      // that is, emailConfirmed or not, UAsigned or not. The token
      // $person.token may be a *-mailconfirm or *-reconnect.
-     sapper.goto('/mailsent');
+     goto('/mailsent');
    } catch (exc) {
      error = "Je n'ai pas réussi à envoyer de courriel à cette adresse !";
    }

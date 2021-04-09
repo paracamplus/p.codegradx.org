@@ -15,22 +15,33 @@
   {/if}
 </section>
 
+<!-- 
+
+Code in script context=module is run on the server and on the client.
+ 
+According to https://github.com/sveltejs/sapper/issues/221
+only page-level components can use preload, not child components.
+So it is not possible to preload the user agreement.
+
+-->
+
 <script>
  import WaitingImage from './WaitingImage.svelte';
  
- import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx';
+ import { onClient } from '../common/utils.mjs';
 
  let ua = undefined;
 
- onMount(async () => {
+ onClient(async () => {
    ua = await getUA();
  });
 
  async function getUA () {
    try {
-     const response = await CodeGradX.getCurrentState().sendAXServer('x', {
+     const state = CodeGradX.getCurrentState();
+     const response = await state.sendAXServer('x', {
        path: '/fromp/getua?lang=fr',
        method: 'GET',
        headers: {
@@ -41,11 +52,12 @@
      if ( response.ok ) {
        return response.entity;
      } else {
-       return "Problème d'accès au serveur!";
+       throw response;
      }
    } catch (exc) {
-     console.log({exc});//DEBUG
+     console.log('within getUA', {exc});//DEBUG
+     return "Problème d'accès au serveur!";
    }
-}
+ }
 
 </script>

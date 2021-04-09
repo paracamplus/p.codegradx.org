@@ -16,7 +16,7 @@
  }
 </style>
 
-<link rel='stylesheet' href='/codemirror.css' />
+<link rel='stylesheet' href={buildGoto('codemirror.css')} />
 
 <section class='w3-container'>
   <div class='smallHint'>
@@ -51,7 +51,7 @@
         Noter ma réponse
       </button>
       <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-              title="Envoyer un fichier au serveur pour notation"
+              title="Envoyer un fichier local au serveur pour notation"
               on:click={() => preferFile = true} >
         Choisir fichier {#if exercise.inlineFileName}
         <code>{exercise.inlineFileName}</code>{/if}
@@ -95,6 +95,7 @@
           HTMLize,
           customizeEditorForLanguage }
     from '../client/editorlib.mjs';
+ import { buildGoto } from '../client/lib.mjs';
 
  export let exercise;
  export let file;

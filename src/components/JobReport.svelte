@@ -39,16 +39,17 @@
 
 {#if job}
 <div class='w3-container'>
-  <h3>Rapport de notation
+  <h3>Rapport de notation {#if job.label}<code>{job.label}</code>{/if}
     <span class='w3-right w3-margin-left'
-          on:click={() => job = undefined}>&#x2716;</span>
+          on:click={close}>&#x2716;</span>
     {#if showReport}
     <span class='w3-right w3-margin-left'
           title="Information administrative"
           on:click={() => showinfo = true}>
           <InformationSign /></span>
     <span class='w3-right mark'>
-      {massageMark(job.mark)}/{massageMark(job.totalMark)}</span>
+      {massageMark(job.mark, 100, job.totalMark)} /
+      {massageMark(job.totalMark, 100, job.totalMark)}</span>
     {/if}
   </h3>
 
@@ -77,9 +78,10 @@
  import InformationSign from './InformationSign.svelte';
  import JobInfo from './JobInfo.svelte';
  
- import { onMount } from 'svelte';
+ import { onMount, createEventDispatcher  } from 'svelte';
+ const dispatch = createEventDispatcher();
  import { CodeGradX } from 'codegradx/src/job';
- import { sleep } from '../common/utils.mjs';
+ import { massageMark } from '../client/marklib.mjs';
 
  export let job;
  export let attempts = undefined;
@@ -87,13 +89,6 @@
  let showReport = false;
  let showinfo = false;
  
- function massageMark (mark) {
-   if ( isNaN(mark) ) {
-     return '';
-   }
-   return Math.round(100*mark);
- }
-
  onMount(async () => {
    //console.log({job});
    try {
@@ -112,5 +107,10 @@
      }
    }
  });
+
+ function close (event) {
+   dispatch('close');
+   job = undefined;
+ }
 
 </script>

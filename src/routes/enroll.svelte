@@ -1,3 +1,7 @@
+<!--
+     Enrolment page for new user
+-->
+
 <style>
  input.error {
    background-color: pink;
@@ -12,7 +16,7 @@
       showheader={false}>
 
   <section class='w3-container w3-margin-top w3-padding'>
-    <header class='w3-center w3-margin-bottom'>
+    <header class='w3-center w3-margin-bottom bold'>
       Inscription à CodeGradX
       <span class='w3-right w3-margin-left w3-xlarge'
             on:click={showHelp}><InformationSign /></span>
@@ -28,7 +32,7 @@
     <div class="w3-margin-top">
       <label for="login">Votre courriel:</label>
       <input type="text" bind:value={login} name='login'
-             class:error={errorLogin} class="w3-input indent"
+             class:error={error} class="w3-input indent"
              on:keyup={hideproblem}
              on:change={hideproblem}
              on:click={hideproblem}
@@ -76,12 +80,11 @@
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson } from '../client/lib.mjs';
+ import { initializePerson, goto } from '../client/lib.mjs';
 
  let login = undefined;
  let defaultlogin = 'mon.email@a.moi';
  let error = undefined;
- let errorLogin = false;
  let helpshown = false;
  let enrollButton;
  let captcha = null;
@@ -91,7 +94,7 @@
  let showRefresh = false;
 
  function hideproblem (event) {
-   error = errorLogin = undefined;
+   error = undefined;
  }
 
  onMount(async () => {
@@ -101,12 +104,12 @@
  async function enroll (event) {
    hideproblem();
    if ( ! login || login === '' ) {
-     errorLogin = error = "Quel est votre courriel ?";
+     error = "Quel est votre courriel ?";
      return;
    }
    // A real email is required to enroll someone!
    if ( ! checkEmail(login) ) {
-     errorLogin = error = "Votre courriel a l'air mal formé!";
+     error = "Votre courriel a l'air mal formé!";
      return;
    }
    let state = CodeGradX.getCurrentState();
@@ -120,7 +123,7 @@
            // $person is partial user with only:
            // confirmedemail, confirmedua, uaversion, login, logins, expires
            console.log($person);//DEBUG
-           sapper.goto(`/resume/${$person.token}`);
+           goto(`/resume/${$person.token}`);
          } catch (exc) {
            error = "Mauvaise réponse!";
            captchaRefresh(null);
@@ -145,7 +148,7 @@
    filledBoxes = o.count;
    hideproblem();
    if ( ! checkEmail(login) ) {
-     errorLogin = error = "Votre courriel a l'air mal formé!";
+     error = "Votre courriel a l'air mal formé!";
    }
  }
  
@@ -177,7 +180,7 @@
    captcha = o.captcha;
    showRefresh = true;
    if ( ! checkEmail(login) ) {
-     errorLogin = error = "Votre courriel a l'air mal formé!";
+     error = "Votre courriel a l'air mal formé!";
    }
  }
 

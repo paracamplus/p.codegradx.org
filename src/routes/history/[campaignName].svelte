@@ -1,50 +1,23 @@
-<Page title={`Mon historique ${$campaign ? `dans ${$campaign.name}` : ''}`}
-      shortTitle="Profil">
+<!--
+      This page displays the jobs made by the user in the current campaign
+-->
 
-  <Problem bind:error={error} />
+<style>
+</style>
 
-  {#if currentJob}
-  <section class='w3-container w3-center w3-modal'
-           style='display:block' >
-    <div class='w3-modal-content w3-animate-top w3-border'>
-      <JobReport bind:job={currentJob} attempts={2} />
-    </div>
-  </section>
+<Page title="Mon historique {campaignTitle}"
+      shortTitle="Historique">
+
+  {#if error}<Problem bind:error={error} />{/if}
+
+  {#if showStudentJobs}
+    <JobsList bind:jobs={jobs}
+              bind:rest={rest}
+              on:seeMore={seeMore} />
+  {:else if ! error}
+    <p class='waitingMessage'>Chargement de l'historique...</p>
+    <WaitingImage height='50px' />
   {/if}
-
-  <table id='jobsHistory'
-         class='w3-table w3-center w3-hoverable w3-bordered'>
-    <thead>
-      <tr class="w3-theme-l3">
-        <th on:click={sortColumn('exercise_nickname')}>surnom</th>
-        <th on:click={sortColumn('exercise_name')}
-            class='w3-hide-small w3-hide-medium'>
-          nom</th>
-        <th on:click={sortColumn('mark', 'float')}>note</th>
-        <th on:click={sortColumn('archived', 'date')}
-            class='w3-hide-small'>
-          date</th>
-    </thead>
-    <tbody>
-      {#if jobs.length > 0}
-         {#each reverse(jobs) as job}
-          <tr class:hidden={job.removed}
-              on:click={mkShowJob(job)}>
-            <td>{job.exercise_nickname}</td>
-            <td class='w3-hide-small w3-hide-medium'>{job.exercise_name}</td>
-            <td>{Math.round(factor * job.mark)} /
-              {Math.round(factor * job.totalMark)}</td>
-            <td class='w3-hide-small'>{job.archived}</td>
-          </tr>
-         {/each}
-      {:else}
-          <tr><td colspan='4'>
-            <p class='waitingMessage'> Chargement de l'historique en cours...</p>
-            <WaitingImage />
-          </td></tr>
-      {/if}
-    </tbody>
-  </table>
 
 </Page>
 
@@ -52,93 +25,83 @@
  import Page from '../../components/Page.svelte';
  import Problem from '../../components/Problem.svelte';
  import WaitingImage from '../../components/WaitingImage.svelte';
- import JobReport from '../../components/JobReport.svelte';
+ import JobsList from '../../components/JobsList.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person, campaign } from '../../stores.mjs';
+ import { person, campaign, lastmessage } from '../../stores.mjs';
  import { CodeGradX } from 'codegradx/campaign';
  import { CodeGradX as cx } from 'codegradx/campaignlib';
  import { initializePerson } from '../../client/lib.mjs';
- import { doSortColumn } from '../../client/sortlib.mjs';
- import queryString from 'query-string';
+ import { fetchCampaign } from '../../client/campaignlib.mjs';
+ import { sleep } from '../../common/utils.mjs';
+ import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { goto } from '../../client/lib.mjs';
 
  let error = undefined;
  let jobs = [];
- let factor = 100;
- let currentJob = undefined;
+ let showStudentJobs = false;
+ let campaignTitle = '';
+ let total = undefined;
+ let offset = 0;
+ let count = 20;
+ let rest = 0;
 
  onMount(async () => {
+   const uri = window.document.location.pathname;
+   const campaignName = uri.replace(/^(.*\/)?history\/([^\/]+)/, '$2');
+   campaignTitle = 'dans ' + campaignName;
    if ( ! $person ) {
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé, je ne vous connais pas!";
+     error = "Désolé mais je ne vous connais pas!";
+     return;
    }
-   await refreshHistory($person);
+   $campaign = await fetchCampaign($person, campaignName);
+   if ( ! $campaign ) {
+     error = "Veuillez d'abord choisir un univers! ...";
+     await sleep(3);
+     $lastmessage = error;
+     goto('/universes');
+   }
+   campaignTitle = `dans ${$campaign.name}`;
+   await refreshHistory($person, $campaign);
  });
 
- async function findCampaign (person) {
-   if ( $campaign ) {
-     return $campaign;
-   }
-   try {
-     $campaign = await person.getCurrentCampaign();
-     return $campaign;
-   } catch (exc) {
-     // ignore, a campaign may be mentioned in the query string:
-   }
-   let uri = window.document.location.pathname;
-   const campaignName = uri.replace(/^(.*\/)?history\/([^\/]+)/, '$2');
-   if ( campaignName ) {
-     try {
-       $campaign = await person.getCampaign(campaignName);
-       return $campaign;
-     } catch (exc) {
-       // ignore
-     }
-   }
-   return undefined;
+ async function seeMore () {
+   await refreshHistory($person, $campaign);
  }
-   
- async function refreshHistory (person) {
+
+ async function refreshHistory (person, campaign) {
+   showStudentJobs = false;
    try {
-     $campaign = await findCampaign(person);
-     if ( $campaign ) {
-       jobs = await $campaign.getJobs();
+     const state = CodeGradX.getCurrentState();
+     const path = `/history/campaign/${campaign.name}`;
+     const response = await state.sendAXServer('x', {
+       path: `${path}?count=${count}&offset=${offset}`,
+       method: 'GET',
+       headers: {
+         Accept: "application/json"
+       }
+     });
+     if ( response.ok ) {
+       const json = response.entity;
+       total = json.total;
+       count = json.count;
+       // prepare next offset:
+       offset = json.offset + count;
+       rest = Math.max(0, total - offset);
+       const newjobs = json.jobs.map(CodeGradX.Job.js2job);
+       jobs = jobs.concat(newjobs);
+       showStudentJobs = true;
      } else {
-       error = "Veuillez d'abord choisir un univers!";
+       throw response;
      }
    } catch (exc) {
-     console.log('refreshHistory', exc);
-     error = "Je ne peux accéder à votre historique!";
+     console.log('history refreshHistory', {exc});
+     error = parseAnomaly(exc);
    }
-   //console.log({jobs});//DEBUG
  }
  
- function reverse (array) {
-   const result = [];
-   for ( let i=0 ; i<array.length ; i++ ) {
-     result[i] = array[array.length - 1 - i];
-   }
-   return result;
- }
-
- // Sort jobs with key.
- function sortColumn (key, hint) {
-   return function (event) {
-     event.stopPropagation();
-     event.preventDefault();
-     jobs = doSortColumn(key, jobs, hint);
-   };
- }
-
- function mkShowJob (job) {
-   return function (event) {
-     event.stopPropagation();
-     event.preventDefault();
-     currentJob = job;
-   };
- }
-
 </script>

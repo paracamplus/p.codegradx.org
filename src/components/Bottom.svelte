@@ -5,6 +5,7 @@
  }
  a {
    text-decoration : none;
+   color: white;
  }
  div.hidden {
    color: var(--color-theme-d2);
@@ -14,7 +15,7 @@
  }
 </style>
 
-<footer class="w3-cell-row w3-small w3-theme-d2">
+<footer id='Footer' class="w3-cell-row w3-small w3-theme-d2">
   <div class="w3-container w3-cell w3-third">
     <a href='https://codegradx.org/spip.php?article22'
        target='_blank' rel="noopener"

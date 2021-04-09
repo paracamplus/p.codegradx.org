@@ -1,3 +1,7 @@
+<!--
+      Display general information on CodeGradX
+-->
+
 <Page shortTitle='À propos'
       title="À propos de CodeGradX" >
 

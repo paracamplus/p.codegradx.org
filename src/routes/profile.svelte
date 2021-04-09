@@ -1,3 +1,7 @@
+<!--
+      Form to modify its profile
+-->
+
 <style>
  input.indent {
    margin-left: 2em;
@@ -99,6 +103,8 @@
                 on:click={modify} >Sauvegarder
         </button>
       </div>
+
+      {#if done}<div class='waitingMessage'>Enregistré!</div>{/if}
     </div>
         
     {:else}
@@ -118,9 +124,11 @@
  import { CodeGradX } from 'codegradx';
  import { initializePerson } from '../client/lib.mjs';
  import { sanitizeName, checkEmail, checkPassword, sanitizePassword, chars }
-   from '../common/sanitizers.mjs';
+ from '../common/sanitizers.mjs';
+ import { sleep } from '../common/utils.mjs';
 
  let error = undefined;
+ let done = false;
  let saveButton;
  let newperson = {
    email: "mon.email@a.moi",
@@ -141,10 +149,11 @@
  
  onMount(async () => {
    if ( ! $person ) {
-     $person = await CodeGradX.getCurrentUser();
+     $person = await initializePerson();
    }
    if ( ! $person ) {
      error = "Désolé, je ne vous connais pas!";
+     return;
    }
    newperson = fillDefaultValues($person);
  });
@@ -276,7 +285,10 @@
      const myuser = await state.userSelfModify(newperson);
      if ( myuser ) {
        $person = myuser;
+       done = true;
        newperson = fillDefaultValues($person);
+       await sleep(3);
+       done = false;
      }
    } catch (exc) {
      error = exc;

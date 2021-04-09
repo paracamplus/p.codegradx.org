@@ -1,14 +1,18 @@
-<!-- Unicode Character 'DOWNWARDS TRIANGLE-HEADED ARROW TO BAR' (U+2B73) -->
-<svg xmlns="http://www.w3.org/2000/svg" 
-     width="{width}"
-     height="{height}"
-     viewBox="0 0 {originalWidth} {originalHeight}"
-     stroke="{color}" 
-     fill="{color}" >
-  <g transform="translate(-21.0938,-156.9375)">
-    <path
-    d="M 125.1562,274.9219 73.125,326.9531 21.0938,274.9219 h 41.625 V 156.9375 h 20.8124 v 117.9844 z m 0,90.1406 H 21.0938 V 344.25 h 104.0624 z" />
+<!-- download -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   width="{width}"
+   height="{height}"
+   viewBox="0 0 {originalWidth} {originalHeight}"
+   stroke="{color}"
+   stroke-width='2'
+   fill="{color}" >
+  <g transform="translate(130.93459,-21.495125)">
+    <path d="M 125.1562,274.9219 73.125,326.9531 21.0938,274.9219 h 41.625 V 156.9375 h 20.8124 v 117.9844 z m 0,90.1406 H 21.0938 V 344.25 h 104.0624 z" />
   </g>
+  <path d="M 131.34435,260.31437 C 75.181409,235.04144 19.01813,209.76836 9.5530713,176.13121 0.08801249,142.49407 37.320679,100.4941 60.378201,89.827662 83.435723,79.161221 92.319153,99.827887 103.86305,92.82757 115.40696,85.827252 129.61062,51.160587 160.70299,30.161073 191.79537,9.1615594 239.77549,1.8282617 274.72098,14.161036 c 34.9455,12.332775 56.85864,44.33377 58.37365,71.333441 1.51501,26.999673 -17.36834,48.999573 -8.78099,59.666743 8.58735,10.66718 44.64534,10.00051 62.37784,23.99954 17.73251,13.99903 17.14026,42.66663 -4.44527,60.11255 -21.58554,17.44591 -65.05277,23.79992 -108.07728,30.08922"
+        style="fill:none;stroke-width:24;" />
 </svg>
 
 <style>
@@ -22,7 +26,7 @@
  export let size = '1em';
  let width = size;
  let height = size;
- let originalWidth = 104.0;
- let originalHeight = 208.1;
+ let originalWidth = 407;
+ let originalHeight = 343.5;
  export let color = 'black';
 </script>

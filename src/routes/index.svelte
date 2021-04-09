@@ -13,7 +13,8 @@
   <title>CodeGradX</title>
 </svelte:head>
 
-<div class='w3-container background' >
+<div class='w3-container background'
+     on:click={pursue} >
   <div class='w3-center'>
     <div class='text' style='padding-top: 10vh;'>
       CodeGradX
@@ -42,22 +43,23 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person, config } from '../stores.mjs';
- import { isUser, initializePerson, configureConfig } from '../client/lib.mjs';
+ import { isUser, initializePerson, configureConfig, goto }
+    from '../client/lib.mjs';
 
  onMount(async () => {
    /* no await */ sapper.prefetchRoutes(['/universes']);
    $config = configureConfig();
    $person = await initializePerson();
-   return go();
+   return pursue();
  });
 
- function go (event) {
+ function pursue (event) {
    const host = window.document.location.hostname
           .replace(/^([^.]+)[.].*$/, '$1');
    if ( host.match(/^(test)?p$/) ) {
-     return sapper.goto('/universes');
+     return goto('/universes');
    } else {
-     return sapper.goto(`/universe/${host}`);
+     return goto(`/universe/${host}`);
    }
  }
    

@@ -1,3 +1,7 @@
+<!--
+      Give choice to sign in or sign up
+-->
+
 <style>
 </style>
 
@@ -11,7 +15,9 @@
   </header>
 
   {#if helpshown}<ConnectDoc bind:helpshown={helpshown} />{/if}
-    
+
+  <LastMessage />
+  
   <p>
       Si vous n'avez pas encore créé de compte sur CodeGradX, vous pouvez
       cliquer sur le bouton « Je m'inscris » ou sur « via Google ».
@@ -23,7 +29,7 @@
             on:click={enroll}>
       Je m'inscris!
     </button>
-    <a href='/viagoogle' name="viaGoogle1"
+    <a href='viagoogle' name="viaGoogle1"
        class="w3-btn w3-theme-d2 w3-round-xxlarge"
        >via Google</a>
   </div>
@@ -38,7 +44,7 @@
             on:click={authenticate}>
       Je m'identifie!
     </button>
-    <a href='/viagoogle' name="viaGoogle2"
+    <a href='viagoogle' name="viaGoogle2"
        class="w3-btn w3-theme-d2 w3-round-xxlarge"
        >via Google</a>
     <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
@@ -54,12 +60,13 @@
  import Page from '../components/Page.svelte';
  import InformationSign from '../components/InformationSign.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
+ import LastMessage from '../components/LastMessage.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson } from '../client/lib.mjs';
+ import { initializePerson, goto } from '../client/lib.mjs';
 
  let helpshown = false;
 
@@ -68,13 +75,13 @@
  });
 
  function enroll (event) {
-   sapper.goto('/enroll');
+   goto('/enroll');
  }
  function authenticate (event) {
-   sapper.goto('/login');
+   goto('/login');
  }
  function lostpassword (event) {
-   sapper.goto('/lostpassword');
+   goto('/lostpassword');
  }
 
  function showHelp (event) {

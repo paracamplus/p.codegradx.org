@@ -6,42 +6,64 @@
  header.firstLine div.w3-dropdown-content {
    font-weight: initial;
    font-size: 1rem;
-}
+ }
+ div.show {
+   display: block;
+ }
 </style>
 
-<header class='w3-container w3-theme-d2 firstLine'>
+<svelte:body on:click={handleOutsideClick} />
+
+<header id='Header' class='w3-container w3-theme-d2 firstLine'>
   <div class='w3-cell-row'>
     <div class='w3-container w3-cell w3-third'>
-      <div class='w3-dropdown-hover w3-theme-d2'>
-        <MenuSign size={$config.logo ? $config.logo.height : '1em'} />
-        <div class='w3-dropdown-content w3-bar-block w3-card-4'>
+      <div class='w3-theme-d2 w3-dropdown-click'>
+        <span id='MenuButton' on:click={displayMenu}>
+          <MenuSign size={$config.logo ? $config.logo.height : '1em'} />
+        </span>
+        <div id='MenuContent' bind:this={menuContent}
+             class:show={showMenu}
+             class='w3-dropdown-content w3-bar-block w3-card-4'>
           <a class='w3-bar-item w3-btn'
-             href='/apropos'>à propos</a>
+             href={buildGoto('apropos')}>à propos</a>
           <a class='w3-bar-item w3-btn'
-             href='/universes'>
+             href={buildGoto('universes')}>
             {#if $campaign}autres{:else}voir les {/if} univers</a>
       
           {#if $campaign}
           <a class='w3-bar-item w3-btn'
-             href='/universe/{$campaign.name}'>l'univers {$campaign.name}</a>
+             href={buildGoto('universe/{$campaign.name}')}>l'univers {$campaign.name}</a>
           {/if}
       
           {#if isUser($person)}
+
+            {#if dev}
+            <!-- *********************************** -->
+            <a class='w3-bar-item w3-btn'
+               href={buildGoto('guts/')}>TRIPES</a>
+            <!-- *********************************** -->
+            {/if}
+
             {#if $campaign}
               <a class='w3-bar-item w3-btn'
-                 href='/history/{$campaign.name}' >mon historique</a>
+                 href={buildGoto('history/{$campaign.name}')} >mon historique</a>
+            {/if}
+            {#if $campaign && isTeacher($campaign, $person)}
+              <a class='w3-bar-item w3-btn'
+                 href={buildGoto('teacher/{$campaign.name}')} >pour enseignant</a>
             {/if}
             {#if $person.isauthor}
               <a class='w3-bar-item w3-btn'
-                 href='/myexercises' >mes exercices</a>
+                 href={buildGoto(`author/${$campaign ? $campaign.name : 'free'}`)} >pour auteur</a>
             {/if}
             <a class='w3-bar-item w3-btn'
-               href='/whoami' >qui suis-je ?</a>
+               href={buildGoto('whoami')} >mon profil</a>
             <div class='w3-bar-item w3-btn'
+                 id='disconnectButton'
                  on:click={logout} >me déconnecter</div>
           {:else}
             <a class='w3-bar-item w3-btn'
-               href='/connect' >m'identifier</a>
+               href={buildGoto('connect')} >m'identifier</a>
           {/if}
         </div>
       </div>
@@ -70,22 +92,51 @@
  import MenuSign from './MenuSign.svelte';
  
  import * as sapper from '@sapper/app';
- import { onMount } from 'svelte'; 
+ import { onMount, createEventDispatcher } from 'svelte';
  import { person, campaign, config } from '../stores.mjs';
- import { CodeGradX } from 'codegradx';
- import { isUser, configureConfig } from '../client/lib.mjs';
+ import { isUser, isTeacher } from '../client/lib.mjs';
+ const dispatch = createEventDispatcher();
+ import { buildGoto } from '../client/lib.mjs';
+ import { stores } from '@sapper/app';
+ const { session } = stores();
+ import { get } from 'svelte/store';
 
+ let dev = get(session).dev;
+ let menuContent = undefined;
+ let showMenu = false;
+ let displayMenu = function (event) {
+   /* ignore till onMount */
+   alert("Not yet installed!");
+ };
+ 
  onMount(async () => {
-   //await configureConfig();
+   displayMenu = doDisplayMenu;
+   showMenu = false;
  });
 
- async function logout (event) {
-   const json = $person;
-   $person = undefined;
-   if ( isUser(json) ) {
-     await CodeGradX.getCurrentState().userDisconnect();
-   }
-   sapper.goto('/universes');
+ function doDisplayMenu (event) {
+   //menuContent.classList.add('w3-show');
+   event.stopPropagation();
+   event.preventDefault();
+   showMenu = ! showMenu;
  }
- 
+
+ async function logout (event) {
+   dispatch('logout', {});
+ }
+
+ function handleOutsideClick (event) {
+   if ( showMenu ) {
+     if ( menuContent.contains(event.target) ) {
+       // nothing: the user selects an item in the menu!
+     } else {
+       event.stopPropagation();
+       event.preventDefault();
+       showMenu = ! showMenu;
+     }
+   } else {
+     // nothing: the menu is not open
+   }
+ }
+
 </script>

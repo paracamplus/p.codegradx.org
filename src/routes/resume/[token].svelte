@@ -1,3 +1,7 @@
+<!--
+
+-->
+
 <style>
 </style>
 
@@ -33,7 +37,8 @@
  import { onMount } from 'svelte';
  import { person } from '../../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { determineNextUserState } from '../../client/lib.mjs';
+ import { determineNextUserState, goto } from '../../client/lib.mjs';
+ import { parseAnomaly } from '../../client/errorlib.mjs';
 
  let error = undefined;
 
@@ -53,13 +58,14 @@
        const where = document.location.pathname.replace(/^.*(\/\w+)/, '$1');
        if ( href && href !== where ) {
          console.log(`From ${where}: goto ${href}`);
-         return sapper.goto(href);
+         return goto(href);
        }
      } else {
-       error = "probleme";
+       throw response;
      }
    } catch (exc) {
-     console.log({exc});//DEBUG
+     console.log('resume', {exc});//DEBUG
+     error = parseAnomaly(exc);
    }
  });
  

@@ -1,4 +1,4 @@
-// Client utilities
+// Common utilities to client or server
 
 /**
    Sleep for n seconds
@@ -31,4 +31,17 @@ export function getCookies (req) {
         //console.log({cookies, result});//DEBUG
     }
     return result;
+}
+
+/*
+   Run code only on client.
+   
+   @param {function}
+
+*/
+
+export function onClient (f) {
+    if ( typeof window !== 'undefined' ) {
+        f.call(this);
+    }
 }
