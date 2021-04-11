@@ -6,7 +6,7 @@
 </style>
 
 <Page title="Mon historique {campaignTitle}"
-      shortTitle="Historique">
+      shortTitle="Historique/{campaignName}">
 
   {#if error}<Problem bind:error={error} />{/if}
 
@@ -32,15 +32,14 @@
  import { person, campaign, lastmessage } from '../../stores.mjs';
  import { CodeGradX } from 'codegradx/campaign';
  import { CodeGradX as cx } from 'codegradx/campaignlib';
- import { initializePerson } from '../../client/lib.mjs';
+ import { initializePerson, goto } from '../../client/lib.mjs';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
- import { sleep } from '../../common/utils.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
- import { goto } from '../../client/lib.mjs';
 
  let error = undefined;
  let jobs = [];
  let showStudentJobs = false;
+ let campaignName = '';
  let campaignTitle = '';
  let total = undefined;
  let offset = 0;
@@ -49,21 +48,21 @@
 
  onMount(async () => {
    const uri = window.document.location.pathname;
-   const campaignName = uri.replace(/^(.*\/)?history\/([^\/]+)/, '$2');
+   campaignName = uri.replace(/^(.*\/)?history\/([^\/]+)/, '$2');
    campaignTitle = 'dans ' + campaignName;
    if ( ! $person ) {
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé mais je ne vous connais pas!";
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     goto('/connect');
      return;
    }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
-     error = "Veuillez d'abord choisir un univers! ...";
-     await sleep(3);
-     $lastmessage = error;
+     $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
      goto('/universes');
+     return;
    }
    campaignTitle = `dans ${$campaign.name}`;
    await refreshHistory($person, $campaign);

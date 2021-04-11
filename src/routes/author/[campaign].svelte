@@ -47,13 +47,13 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person, campaign, current_exercise } from '../../stores.mjs';
+ import { person, campaign, current_exercise, lastmessage }
+    from '../../stores.mjs';
  import { initializePerson, goto } from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx/src/newexercise';
  import { CodeGradX as _ } from 'codegradx/src/userlib';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
- import { sleep } from '../../common/utils.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
 
  let error = undefined;
@@ -70,7 +70,8 @@
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé, je ne vous connais pas!";
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     goto('/connect');
      return;
    }
    if ( ! $person.isauthor ) {
@@ -79,9 +80,9 @@
    }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
-     error = "Veuillez d'abord choisir un univers! ...";
-     await sleep(3);
+     $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
      goto('/universes');
+     return;
    }
    campaignTitle = `dans ${$campaign.name}`;
    try {

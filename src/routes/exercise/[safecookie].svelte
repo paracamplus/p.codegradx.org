@@ -66,8 +66,6 @@
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/exercise';
  import { initializePerson } from '../../client/lib.mjs';
- import { sleep } from '../../common/utils.mjs';
- import { fade } from 'svelte/transition';
  import { person, current_exercise, campaign } from '../../stores.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
  import { buildGoto } from '../../client/lib.mjs';

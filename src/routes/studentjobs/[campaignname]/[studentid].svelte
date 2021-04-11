@@ -29,7 +29,7 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person, campaign } from '../../../stores.mjs';
+ import { person, campaign, lastmessage } from '../../../stores.mjs';
  import { CodeGradX } from 'codegradx/campaign';
  import { CodeGradX as cx } from 'codegradx/campaignlib';
  import { initializePerson, isTeacher, goto } from '../../../client/lib.mjs';
@@ -59,13 +59,13 @@
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé, je ne vous connais pas!";
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     goto('/connect');
      return;
    }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
-     error = "Veuillez d'abord choisir un univers! ...";
-     await sleep(3);
+     $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
      goto('/universes');
    }
    campaignTitle = `dans ${$campaign.name}`;

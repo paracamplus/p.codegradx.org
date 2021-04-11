@@ -32,7 +32,8 @@
       
           {#if $campaign}
           <a class='w3-bar-item w3-btn'
-             href={buildGoto('universe/{$campaign.name}')}>l'univers {$campaign.name}</a>
+             href={buildGoto(`universe/${$campaign.name}`)}>
+            l'univers {$campaign.name}</a>
           {/if}
       
           {#if isUser($person)}
@@ -46,11 +47,16 @@
 
             {#if $campaign}
               <a class='w3-bar-item w3-btn'
-                 href={buildGoto('history/{$campaign.name}')} >mon historique</a>
+                 href={buildGoto(`history/${$campaign.name}`)} >
+                mon historique</a>
+              <a class='w3-bar-item w3-btn'
+                 href={buildGoto(`results/${$campaign.name}`)} >
+                mes résultats</a>
             {/if}
             {#if $campaign && isTeacher($campaign, $person)}
               <a class='w3-bar-item w3-btn'
-                 href={buildGoto('teacher/{$campaign.name}')} >pour enseignant</a>
+                 href={buildGoto(`teacher/${$campaign.name}`)} >
+                pour enseignant</a>
             {/if}
             {#if $person.isauthor}
               <a class='w3-bar-item w3-btn'

@@ -20,7 +20,7 @@
 
   <p class='smallHint'>
     Cliquer sur une ligne affiche le rapport de notation associé (sauf
-    si la ligne est grisée). 
+    peut-être si la ligne est grisée). 
     Cliquer sur un titre trie les lignes.
   </p>
 

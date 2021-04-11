@@ -33,7 +33,6 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/campaignlib';
- import { sleep } from '../common/utils.mjs';
  import { campaign, lastmessage } from '../stores.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
  import { goto } from '../client/lib.mjs';
@@ -45,8 +44,6 @@
    if ( $campaign ) {
      exercisesSet = await fetchExercisesSet($campaign);
    } else {
-     //error = "Je n'arrive pas à récupérer les exercices afférents!";
-     //await sleep(5);
      $lastmessage = `Je n'ai pu récupérer les exercices de
 ${$campaign.name}, veuillez choisir un autre univers!`;
      goto('/universes');

@@ -55,8 +55,8 @@ NOTA: many parts of code similar to exercisejobs
  import { CodeGradX } from 'codegradx/exercise';
  import { CodeGradX as _ } from 'codegradx/campaign';
  import { initializePerson } from '../../../client/lib.mjs';
- import { sleep } from '../../../common/utils.mjs';
- import { person, current_exercise, campaign } from '../../../stores.mjs';
+ import { person, current_exercise, campaign, lastmessage } 
+    from '../../../stores.mjs';
  import { doSortColumn } from '../../../client/sortlib.mjs';
  import { parseAnomaly } from '../../../client/errorlib.mjs';
  import { fetchCampaign } from '../../../client/campaignlib.mjs';
@@ -82,7 +82,8 @@ NOTA: many parts of code similar to exercisejobs
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé, je ne vous connais pas!";
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     goto('/connect');
      return;
    } else if ( ! $person.isauthor ) {
      error = "Navré mais vous n'êtes pas auteur d'exercices!";
@@ -90,9 +91,9 @@ NOTA: many parts of code similar to exercisejobs
    }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
-     error = "Veuillez d'abord choisir un univers! ...";
-     await sleep(3);
+     $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
      goto('/universes');
+     return;
    }
    if ( $current_exercise ) {
      exercise = $current_exercise;

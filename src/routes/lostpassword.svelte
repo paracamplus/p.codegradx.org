@@ -43,10 +43,9 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { initializePerson, goto } from '../client/lib.mjs';
- import { sleep } from '../common/utils.mjs';
 
  let login = undefined;
  let defaultlogin = 'mon.email@a.moi';
@@ -61,10 +60,11 @@
    const maybeperson = await initializePerson();
    if ( maybeperson ) {
      $person = maybeperson;
-     error = `Bonjour ${$person.pseudo}, je vous épargne cette étape
+     $lastmessage = error =
+       `Bonjour ${$person.pseudo}, je vous épargne cette étape
 puisque je vous connais déjà !`;
-     await sleep(2);
-     await goto('/universes');
+     goto('/universes');
+     return;
    }
  });
  

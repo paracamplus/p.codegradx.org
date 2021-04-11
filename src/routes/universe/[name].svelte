@@ -25,7 +25,7 @@
      {/if}
   </header>
 
-  {#if error}<div transition:fade><Problem bind:error={error} /></div>{/if}
+  {#if error}<Problem bind:error={error} />{/if}
 
   {#if showAuthentication && ! $person}
   <div class='w3-container'>
@@ -57,7 +57,6 @@
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/campaign';
  import { sleep, onClient } from '../../common/utils.mjs';
- import { fade } from 'svelte/transition';
  import { person, campaign, lastmessage } from '../../stores.mjs';
  import { initializePerson, isCampaign, goto } from '../../client/lib.mjs';
  import { fetchCampaign } from '../../client/campaignlib.mjs';

@@ -156,7 +156,6 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { fade } from 'svelte/transition';
  import { person, campaign } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { initializePerson, buildGoto } from '../client/lib.mjs';

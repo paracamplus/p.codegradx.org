@@ -43,9 +43,8 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { sleep } from '../common/utils.mjs';
  import { isUser, initializePerson, goto } from '../client/lib.mjs';
 
  let path = undefined;
@@ -75,7 +74,7 @@
    }
    // If coming from /connect, then $person is a partial user:
    if ( ! $person ) {
-     await sleep(1);
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
      goto('/connect');
    }
  });

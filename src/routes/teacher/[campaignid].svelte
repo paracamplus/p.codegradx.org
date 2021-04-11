@@ -92,7 +92,7 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person, campaign } from '../../stores.mjs';
+ import { person, campaign, lastmessage } from '../../stores.mjs';
  import { initializePerson, isTeacher, goto } from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx/src/newexercise';
@@ -125,8 +125,7 @@
    const campaignName = uri.replace(/^(.*\/)?teacher\/([^\/]+)/, '$2');
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
-     error = "Je ne vois pas d'univers ainsi nommé!";
-     await sleep(3);
+     $lastmessage = error = "Je ne vois pas d'univers ainsi nommé!";
      goto('/universes');
      return;
    }

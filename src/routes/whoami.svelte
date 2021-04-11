@@ -80,12 +80,12 @@
 <script>
  import Page from '../components/Page.svelte';
  import Problem from '../components/Problem.svelte';
-// import ConnectDoc from '../components/ConnectDoc.svelte';
  import Universes from '../components/Universes.svelte';
 
  import { onMount } from 'svelte';
- import { person, campaign } from '../stores.mjs';
+ import { person, campaign, lastmessage } from '../stores.mjs';
  import { initializePerson, buildGoto } from '../client/lib.mjs';
+ import { goto } from '../client/lib.mjs';
 
  let error = undefined;
 
@@ -94,7 +94,8 @@
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé, je ne vous connais pas!";
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     goto('/connect');
      return;
    }
  });
