@@ -78,6 +78,7 @@ NOTA: many parts of code similar to exercisejobs
    const campaignName = uri
         .replace(/\/campaignexercisejobs\/(.+)\/(.+)$/, '$1');
    uuid = uri.replace(/\/campaignexercisejobs\/(.+)\/(.+)$/, '$2');
+   exerciseTitle = CodeGradX.normalizeUUID(uuid);
    if ( ! $person ) {
      $person = await initializePerson();
    }
@@ -99,7 +100,6 @@ NOTA: many parts of code similar to exercisejobs
      exercise = $current_exercise;
      uuid = $current_exercise.uuid;
    }
-   exerciseTitle = uuid;
    try {
      await findRelatedJobs(uuid);
      showjobs = true;

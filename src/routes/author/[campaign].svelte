@@ -10,21 +10,23 @@
   shortTitle="Auteurs" >      
 
   {#if showexercises }
-  <p>
+    <p>
     {#if exercises.length > 0 }
-      Voici les {exercises.length} exercices dont vous êtes 
-      l'auteur {campaignTitle} {#if $campaign}depuis 
+      Voici les {exercises.length} exercices dont vous êtes l'auteur
+      {#if $campaign}dans l'univers {$campaign.name} depuis 
       {CodeGradX.Date2str($campaign.starttime)}.{:else}.{/if}
       Vous pouvez également créer un nouvel
       exercice ou une nouvelle version d'un ancien exercice.
     {:else}
-      Vous n'avez pas encore défini d'exercices. À vous
-      d'en créer un maintenant!
+      Vous n'avez pas encore défini d'exercices
+      {#if $campaign}dans l'univers {$campaign.name}.{/if}
+      À vous d'en créer un maintenant!
     {/if}
-  </p>
-  <FileChooser on:chosenfile={sendExerciseFile}
-               labelChoose="Créer nouvel exercice"
-               labelChosen="Envoyer exercice" />
+    </p>
+
+    <FileChooser on:chosenfile={sendExerciseFile}
+                 labelChoose="Créer nouvel exercice"
+                 labelChosen="Envoyer exercice" />
   {/if}
 
   {#if error}<Problem bind:error={error} />{/if}

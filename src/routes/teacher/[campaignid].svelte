@@ -23,50 +23,65 @@
   <h2>Listes</h2>
   <div class='w3-center'>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:click={showStudentsCreation}>nouveaux apprenants</button>
+            on:click={mkCloseAllBut('showStudentsCreationForm')}>
+      nouveaux apprenants</button>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:teachers={showTeachers}
-            on:click={showStudents}>apprenants</button>
+            on:click={mkCloseAllBut('showStudentsList')}>
+      apprenants</button>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:students={showStudents}
-            on:click={showTeachers}>enseignants</button>
+            on:click={mkCloseAllBut('showTeachersList')}>
+      enseignants</button>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:click={showExercises}>exercices</button>
+            on:click={mkCloseAllBut('showExercisesList')}>
+      exercices</button>
+    <button class='w3-btn w3-round-xxlarge w3-theme-l4'
+            on:click={mkCloseAllBut('showExercisesSet')}>
+      jeu d'exercices</button>
   </div>
 
-  {#if showStudentsCreationForm}
-    <StudentsCreation on:students={showStudents}/>
-  {:else if showStudentsList}
-    <StudentsList bind:showPersonsList={showStudentsList} />
-  {:else if showTeachersList}
-    <TeachersList bind:showPersonsList={showTeachersList} />
-  {:else if showExercisesList}
-    <AllExercicesList bind:showExercisesList={showExercisesList} />
+  {#if widgets.showStudentsCreationForm}
+    <StudentsCreation on:close={closeAll} />
+  {:else if widgets.showStudentsList}
+    <StudentsList on:close={closeAll} />
+  {:else if widgets.showTeachersList}
+    <TeachersList on:close={closeAll} />
+  {:else if widgets.showExercisesList}
+    <AllExercicesList on:close={closeAll} />
+  {:else if widgets.showExercisesSet}
+    <ExercisesSetCreation on:close={closeAll} />
   {/if}
 
   <h2>Statistiques</h2>
   <div class='w3-center'>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:click={showPerStudent}>par apprenants</button>
+            on:click={mkCloseAllBut('showStudentsStats')}>
+      par apprenants</button>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:click={showPerExercise}>par exercice</button>
+            on:click={mkCloseAllBut('showExercisesStats')}>
+      par exercice</button>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:click={showPerDay}>par jour</button>
+            on:click={mkCloseAllBut('showDaysStats')}>
+      par jour</button>
   </div>
 
-  {#if showStudentsStats}
-  <StudentsStats bind:showStudentsStats={showStudentsStats} />
-  {:else if showExercisesStats}
-  <ExercisesStats bind:showExercisesStats={showExercisesStats} />
-  {:else if showDaysStats}
-  <DaysStats bind:showDaysStats={showDaysStats} />
+  {#if widgets.showStudentsStats}
+  <StudentsStats on:close={closeAll} />
+  {:else if widgets.showExercisesStats}
+  <ExercisesStats on:close={closeAll} />
+  {:else if widgets.showDaysStats}
+  <DaysStats on:close={closeAll} />
   {/if}
 
   <h2>Notifications</h2>
   <div class='w3-center'>
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
-            on:click={showNotifications}>dernières notifications</button>
+            on:click={mkCloseAllBut('showNotifications')}>
+      dernières notifications</button>
   </div>
+
+  {#if widgets.showNotifications}
+  <Notifications on:close={closeAll} />
+  {/if}
 
   {:else if ! error}
   <div>
@@ -89,8 +104,9 @@
  import StudentsStats from '../../components/StudentsStats.svelte';
  import ExercisesStats from '../../components/ExercisesStats.svelte';
  import DaysStats from '../../components/DaysStats.svelte';
+ import Notifications from '../../components/Notifications.svelte';
+ import ExercisesSetCreation from '../../components/ExercisesSetCreation.svelte';
 
- import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person, campaign, lastmessage } from '../../stores.mjs';
  import { initializePerson, isTeacher, goto } from '../../client/lib.mjs';
@@ -99,17 +115,37 @@
  import { CodeGradX as _ } from 'codegradx/src/userlib';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
  import { sleep } from '../../common/utils.mjs';
+ import { parseAnomaly } from '../../client/errorlib.mjs';
 
  let error = undefined;
  let personTitle = "";
- let campaignTitle = ''; 
- let showStudentsList = false;
- let showStudentsCreationForm = false;
- let showTeachersList = false;
- let showExercisesList = false;
- let showStudentsStats = false;
- let showExercisesStats = false;
- let showDaysStats = false;
+ let campaignTitle = '';
+
+ let widgets = {
+   showStudentsList: false,
+   showStudentsCreationForm: false,
+   showExercisesSet: false,
+   showTeachersList: false,
+   showExercisesList: false,
+   showStudentsStats: false,
+   showExercisesStats: false,
+   showDaysStats: false,
+   showNotifications: false
+ };
+
+ function closeAll (event) {
+   Object.keys(widgets).forEach(key => {
+     widgets[key] = false;
+   });
+ }
+   
+ function mkCloseAllBut (widget) {
+   return function (event) {
+     const old = widgets[widget];
+     closeAll();
+     widgets[widget] = ! old;
+   };
+ }
 
  onMount(async () => {
    if ( ! $person ) {
@@ -136,45 +172,5 @@
      return;
    }
  });
-
- function showStudents (event) {
-   showStudentsCreationForm = showTeachersList = showExercisesList = false;
-   showStudentsStats = showExercisesStats = showDaysStats = false;
-   showStudentsList = ! showStudentsList;
- }
- function showStudentsCreation (event) {
-   showStudentsList = showTeachersList = showExercisesList = false;
-   showStudentsStats = showExercisesStats = showDaysStats = false;
-   showStudentsCreationForm = ! showStudentsCreationForm;
- }
- function showTeachers (event) {
-   showStudentsCreationForm = showStudentsList = showExercisesList = false;
-   showStudentsStats = showExercisesStats = showDaysStats = false;
-   showTeachersList = ! showTeachersList;
- }
- function showExercises (event) {
-   showStudentsCreationForm = showTeachersList = showStudentsList = false;
-   showStudentsStats = showExercisesStats = showDaysStats = false;
-   showExercisesList = ! showExercisesList;
- }
- 
- function showPerStudent (event) {
-   showStudentsList = showTeachersList = showStudentsList = false;
-   showExercisesStats = showDaysStats = false;
-   showStudentsStats = ! showStudentsStats;
- }
- function showPerExercise (event) {
-   showStudentsList = showTeachersList = showStudentsList = false;
-   showStudentsStats = showDaysStats = false;
-   showExercisesStats = ! showExercisesStats;
- }
- function showPerDay (event) {
-   showStudentsList = showTeachersList = showStudentsList = false;
-   showStudentsStats = showExercisesStats = false;
-   showDaysStats = ! showDaysStats;
- }
-
- async function showNotifications (event) {
- }
 
 </script>

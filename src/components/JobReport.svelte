@@ -109,8 +109,13 @@
  });
 
  function close (event) {
-   dispatch('close');
-   job = undefined;
+   const uri = window.document.location.pathname;
+   if ( uri.match(/\/job\//) ) {
+     window.close();
+   } else {
+     dispatch('close');
+     job = undefined;
+   }
  }
 
 </script>

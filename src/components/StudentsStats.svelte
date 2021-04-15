@@ -1,10 +1,14 @@
 <style>
 </style>
 
-{#if showStudentsStats}
+<p class='smallHint'>
+  Cliquer sur un titre trie la table. Cliquer sur une ligne affiche les
+  copies de l'apprenant concerné, CTRL-clic l'affiche dans un autre onglet.
+</p>
+
 <div>
   <span class='w3-right w3-xxlarge w3-margin-left'
-        on:click={() => showStudentsStats = false}>&#x2716;</span>
+        on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={downloadStudentsStats}><DownloadSign /></span>
   <span class='w3-right w3-xlarge w3-margin-left'
@@ -17,40 +21,41 @@
       <th on:click={sortColumn('firstname')}>prénom</th>
       <th on:click={sortColumn('pseudo')}>pseudo</th>
       <th on:click={sortColumn('exercises')}>#exercices</th>
-      <th on:click={sortColumn('attempts')}>#essais</th>
       <th on:click={sortColumn('successes')}>#succès</th>
+      <th on:click={sortColumn('attempts')}>#essais</th>
     </tr>
   </thead>
   <tbody>
     {#each items as item}
-    <tr>
+    <tr on:click={mkShowJobs(item)}>
       <td>{@html shorten(htmlencode(item.studentLastName))}</td>
       <td>{@html shorten(htmlencode(item.studentFirstName))}</td>
       <td>{@html shorten(htmlencode(item.studentPseudo))}</td>
       <td>{item.exercises}</td>
-      <td>{item.attempts}</td>
       <td>{item.successes}</td>
+      <td>{item.attempts}</td>
     </tr>
     {:else}
     <tr><td colspan='6'><WaitingImage /></td></tr>
     {/each}
   </tbody>
 </table>
-{/if}
 
 <script>
  import WaitingImage from '../components/WaitingImage.svelte';
  import RefreshSign from '../components/RefreshSign.svelte';
  import DownloadSign from '../components/DownloadSign.svelte';
  
- import { onMount } from 'svelte';
+ import { onMount, createEventDispatcher } from 'svelte';
+ const dispatch = createEventDispatcher();
  import { campaign } from '../stores.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx';
  import { doSortColumn } from '../client/sortlib.mjs';
  import { shorten } from '../client/utils.mjs';
+ import { goto } from '../client/lib.mjs';
+ import { parseAnomaly } from '../client/errorlib.mjs';
 
- export let showStudentsStats = false;
  let items = [];
  let entryPointName = 'perStudent';
   
@@ -77,9 +82,14 @@
          Accept: 'application/json'
        }
      });
-     items = response.entity;
+     if ( response.ok ) {
+       items = response.entity;
+     } else {
+       throw response;
+     }
    } catch (exc) {
      console.log('studentsStats', {exc});
+     error = parseAnomaly(exc);
    }
  }
 
@@ -108,6 +118,25 @@
    document.body.appendChild(element);
    element.click();
    document.body.removeChild(element);
+ }
+
+ function mkShowJobs (item) {
+   const href = `/studentjobs/${$campaign.name}/${item.studentid}`;
+   return function (event) {
+     event.stopPropagation();
+     event.preventDefault();
+     if ( event.metaKey || event.ctrlKey || event.altKey ) {
+       const element = document.createElement('a');
+       element.setAttribute('href', href);
+       element.setAttribute('target', '_blank');
+       element.style.display = 'none';
+       document.body.appendChild(element);
+       element.click();
+       document.body.removeChild(element);
+     } else {
+       goto(href);
+     }
+   };
  }
 
 </script>

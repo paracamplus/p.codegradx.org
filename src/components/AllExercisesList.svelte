@@ -9,7 +9,7 @@
 <div>
   <span class='w3-right w3-xxlarge w3-margin-left'
         title="Clore la liste"
-        on:click={() => showExercisesList = false}>&#x2716;</span>
+        on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
         title="Rafraîchir la liste"
         on:click={refreshExercisesList}><RefreshSign /></span>
@@ -39,10 +39,14 @@
       <td>{exercise.start}</td>
     </tr>
     {:else}
-    <tr><td colspan='6'><WaitingImage /></td></tr>
+    <tr><td colspan='4'><WaitingImage /></td></tr>
     {/each}
   </tbody>
 </table>
+
+{:else}
+ <p class='waitingMessage'>Chargement des données...</p>
+ <WaitingImage />
 {/if}
 
 {#if error}<Problem bind:error={error} />{/if}
@@ -53,7 +57,8 @@
  import Problem from '../components/Problem.svelte';
  
  import * as sapper from '@sapper/app';
- import { onMount } from 'svelte';
+ import { onMount, createEventDispatcher } from 'svelte';
+ const dispatch = createEventDispatcher();
  import { campaign } from '../stores.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx';
@@ -62,7 +67,7 @@
  import { parseAnomaly } from '../client/errorlib.mjs';
  import { goto } from '../client/lib.mjs';
 
- export let showExercisesList = false;
+ export let showExercisesList = true;
  export let entryPointName = 'listExercises';
  export let entryKeyName = 'exercises';
  let exercises = [];
@@ -98,7 +103,7 @@
      }
    } catch (exc) {
      console.log('AllExercisesList', {exc});
-     showExercisesList = false;
+     //showExercisesList = false;
      error = parseAnomaly(exc);
    }
  }

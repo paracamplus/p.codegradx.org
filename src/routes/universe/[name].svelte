@@ -25,6 +25,8 @@
      {/if}
   </header>
 
+  <LastMessage />
+  
   {#if error}<Problem bind:error={error} />{/if}
 
   {#if showAuthentication && ! $person}
@@ -52,6 +54,7 @@
  import Problem from '../../components/Problem.svelte';
  import WaitingImage from '../../components/WaitingImage.svelte';
  import ExercisesList from '../../components/ExercisesList.svelte';
+ import LastMessage  from '../../components/LastMessage.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';

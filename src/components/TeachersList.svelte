@@ -1,10 +1,8 @@
 <PersonsList
+  on:close
   entryPointName='listTeachers'
-  entryKeyName='teachers'
-  bind:showPersonsList={showPersonsList} />
+  entryKeyName='teachers' />
 
 <script>
   import PersonsList from '../components/PersonsList.svelte';
-
-  export let showPersonsList = false;
 </script>

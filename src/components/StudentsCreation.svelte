@@ -50,6 +50,7 @@
  const dispatch = createEventDispatcher();
  import { CodeGradX } from 'codegradx';
  import { campaign } from '../stores.mjs';
+ import { parseAnomaly } from '../client/errorlib.mjs';
  
  let content = '';
  let error = undefined;
@@ -93,12 +94,13 @@
          showmessages = true;
        }
      } else {
-       error = "Probleme d'envoi";
+       throw response;
      }
    } catch (exc) {
      console.log('studentscreation', {exc});
-     error = exc;
+     error = parseAnomaly(exc);
    }
+   waiting = false;
  }
 
  /**

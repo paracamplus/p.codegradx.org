@@ -20,7 +20,8 @@
 
   <p class='smallHint'>
     Cliquer sur une ligne affiche le rapport de notation associé (sauf
-    peut-être si la ligne est grisée). 
+    peut-être si la ligne est grisée),
+    cliquer+CTRL l'affiche dans un onglet différent.
     Cliquer sur un titre trie les lignes.
   </p>
 
@@ -43,8 +44,10 @@
               on:click={mkShowJob(job)}>
             <td>{job.exercise_nickname}</td>
             <td class='w3-hide-small w3-hide-medium'>{job.exercise_name}</td>
-            <td>{massageMark(job.mark, factor, job.totalMark)} /
-              {massageMark(job.totalMark, factor, job.totalMark)}</td>
+            <td>{massageMark(job.mark, factor, job.totalMark)}
+              {#if job.totalMark}
+                / {massageMark(job.totalMark, factor, job.totalMark)}
+              {/if}</td>
             <td class='w3-hide-small'>{job.archived}</td>
           </tr>
          {/each}
@@ -100,7 +103,18 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     currentJob = job;
+     if ( event.metaKey || event.ctrlKey || event.altKey ) {
+       const href = `/job/${job.jobid}`;
+       const element = document.createElement('a');
+       element.setAttribute('href', href);
+       element.setAttribute('target', '_blank');
+       element.style.display = 'none';
+       document.body.appendChild(element);
+       element.click();
+       document.body.removeChild(element);
+     } else {
+       currentJob = job;
+     }
    };
  }
 

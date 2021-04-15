@@ -19,10 +19,14 @@
 </section>
 {/if}
 
-{#if showDaysStats}
+<p class='smallHint'>
+  Cliquer sur un titre trie la table. Cliquer sur une ligne affiche les
+  copies de la journée.
+</p>
+
 <div>
   <span class='w3-right w3-xxlarge w3-margin-left'
-        on:click={() => showDaysStats = false}>&#x2716;</span>
+        on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={downloadDaysStats}><DownloadSign /></span>
   <span class='w3-right w3-xlarge w3-margin-left'
@@ -91,7 +95,6 @@
     {/each}
   </tbody>
 </table>
-{/if}
 
 <script>
  import WaitingImage from '../components/WaitingImage.svelte';
@@ -99,15 +102,17 @@
  import JobReport from '../components/JobReport.svelte';
  import DownloadSign from '../components/DownloadSign.svelte';
  
- import { onMount } from 'svelte';
+ import { onMount, createEventDispatcher } from 'svelte';
+ const dispatch = createEventDispatcher();
  import { campaign } from '../stores.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx';
  import { doSortColumn } from '../client/sortlib.mjs';
  import { shorten } from '../client/utils.mjs';
  import { massageMark } from '../client/marklib.mjs';
+ import { goto } from '../client/lib.mjs';
+ import { parseAnomaly } from '../client/errorlib.mjs';
 
- export let showDaysStats = false;
  let items = [];
  let entryPointName = 'perDay';
  let subitemDate = undefined;
@@ -140,9 +145,14 @@
          Accept: 'application/json'
        }
      });
-     items = response.entity;
+     if ( response.ok ) {
+       items = response.entity;
+     } else {
+       throw response;
+     }
    } catch (exc) {
      console.log('daysStats', {exc});
+     error = parseAnomaly(exc);
    }
  }
 
@@ -206,8 +216,19 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     const pathdir = '/s' + jobid.replace(/-/g, '').replace(/(.)/g, '/$1');
-     currentJob = new CodeGradX.Job({ jobid, pathdir });;
+     if ( event.metaKey || event.ctrlKey || event.altKey ) {
+       const href = `/job/${job.jobid}`;
+       const element = document.createElement('a');
+       element.setAttribute('href', href);
+       element.setAttribute('target', '_blank');
+       element.style.display = 'none';
+       document.body.appendChild(element);
+       element.click();
+       document.body.removeChild(element);
+     } else {
+       const pathdir = '/s' + jobid.replace(/-/g, '').replace(/(.)/g, '/$1');
+       currentJob = new CodeGradX.Job({ jobid, pathdir });;
+     }
    };
  }
 

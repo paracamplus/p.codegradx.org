@@ -30,7 +30,8 @@
   <p class='smallHint'>
     Voici le rapport de déploiement de l'exercice.
     {#if exercise.safecookie} L'exercice a été déployé avec succès,
-      cliquer sur le bouton ci-dessous pour accéder à l'énoncé.{/if}
+      cliquer sur le bouton ci-dessous permet d'accéder à l'énoncé.
+    {/if}
     Les copies problématiques apparaissent avec un fond rose. Cliquer
     sur le mot "Pb" affiche le rapport d'anomalie (le stderr de la
     notation). C'est un rapport brut destiné à l'auteur de l'exercice.

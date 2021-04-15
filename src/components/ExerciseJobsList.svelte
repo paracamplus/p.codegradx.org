@@ -36,7 +36,7 @@
     Les copies sur fond rose sont problématiques: cliquer sur Pb donne
     des renseignements bruts sur les circonstances du problème.
     Cliquer sur une ligne affiche le rapport de notation associé (sauf
-    si la ligne est grisée). 
+    si la ligne est grisée), cliquer+CTRL l'affiche dans un onglet différent.
     Cliquer sur un titre trie les lignes.
   </p>
   
@@ -44,7 +44,7 @@
     <thead class="w3-theme-l3">
       <th on:click={sortColumn('finished', 'date')}>date</th>
       <th on:click={sortColumn('person_id', 'int')}>apprenant</th>
-      <th on:click={sortColumn('mark', 'float')}>note</th>
+      <th on:click={sortColumn('mark', 'float')}>note / {totalMark}</th>
       <th on:click={sortColumn('problem')}>problème</th>
     </thead>
     <tbody>
@@ -55,7 +55,7 @@
               on:click={mkShowJob(job)} >
             <td>{CodeGradX.Date2str(job.finished)}</td>
             <td>{job.person_id}</td>
-            <td>{massageMark(job.mark, 100, totalMark)}</td>
+            <td>{job.mark}</td>
             <td on:click={mkShowJobProblem(job)}>
               {#if job.problem}
               <span title="Afficher les problèmes">Pb</span>{/if}</td>
@@ -119,7 +119,18 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     currentJob = job;
+     if ( event.metaKey || event.ctrlKey || event.altKey ) {
+       const href = `/job/${job.jobid}`;
+        const element = document.createElement('a');
+        element.setAttribute('href', href);
+        element.setAttribute('target', '_blank');
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+     } else {
+       currentJob = job;
+     }
    };
  }
 

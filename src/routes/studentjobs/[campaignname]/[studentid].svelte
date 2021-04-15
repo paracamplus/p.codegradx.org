@@ -6,7 +6,15 @@
 </style>
 
 <Page title={`Historique ${studentTitle} ${campaignTitle}`}
-      shortTitle="Historique">
+      shortTitle="Historique"
+      showheader={false} >
+
+  <header class='w3-center w3-large bold'>
+    Historique {studentTitle} {campaignTitle}
+    <span class='w3-right w3-margin-left w3-xlarge'
+          title="Clore cette liste"
+          on:click={close}>&#x2716;</span>
+  </header>
 
   <Problem bind:error={error} />
 
@@ -67,6 +75,7 @@
    if ( ! $campaign ) {
      $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
      goto('/universes');
+     return;
    }
    campaignTitle = `dans ${$campaign.name}`;
    if ( ! isTeacher($campaign, $person) ) {
@@ -108,6 +117,15 @@
    } catch (exc) {
      console.log('studentjobs refreshHistory', exc);
      error = parseAnomaly(exc);
+   }
+ }
+
+ function close (event) {
+   const uri = window.document.location.pathname;
+   if ( uri.match(/\/studentjobs\//) ) {
+     window.close();
+   } else {
+     showStudentJobs = false;
    }
  }
  
