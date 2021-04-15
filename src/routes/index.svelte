@@ -10,7 +10,7 @@
 </style>
 
 <svelte:head>
-  <title>CodeGradX</title>
+  <title>CodeGradX - Exercices de programmation</title>
 </svelte:head>
 
 <div class='w3-container background'

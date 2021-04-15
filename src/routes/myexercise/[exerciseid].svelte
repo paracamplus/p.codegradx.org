@@ -44,13 +44,18 @@
                  bind:showinfo={showinfo} />
    {/if}
 
+   <div class='w3-center'>
    {#if exercise.safecookie}
-      <div class='w3-center'>
         <a class='w3-button w3-round-xxlarge w3-theme-l4'
-           title="exercise déployé"
+           title="voir l'exercise déployé"
            href={buildGoto(`/exercise/${exercise.safecookie}`)}
-           >exercice {exercise.nickname}</a></div>
+           >exercice {exercise.nickname}</a>
    {/if}
+   <span class='w3-button w3-round-xxlarge w3-theme-l4'
+         title="voir les copies associées"
+         on:click={mkShowRelatedJobs(exercise)}
+         >Copies associées</span>
+   </div>
 
    {#if exercise.globalReport._cdata}
     <div class='report'>{@html massagePRE(exercise.globalReport._cdata)}</div>
@@ -125,13 +130,14 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../../stores.mjs';
+ import { person, lastmessage, current_exercise } from '../../stores.mjs';
  import { initializePerson } from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx/exercise';
  import queryString from 'query-string';
  import { massagePRE } from '../../client/utils.mjs';
- import { buildGoto } from '../../client/lib.mjs';
+ import { goto, buildGoto } from '../../client/lib.mjs';
+ import { onClient } from '../../common/utils.mjs';
 
  let newexercise = false;
  let ownurl = undefined;
@@ -143,16 +149,24 @@
  let currentJob = undefined;
  let currentJobProblem = undefined;
 
+ onClient(() => {
+   const uri = window.document.location.pathname;
+   const exerciseid = uri.replace(/^(.*\/)?myexercise\/([^\/]+)/, '$2');
+   const location = '/e' + exerciseid.replace(/-/g, '').replace(/(.)/g, '/$1');
+   exerciseTitle = CodeGradX.normalizeUUID(exerciseid);
+ });
+
  onMount(async () => {
    const uri = window.document.location.pathname;
    const exerciseid = uri.replace(/^(.*\/)?myexercise\/([^\/]+)/, '$2');
    const location = '/e' + exerciseid.replace(/-/g, '').replace(/(.)/g, '/$1');
-   exerciseTitle = exerciseid;
+   exerciseTitle = CodeGradX.normalizeUUID(exerciseid);
    if ( ! $person ) {
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé, je ne vous connais pas!";
+     $lastmessage = error = "Veuillez d'abord vous identifier";
+     goto('/connect');
      return;
    } else if ( ! $person.isauthor ) {
      error = "Navré mais vous n'êtes pas auteur d'exercices!";
@@ -248,6 +262,15 @@ FW4EX e212 Missing fw4ex.xml
       </submission><marking archived="2018-06-01T06:37:53" started="2018-06-01T06:37:56Z" ended="2018-06-01T06:37:56Z" finished="2018-06-01T06:37:56" mark="1" totalMark="1"><exercise exerciseid="4B168C98656611E888AEF639DBB6D1F5"/><partialMark name="Q1" mark="1"/></marking></pseudojob></pseudojobs><report/></exerciseAuthorReport></fw4ex>
 
   */
+
+ function mkShowRelatedJobs (exercise) {
+   return function (event) {
+     event.stopPropagation();
+     event.preventDefault();
+     $current_exercise = exercise;
+     goto(`/exercisejobs/${exercise.uuid}`);
+   };
+ }
 
 </script>
 

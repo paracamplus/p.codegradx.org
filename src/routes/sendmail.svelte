@@ -103,7 +103,7 @@
    try {
      // Redirect to the /universes page with renewed credentials:
      let url = `/fromp/reconnect/${$person.token}` +
-               `?site=${window.location.origin}/universes`;
+               `?site=${window.document.location.origin}/universes`;
      const response = await CodeGradX.getCurrentState().sendAXServer('x', {
        path: url,
        method: 'GET',

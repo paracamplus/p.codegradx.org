@@ -25,6 +25,10 @@
     Cliquer sur un titre trie les lignes.
   </p>
 
+  <p> Il y a {jobs.length} copies différentes affichées ci-dessous{#if rest} 
+    et encore, au plus, {rest} copies non encore affichées{/if}.
+  </p>
+
   <table class='w3-table w3-center w3-hoverable w3-bordered'>
     <thead>
       <tr class="w3-theme-l3">
@@ -48,7 +52,8 @@
               {#if job.totalMark}
                 / {massageMark(job.totalMark, factor, job.totalMark)}
               {/if}</td>
-            <td class='w3-hide-small'>{job.archived}</td>
+            <td title={job.uuid}
+                class='w3-hide-small'>{CodeGradX.Date2str(job.archived)}</td>
           </tr>
          {/each}
          {#if rest}
@@ -76,6 +81,7 @@
  const dispatch = createEventDispatcher();
  import { doSortColumn } from '../client/sortlib.mjs';
  import { massageMark } from '../client/marklib.mjs';
+ import { CodeGradX } from 'codegradx';
  
  let currentJob = undefined;
  export let jobs = [];

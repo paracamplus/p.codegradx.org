@@ -50,7 +50,8 @@
       {/if}
       {#if $person.admin}<p> Vous êtes administrateur </p>{/if}
       {#if $person.isauthor}
-      <p> Vous êtes auteur et vos préfixes possibles sont:</p>
+      <p> Vous êtes auteur et les préfixes possibles
+        pour vos exercices sont:</p>
       <ul>
         {#each $person.authorprefixes as prefix}
         <li><span class='personName'>{prefix}</span></li>

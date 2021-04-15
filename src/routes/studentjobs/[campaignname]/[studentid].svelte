@@ -6,15 +6,7 @@
 </style>
 
 <Page title={`Historique ${studentTitle} ${campaignTitle}`}
-      shortTitle="Historique"
-      showheader={false} >
-
-  <header class='w3-center w3-large bold'>
-    Historique {studentTitle} {campaignTitle}
-    <span class='w3-right w3-margin-left w3-xlarge'
-          title="Clore cette liste"
-          on:click={close}>&#x2716;</span>
-  </header>
+      shortTitle="Historique" >
 
   <Problem bind:error={error} />
 
@@ -61,6 +53,7 @@
    const uri = window.document.location.pathname;
    const campaignName = uri
         .replace(/^(.*\/)?studentjobs\/([^\/]+)\/([^\/]+)/, '$2');
+   campaignTitle = `dans ${campaignName}`;
    studentid = uri.replace(/^(.*\/)?studentjobs\/([^\/]+)\/([^\/]+)/, '$3');
    // $person is the invoker of the page
    if ( ! $person ) {
@@ -92,8 +85,9 @@
  async function refreshStudentHistory (campaign, studentid) {
    try {
      const state = CodeGradX.getCurrentState();
+     const url = `/campaign/listJobsPerStudent/${campaign.name}/${studentid}`;
      const response = await state.sendAXServer('x', {
-       path: `/campaign/listJobsPerStudent/${campaign.name}/${studentid}`,
+       path: `${url}?count=${count}&offset=${offset}`,
        method: 'GET',
        headers: {
          Accept: 'application/json'

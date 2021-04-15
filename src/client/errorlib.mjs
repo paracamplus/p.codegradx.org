@@ -7,7 +7,8 @@
 
 const messages = {
     e215: "Cette action ne vous est pas autorisée.",
-    e190: "Êtes-vous sûr du nom de cet univers ?"
+    e190: "Êtes-vous sûr du nom de cet univers ?",
+    e146: "Vous n'êtes pas un apprenant de cet univers!"
 };
 
 export function parseAnomaly (o) {

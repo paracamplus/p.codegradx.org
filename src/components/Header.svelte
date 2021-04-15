@@ -60,7 +60,7 @@
             {/if}
             {#if $person.isauthor}
               <a class='w3-bar-item w3-btn'
-                 href={buildGoto(`author/${$campaign ? $campaign.name : 'free'}`)} >pour auteur</a>
+                 href={buildGoto(`author/${campaignName}`)} >pour auteur</a>
             {/if}
             <a class='w3-bar-item w3-btn'
                href={buildGoto('whoami')} >mon profil</a>
@@ -114,15 +114,19 @@
    alert("Not yet installed!");
  };
  let dev = false;
- try {
-   dev = get(session).dev;
- } catch (exc) {
-   // ignore
- }
+ let campaignName = 'free';
  
  onMount(async () => {
+   try {
+     dev = get(session).dev;
+   } catch (exc) {
+     // ignore
+   }
    displayMenu = doDisplayMenu;
    showMenu = false;
+   if ( $campaign ) {
+     campaignName = $campaign.name;
+   }
  });
 
  function doDisplayMenu (event) {

@@ -16,7 +16,7 @@
       <ul class='w3-ul'>
         <li> Identifiant: <b>{exercise.name}</b> </li>
         {#if exercise.uuid}
-        <li> UUID: <b>{exercise.uuid}</b> </li>
+        <li> UUID: <b>{CodeGradX.normalizeUUID(exercise.uuid)}</b> </li>
         {/if}
         {#if exercise.date}
           <li>Créé le {CodeGradX.Date2str(exercise.date)}</li>

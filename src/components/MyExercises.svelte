@@ -6,9 +6,8 @@
 </style>
 
 <p class='smallHint'>Cliquer sur une ligne affiche le rapport de
-  déploiement, cliquer sur l'icône multi-rectangulaire affiche les
-  copies des apprenants ayant tenté cet exercice. Cliquer sur les
-  titres du tableau permet de le trier.
+  déploiement et permet également d'accéder aux copies associées à cet
+  exercice. Cliquer sur les titres du tableau permet de le trier.
 </p>
 <table class='w3-table w3-center w3-hoverable w3-bordered'>
   <thead>
@@ -23,16 +22,10 @@
     {#each exercises as exercise}
     <tr on:click={mkShowExerciseReports(exercise)}
         title="Voir le rapport de déploiement" >
-      <td>{exercise.nickname}
-        <span class='w3-right'
-              on:click={mkShowRelatedJobs(exercise)}
-              title="Voir les copies associées">
-          <JobsSign size="1.25em" />
-        </span>
-      </td>
+      <td>{exercise.nickname}</td>
       <td class='w3-hide-small'>{exercise.name}</td>
-      <td class='w3-hide-small'>{exercise.uuid}</td>
-      <td>{exercise.start}</td>
+      <td class='w3-hide-small'>{CodeGradX.normalizeUUID(exercise.uuid)}</td>
+      <td>{CodeGradX.Date2str(exercise.start)}</td>
     </tr>
     {:else}
     <tr>
@@ -67,15 +60,6 @@
    return function (event) {
      $current_exercise = exercise;
      goto(`/myexercise/${exercise.uuid}`);
-   };
- }
-
- function mkShowRelatedJobs (exercise) {
-   return function (event) {
-     event.stopPropagation();
-     event.preventDefault();
-     $current_exercise = exercise;
-     goto(`/exercisejobs/${exercise.uuid}`);
    };
  }
 
