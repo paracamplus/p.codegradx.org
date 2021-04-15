@@ -107,13 +107,18 @@
  const { session } = stores();
  import { get } from 'svelte/store';
 
- let dev = get(session).dev;
  let menuContent = undefined;
  let showMenu = false;
  let displayMenu = function (event) {
    /* ignore till onMount */
    alert("Not yet installed!");
  };
+ let dev = false;
+ try {
+   dev = get(session).dev;
+ } catch (exc) {
+   // ignore
+ }
  
  onMount(async () => {
    displayMenu = doDisplayMenu;

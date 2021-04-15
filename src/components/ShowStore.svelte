@@ -29,7 +29,11 @@
  export let dev = false;
 
  onMount(() => {
-   dev = get(session).dev;
+   try {
+     dev = get(session).dev;
+   } catch (exc) {
+     // ignore
+   }
  });
  
 </script>
