@@ -86,9 +86,9 @@ NOTA: many parts of code similar to exercisejobs
      $lastmessage = error = "Veuillez d'abord vous identifier!";
      goto('/connect');
      return;
-   } else if ( ! $person.isauthor ) {
-     error = "Navré mais vous n'êtes pas auteur d'exercices!";
-     return;
+   //} else if ( ! $person.isauthor ) {
+   //  error = "Navré mais vous n'êtes pas auteur d'exercices!";
+   //  return;
    }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {

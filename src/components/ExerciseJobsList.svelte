@@ -32,12 +32,14 @@
   {/if}
 
   <p class='smallHint'>
+    {#if jobs && jobs.length}
     Il y a {total} copies, {jobs.length} sont listées ci-dessous.
     Les copies sur fond rose sont problématiques: cliquer sur Pb donne
     des renseignements bruts sur les circonstances du problème.
     Cliquer sur une ligne affiche le rapport de notation associé (sauf
     si la ligne est grisée), cliquer+CTRL l'affiche dans un onglet différent.
     Cliquer sur un titre trie les lignes.
+    {/if}
   </p>
   
   <table class='w3-table w3-center w3-hoverable w3-bordered'>

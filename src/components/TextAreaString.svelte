@@ -74,7 +74,7 @@
      const jobPromise = exercise.sendStringAnswer(answer);
      dispatch('jobPromise', {jobPromise});
    } catch (exc) {
-     console.log('TextAreaString send Textarea', exc);
+     console.log('TextAreaString send Textarea', {exc});
      error = "Je n'ai pas réussi à envoyer votre réponse!";
    }
  }

@@ -8,6 +8,12 @@
    top: 0.75em;
    right: -0.5em;
  }
+ tr.hover-item:hover {
+   background-color: var(--color-hover-gray);
+ }
+ tr.hover-subitem:hover {
+   background-color: var(--color-hover-gray);
+ }
 </style>
 
 {#if currentJob}
@@ -32,7 +38,7 @@
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={refreshDaysStats}><RefreshSign /></span>
 </div>
-<table class='w3-table w3-center w3-hoverable'>
+<table class='w3-table w3-center'>
   <thead class="w3-theme-l3">
     <tr>
       <th on:click={sortColumn('date', 'date')}>date</th>
@@ -44,8 +50,8 @@
   </thead>
   <tbody>
     {#each items as item}
-    <tr on:click={mkShowOneDayStat(item)}>
-      <td>{CodeGradX.Date2str(item.date)}</td>
+    <tr class='hover-item' on:click={mkShowOneDayStat(item)}>
+      <td>{CodeGradX.Date2str(item.date).replace(/Z.*$/, '')}</td>
       <td>{item.students}</td>
       <td>{item.exercises}</td>
       <td>{item.attempts}</td>
@@ -69,7 +75,7 @@
             </thead>
             <tbody>
               {#each subitems as subitem}
-              <tr on:click={mkShowJob(subitem.uuid)}
+              <tr class='hover-subitem' on:click={mkShowJob(subitem.uuid)}
                   data-jobid={subitem.uuid}>
                 <td>{subitem.finished.replace(/^.* (.*)$/, '$1')}</td>
                 <td title={subitem.fullName}>{subitem.studentPseudo}</td>
@@ -183,7 +189,7 @@
 
  function mkShowOneDayStat (item) {
    return async function (event) {
-     console.log(item);//DEBUG
+     //console.log(item);//DEBUG
      const state = CodeGradX.getCurrentState();
      showSubItems = false;
      subitemDate = item.date;

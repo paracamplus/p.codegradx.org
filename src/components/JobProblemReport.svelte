@@ -65,7 +65,7 @@
      problem = job.XMLproblemReport;
      showProblemReport = true;
    } catch (exc) {
-     console.log("jobProblemReport", exc);
+     console.log("jobProblemReport", {exc});
      if ( exc.message.match(/waitedTooMuch/i) ) {
        error = 'Désolé mais je ne trouve pas ce rapport de notation!';
      } else {

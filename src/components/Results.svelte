@@ -5,6 +5,8 @@
   {#if showresults}
     <p class='smallHint'>
       Vous pouvez cliquer sur un exercice pour améliorer votre score.
+      Le score est vert quand supérieur à 95%, orange quand supérieur
+      à 80%, rouge quand l'exercice a été, au moins une fois, tenté.
     </p>
     <ResultsSet bind:exercisesSet={exercisesSet}
                 bind:results={results} />

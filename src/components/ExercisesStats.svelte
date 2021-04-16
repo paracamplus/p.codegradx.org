@@ -17,7 +17,8 @@
 <table class='w3-table w3-center w3-hoverable'>
   <thead class="w3-theme-l3">
     <tr>
-      <th on:click={sortColumn('exerciseUUID')}>UUID</th>
+      <th class='w3-hide-small'
+          on:click={sortColumn('exerciseUUID')}>UUID</th>
       <th on:click={sortColumn('exerciseNickName')}>surnom</th>
       <th on:click={sortColumn('exerciseLongName')}>nom</th>
       <th on:click={sortColumn('students')}>#apprenants</th>
@@ -28,7 +29,7 @@
   <tbody>
     {#each items as item}
     <tr on:click={mkShowJobs(item)}>
-      <td class='w3-hide-small'>{item.exerciseUUID}</td>
+      <td class='w3-hide-small'>{CodeGradX.normalizeUUID(item.exerciseUUID)}</td>
       <td>{item.exerciseNickName}</td>
       <td>{item.exerciseLongName}</td>
       <td>{item.students}</td>

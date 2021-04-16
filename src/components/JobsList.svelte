@@ -25,8 +25,8 @@
     Cliquer sur un titre trie les lignes.
   </p>
 
-  <p> Il y a {jobs.length} copies différentes affichées ci-dessous{#if rest} 
-    et encore, au plus, {rest} copies non encore affichées{/if}.
+  <p> Il y a {jobs.length} copies différentes affichées ci-dessous.
+    {#if rest}Et encore, au plus, {rest} copies non encore affichées{/if}.
   </p>
 
   <table class='w3-table w3-center w3-hoverable w3-bordered'>

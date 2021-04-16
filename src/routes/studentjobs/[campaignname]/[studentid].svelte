@@ -109,7 +109,7 @@
        throw response;
      }
    } catch (exc) {
-     console.log('studentjobs refreshHistory', exc);
+     console.log('studentjobs refreshHistory', {exc});
      error = parseAnomaly(exc);
    }
  }

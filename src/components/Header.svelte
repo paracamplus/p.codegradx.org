@@ -14,7 +14,8 @@
 
 <svelte:body on:click={handleOutsideClick} />
 
-<header id='Header' class='w3-container w3-theme-d2 firstLine'>
+<div>
+ <header id='Header' class='w3-container w3-theme-d2 firstLine'>
   <div class='w3-cell-row'>
     <div class='w3-container w3-cell w3-third'>
       <div class='w3-theme-d2 w3-dropdown-click'>
@@ -92,10 +93,15 @@
       </div>
     </div>
   </div>
-</header>
+ </header>
+
+ <Publicity bind:dev={dev} />
+
+</div>
 
 <script>
  import MenuSign from './MenuSign.svelte';
+ import Publicity from './Publicity.svelte';
  
  import * as sapper from '@sapper/app';
  import { onMount, createEventDispatcher } from 'svelte';

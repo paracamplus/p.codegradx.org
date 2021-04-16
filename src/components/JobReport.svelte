@@ -99,7 +99,7 @@
      await job.getReport(parameters);
      showReport = true;
    } catch (exc) {
-     console.log("jobReport", exc);
+     console.log("jobReport", {exc});
      if ( exc.message.match(/waitedTooMuch/i) ) {
        error = 'Désolé mais je ne trouve pas ce rapport de notation!';
      } else {

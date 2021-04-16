@@ -199,7 +199,7 @@ export function makeSendEditorContent (exercise, getAnswer, dispatch) {
             const jobPromise = exercise.sendStringAnswer(answer);
             dispatch('jobPromise', {jobPromise});
         } catch (exc) {
-            console.log('TextAreaString send Textarea', exc);
+            console.log('TextAreaString send Textarea', {exc});
             throw "Je n'ai pas réussi à envoyer votre réponse!";
         }
     };
@@ -217,7 +217,7 @@ export function makeSendFile (exercise, dispatch) {
                 FileChooserForm, chosenfile)
             dispatch('jobPromise', {jobPromise});
         } catch (exc) {
-            console.log('SingleFile sendFile', exc);
+            console.log('SingleFile sendFile', {exc});
             throw "Je n'ai pas réussi à envoyer votre fichier!";
         }
     };

@@ -65,10 +65,9 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/exercise';
- import { initializePerson } from '../../client/lib.mjs';
+ import { initializePerson, goto, buildGoto } from '../../client/lib.mjs';
  import { person, current_exercise, campaign } from '../../stores.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
- import { buildGoto } from '../../client/lib.mjs';
 
  let error = undefined;
  let showinfo = false;
@@ -98,7 +97,7 @@
      exerciseTitle = $current_exercise.nickname;
      showExercise = true;
    } catch (exc) {
-     console.log('exercise', exc);
+     console.log('exercise', {exc});
      error = parseAnomaly(exc);
      return;
    }

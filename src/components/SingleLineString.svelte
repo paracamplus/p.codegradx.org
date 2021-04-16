@@ -51,7 +51,7 @@
      const jobPromise = exercise.sendStringAnswer(value);
      dispatch('jobPromise', {jobPromise});
    } catch (exc) {
-     console.log('SingleFile sendFile', exc);
+     console.log('SingleFile sendFile', {exc});
      error = "Je n'ai pas réussi à envoyer votre réponse!";
    }
  }

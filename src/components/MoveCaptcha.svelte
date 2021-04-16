@@ -152,7 +152,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
        throw response;
      }
    } catch(exc) {
-     console.log('signup', 'getInfo', exc);
+     console.log('signup', 'getInfo', {exc});
      error = "Je n'arrive pas à construire la Captcha"
      progress = undefined;
    }

@@ -48,7 +48,7 @@ export async function get (req, res, next) {
         
     }).catch((exc) => {
         console.log('signupinit PB', state.log);
-        console.log('signupinit PB', exc);
+        console.log('signupinit PB', {exc});
         let content = `Problem
 exception: ${exc.toString()}
 state.log is

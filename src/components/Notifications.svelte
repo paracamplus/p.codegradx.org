@@ -9,27 +9,26 @@
     <tr>
       <th on:click={sortColumn('date', 'date')}>date</th>
       <th on:click={sortColumn('category')}>catégorie</th>
-      <th on:click={sortColumn('origin')}>origine</th>
-      <th on:click={sortColumn('payload')}>données</th>
+      <th on:click={sortColumn('content')}>fait</th>
     </tr>
   </thead>
   <tbody>
     {#if loaded}
       {#each items as item}
       <tr>
-        <td>{item.date}</td>
+        <td>{CodeGradX.Date2str(item.date)}</td>
         <td>{item.category}</td>
-        <td>{item.origin}</td>
-        <td>{item.payload}</td>
+        <td>{#if item.comment}{@html item.comment}
+            {:else}{item.content}{/if}</td>
       </tr>
       {:else}
       <tr>
-        <td colspan='4' class='w3-center'>aucune notification</td></tr>
+        <td colspan='3' class='w3-center'>aucune notification</td></tr>
       {/each}
       {:else}
-      <tr><td colspan='4' class='waitingMessage'>
+      <tr><td colspan='3' class='waitingMessage'>
         Chargement des notifications</td></tr>
-      <tr><td colspan='4'><WaitingImage /></td></tr>
+      <tr><td colspan='3'><WaitingImage /></td></tr>
     {/if}
   </tbody>
 </table>
@@ -45,7 +44,7 @@
  import { CodeGradX } from 'codegradx';
  import { doSortColumn } from '../client/sortlib.mjs';
  import { shorten } from '../client/utils.mjs';
- import { goto } from '../client/lib.mjs';
+ import { goto, buildGoto } from '../client/lib.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
 
  let items = [];
@@ -76,7 +75,7 @@
        }
      });
      if ( response.ok ) {
-       items = response.entity;
+       items = response.entity.map(massageNotification);
        loaded = true;
      } else {
        throw response;
@@ -85,6 +84,19 @@
      console.log('refreshNotifications', {exc});
      error = parseAnomaly(exc);
    }
+ }
+
+ function massageNotification (item) {
+   if ( item.category === 'job' ) {
+     const joburl = buildGoto(`/job/${CodeGradX.normalizeUUID(item.job)}`);
+     item.comment = `
+<span class='personName'>${item.pseudo}</span>
+a obtenu ${item.mark} / ${item.totalmark}
+sur l'exercise ${item.nickname}
+avec sa <a href='${joburl}'>réponse</a>.
+        `;
+   }
+   return item;
  }
 
 </script>

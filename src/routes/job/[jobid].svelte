@@ -29,8 +29,8 @@
  import JobReport from '../../components/JobReport.svelte';
 
  import { onMount } from 'svelte';
- import { person } from '../../stores.mjs';
- import { initializePerson } from '../../client/lib.mjs';
+ import { person, lastmessage } from '../../stores.mjs';
+ import { initializePerson, goto } from '../../client/lib.mjs';
  import { CodeGradX } from 'codegradx/exercise';
 
  let currentJob = undefined;
@@ -39,15 +39,16 @@
 
  onMount(async () => {
    const uri = window.document.location.pathname;
-   const jobid = uri.replace(/^(.*\/)?job\/([^\/]+)/, '$2');
+   let jobid = uri.replace(/^(.*\/)?job\/([^\/]+)/, '$2');
+   jobid = jobTitle = CodeGradX.normalizeUUID(jobid);
    if ( ! $person ) {
      $person = await initializePerson();
    }
    if ( ! $person ) {
-     error = "Désolé, je ne vous connais pas!";
+     $lastmessage = error = "Désolé, je ne vous connais pas!";
+     goto('/connect');
      return;
    }
-   jobTitle = jobid;
    const pathdir = '/s' + jobid.replace(/-/g, '').replace(/(.)/g, '/$1');
    try {
      currentJob = new CodeGradX.Job({ jobid, pathdir });
