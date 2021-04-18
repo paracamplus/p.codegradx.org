@@ -170,7 +170,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
    }
  }
 
- function showevent (event) {
+ function showevent (event, msg) {
    if ( debug ) {
      const e = {
        type: event.type,
@@ -180,46 +180,79 @@ vous pouviez résoudre la captcha sont écoulées.`,
        targetName: event.target.getAttribute('alt'),
        timeStamp: event.timeStamp
      };
+     if (msg) events.unshift({msg});
      eventscount = events.unshift(e);
      events = events.concat([]);
-     console.log(event);
+     console.log(msg, event);
    }
  }
 
+ /** There are vast differences between browsers and OS. However the
+     following sequence seems to be common among mouse-based gestures.
+
+  // entering the image:
+  pointerover
+  pointerenter
+  // press mouse button down
+  pointerdown
+  // start to move the image
+  dragstart
+  // entering the target
+  dragenter
+  // stop pressing mouse button
+  dragleave
+  // moving within the target
+  pointerover
+  pointerenter
+  // exit from the target
+  pointerout
+  pointerleave
+
+*/
+
  function prepareDragAndDropHooks (images, targets) {
    for ( const image of images ) {
-     image.addEventListener('dragstart', (event) => {
-       showevent(event);
-       error = undefined;
-       event.dataTransfer.setData("text/plain", event.target.src);
-       event.dataTransfer.effectAllowed = 'copy';
-       return true;
-     });
-     image.addEventListener('pointerdown', (event) => {
+     image.addEventListener('pointerover', showevent);
+     image.addEventListener('pointerdown', showevent);
+     image.addEventListener('touchstart', (event) => {
+       // Touching an image:
        showevent(event);
        error = undefined;
        const url = event.target.src;
-       function listener (event) {
+       function dropImage (event) {
          showevent(event);
-         event.dataTransfer = new DataTransfer();
-         event.dataTransfer.setData('text/plain', url);
-         drop(event);
-         //setTargetImage(event.target, url);
+         drop(event, url);
          for ( const target of targets ) {
-           target.removeEventListener('pointerenter', listener);
+           target.removeEventListener('touchstart', dropImage);
          }
        }
        for ( const target of targets ) {
-         target.addEventListener('pointerenter', listener);
+         target.addEventListener('touchstart', dropImage);
+       }
+     });
+     image.addEventListener('dragstart', (event) => {
+       // Start moving the image:
+       showevent(event);
+       error = undefined;
+       const url = event.target.src;
+       event.dataTransfer.setData("text/plain", url);
+       event.dataTransfer.effectAllowed = 'copy';
+       function dropImage (event) {
+         showevent(event);
+         drop(event, url);
+         for ( const target of targets ) {
+           target.removeEventListener('dragleave', dropImage);
+         }
+       }
+       for ( const target of targets ) {
+         target.addEventListener('dragleave', dropImage);
        }
        return true;
      });
-     image.addEventListener('touchstart', showevent);
+     //image.addEventListener('touchstart', showevent);
      //image.addEventListener('touchmove', showevent);
      image.addEventListener('touchend', showevent);
      image.addEventListener('touchcancel', showevent);
-     image.addEventListener('pointerover', showevent);
-     image.addEventListener('pointerenter', showevent);
      //image.addEventListener('pointerdown', showevent);
      //image.addEventListener('pointermove', showevent);
      image.addEventListener('pointerup', showevent);
@@ -230,7 +263,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
      image.addEventListener('lostpointercapture', showevent);
    }
    for ( const target of targets ) {
-     target.addEventListener("dragenter", illuminate);
+     //target.addEventListener("dragenter", illuminate);
      target.addEventListener("pointerover", illuminate);
      target.addEventListener("pointerenter", illuminate);
      target.addEventListener('pointerout', tarnish);
@@ -239,7 +272,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
        showevent(event);
        event.preventDefault();
      });*/
-     target.addEventListener("dragleave", tarnish);
+     //target.addEventListener("dragleave", tarnish);
      target.addEventListener("drop", drop);
      //target.setPointerCapture(pointerID???);
      target.addEventListener('touchstart', showevent);
@@ -248,7 +281,7 @@ vous pouviez résoudre la captcha sont écoulées.`,
      target.addEventListener('touchcancel', showevent);
      //target.addEventListener('pointerover', showevent);
      //target.addEventListener('pointerenter', showevent);
-     target.addEventListener('pointerdown', showevent);
+     //target.addEventListener('pointerdown', showevent);
      //target.addEventListener('pointermove', showevent);
      target.addEventListener('pointerup', showevent);
      target.addEventListener('pointercancel', showevent);
@@ -345,10 +378,13 @@ vous pouviez résoudre la captcha sont écoulées.`,
    const target = event.target;
    target.classList.remove('targeted');
  }
- function drop (event) {
+ function drop (event, url) {
    showevent(event);
    tarnish(event);
-   setTargetImage(event.target, event.dataTransfer.getData("text/plain"));
+   if ( ! url ) {
+     url = event.dataTransfer.getData("text/plain");
+   }
+   setTargetImage(event.target, url);
    //event.preventDefault();
    //event.stopPropagation();
  }
