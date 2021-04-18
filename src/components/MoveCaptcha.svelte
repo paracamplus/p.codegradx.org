@@ -101,6 +101,7 @@
  import { CodeGradX } from 'codegradx';
  import { finalcrypt } from '../server/cryptlib.mjs';
  import { sleep } from '../common/utils.mjs';
+ import queryString from 'query-string';
 
  const message = {
    building: "Construction d'une Captcha...",
@@ -124,8 +125,13 @@ vous pouviez résoudre la captcha sont écoulées.`,
  let error = undefined;
  let progress = undefined;
  let end = undefined;
+ let debug = false; //DEBUG
 
  onMount(async () => {
+   const search = queryString.parse(window.document.location.search);
+   if ( search.debug ) {
+     debug = true;
+   }
    await refreshCaptcha(null);
  });
 
@@ -165,19 +171,19 @@ vous pouviez résoudre la captcha sont écoulées.`,
  }
 
  function showevent (event) {
-   return; /*
-   const e = {
-     type: event.type,
-     pointerType: event.pointerType,
-     button: event.button,
-     buttons: event.buttons,
-     targetName: event.target.getAttribute('alt'),
-     timeStamp: event.timeStamp
-   };
-   eventscount = events.unshift(e);
-   events = events.concat([]);
-   console.log(event);
-*/
+   if ( debug ) {
+     const e = {
+       type: event.type,
+       pointerType: event.pointerType,
+       button: event.button,
+       buttons: event.buttons,
+       targetName: event.target.getAttribute('alt'),
+       timeStamp: event.timeStamp
+     };
+     eventscount = events.unshift(e);
+     events = events.concat([]);
+     console.log(event);
+   }
  }
 
  function prepareDragAndDropHooks (images, targets) {
