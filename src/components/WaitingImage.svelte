@@ -1,20 +1,28 @@
 <!-- spinning logo -->
 
-<div class='w3-center'>
-  <!-- ParacamplusLogo /-->
-  <Picture image='/fw4ex-512x512' alt='logo' height={height} />
+<div>
+  <div class='w3-left waitingMessage'>{message}</div>
+  <div bind:this={picture}
+       class='w3-center animate'>
+    <picture style='height: {height};'>
+      <source srcset='/fw4ex-512x512.webp'
+              type='image/webp'
+              alt='logo' />
+      <img src='/fw4ex-512x512.png' alt='logo' />
+    </picture>
+  </div>
 </div>
 
 <style>
- div {
+ :global(div.animate) {
    animation: combined 9s infinite linear;
    margin: auto;
    z-index: 99;
-   height: 50px;
+   height: 33px;
  }
  @keyframes rotation {
-   0% { transform: rotate(0deg); }
-   100% {   transform: rotate(359deg); }
+   0%   { transform: rotate(0deg); }
+   100% { transform: rotate(359deg); }
  }
  @keyframes zoom-in {
    0% {
@@ -40,18 +48,26 @@
    }
    75% {
      opacity: 0.5;
-     transform: scale3d(0.75, 0.75, 0.75) rotate(270deg);
+     transform: scale3d(0.25, 0.25, 0.25) rotate(270deg);
    }
    100% {
-     transform: scale3d(1, 1, 1) rotate(359deg);
-     opacity: 0;
+     transform: scale3d(0, 0, 0) rotate(359deg);
+     opacity: 0.1;
    }
  }
 </style>
 
 <script>
-  import Picture from './Picture.svelte';
  //import ParacamplusLogo from './ParacamplusLogo.svelte';
 
- export let height = '50px';
+ import { onMount } from 'svelte';
+
+ export let height = '33px';
+ export let message = undefined;
+ let picture = undefined;
+
+ onMount(() => {
+   picture.classList.add('animate');
+ });
+ 
 </script>

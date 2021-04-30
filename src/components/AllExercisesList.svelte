@@ -5,10 +5,13 @@
 <style>
 </style>
 
+{#if error}<Problem bind:error={error} />{/if}
+
 {#if showExercisesList}
 <div>
   <span class='w3-right w3-xxlarge w3-margin-left'
         title="Clore la liste"
+        data-close="AllExercisesList"
         on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
         title="Rafraîchir la liste"
@@ -16,8 +19,9 @@
 </div>
 
 <p class='smallHint'>
-  Il y a {exercises.length} exercices. Cliquer sur une ligne affiche
-  les réponses exprimées par les apprenants de l'univers {$campaign.name}.
+  Il y a {exercises.length} exercices. Cliquer sur une ligne permet
+  d'afficher les réponses exprimées par les apprenants de l'univers
+  {$campaign.name} ou d'envoyer un lot de copies à noter.
 </p>
 
 <table class='w3-table w3-center w3-hoverable'>
@@ -31,49 +35,62 @@
   </thead>
   <tbody>
     {#each exercises as exercise}
-    <tr on:click={mkShowJobsPerExercise(exercise)}
-        data-uuid={exercise.uuid}>
-      <td>{CodeGradX.normalizeUUID(exercise.uuid)}</td>
-      <td>{exercise.nickname}</td>
-      <td>{exercise.name}</td>
-      <td>{exercise.start}</td>
-    </tr>
+    <ExerciseLine exercise={exercise} />
     {:else}
-    <tr><td colspan='4'><WaitingImage /></td></tr>
+    <tr><td colspan='4'>Aucun exercice!</td></tr>
     {/each}
   </tbody>
 </table>
 
 {:else}
- <p class='waitingMessage'>Chargement des données...</p>
- <WaitingImage />
+ <WaitingImage message="Chargement des exercices..." />
 {/if}
-
-{#if error}<Problem bind:error={error} />{/if}
 
 <script>
  import WaitingImage from '../components/WaitingImage.svelte';
  import RefreshSign from '../components/RefreshSign.svelte';
  import Problem from '../components/Problem.svelte';
+ import ExerciseLine from '../components/ExerciseLine.svelte';
  
  import * as sapper from '@sapper/app';
  import { onMount, createEventDispatcher } from 'svelte';
  const dispatch = createEventDispatcher();
- import { campaign } from '../stores.mjs';
+ import { person, campaign } from '../stores.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
- import { CodeGradX } from 'codegradx';
+ import { CodeGradX } from 'codegradx/campaignlib';
  import { doSortColumn } from '../client/sortlib.mjs';
- import { shorten } from '../client/utils.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
- import { goto } from '../client/lib.mjs';
+ import { initializePerson, goto } from '../client/lib.mjs';
+ import { onClient } from '../common/utils.mjs';
+ import { fetchCampaign, flattenExercisesSet } from '../client/campaignlib.mjs';
 
- export let showExercisesList = true;
+ export let showExercisesList = false;
  export let entryPointName = 'listExercises';
  export let entryKeyName = 'exercises';
+ let objexercises = {};
  let exercises = [];
  let error = undefined;
 
+ /* In objexercises, exercise have a safecookie. 
+    allexercises list all exercises without safecookie.
+  */
+ 
+ onClient(async () => {
+   try {
+     $person = await initializePerson();
+     $campaign = await fetchCampaign($person, $campaign.name);
+     const exercisesSet = await $campaign.getExercisesSet();
+     objexercises = flattenExercisesSet(exercisesSet);
+     //console.log({objexercises}); // DEBUG
+     exercises = Object.values(objexercises);
+   } catch (exc) {
+     console.log('AllExercisesList', {exc});
+     error = parseAnomaly(exc);
+   }
+ });
+
  onMount(async () => {
+   //console.log($campaign);//DEBUG
    await refreshExercisesList();
  });
 
@@ -97,7 +114,10 @@
        }
      });
      if ( response.ok ) {
-       exercises = response.entity[entryKeyName];
+       const allexercises = response.entity[entryKeyName]
+                                    .map(e => new CodeGradX.Exercise(e));
+       exercises = merge(exercises, allexercises);
+       showExercisesList = true;
      } else {
        throw response;
      }
@@ -108,8 +128,19 @@
    }
  }
 
- const keyNames = `uuid name nickname start`;
- 
+ function merge (exercises, allexercises) {
+   const newexercises = [];
+   for ( const exercise of allexercises ) {
+     if ( objexercises[exercise.exerciseid] ) {
+       Object.assign(objexercises[exercise.exerciseid], exercise);
+       newexercises.push(objexercises[exercise.exerciseid]);
+     } else {
+       newexercises.push(exercise);
+     }
+   }
+   return newexercises;
+ }
+
  async function downloadExercisesList (event) {
    event.stopPropagation();
    event.preventDefault();
@@ -131,12 +162,6 @@
    document.body.appendChild(element);
    element.click();
    document.body.removeChild(element);
- }
-
- function mkShowJobsPerExercise (exercise) {
-   return function (event) {
-     goto(`/campaignexercisejobs/${$campaign.name}/${exercise.uuid}`);
-   };
  }
 
 </script>

@@ -34,8 +34,7 @@ NOTA: many parts of code similar to exercisejobs
                      bind:exercise={exercise}
                      on:seeMore={seeMore} />
   {:else if ! error}
-    <p class='waitingMessage'>Chargement des copies associées...</p>
-    <WaitingImage />
+    <WaitingImage message="Chargement des copies associées..." />
   {/if}
 
   {#if error}<Problem bind:error={error} />{/if}
@@ -54,16 +53,18 @@ NOTA: many parts of code similar to exercisejobs
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/exercise';
  import { CodeGradX as _ } from 'codegradx/campaign';
- import { initializePerson } from '../../../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../../../client/lib.mjs';
  import { person, current_exercise, campaign, lastmessage } 
     from '../../../stores.mjs';
  import { doSortColumn } from '../../../client/sortlib.mjs';
  import { parseAnomaly } from '../../../client/errorlib.mjs';
  import { fetchCampaign } from '../../../client/campaignlib.mjs';
+ import { onClient } from '../../../common/utils.mjs';
 
  let error = undefined;
  let exercise = undefined;
  let showinfo = false;
+ let campaignName = undefined;
  let exerciseTitle = '...';
  let showjobs = false;
  let jobs = [];
@@ -73,22 +74,26 @@ NOTA: many parts of code similar to exercisejobs
  let total = undefined;
  let rest = 0;
  
- onMount(async () => {
+ onClient(async () => {
    const uri = window.document.location.pathname;
-   const campaignName = uri
+   campaignName = uri
         .replace(/\/campaignexercisejobs\/(.+)\/(.+)$/, '$1');
    uuid = uri.replace(/\/campaignexercisejobs\/(.+)\/(.+)$/, '$2');
    exerciseTitle = CodeGradX.normalizeUUID(uuid);
-   if ( ! $person ) {
-     $person = await initializePerson();
-   }
-   if ( ! $person ) {
+   
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
      $lastmessage = error = "Veuillez d'abord vous identifier!";
-     goto('/connect');
+     await goto('/connect');
      return;
-   //} else if ( ! $person.isauthor ) {
-   //  error = "Navré mais vous n'êtes pas auteur d'exercices!";
-   //  return;
+   } else {
+     $person = maybeperson;
+   }
+ });
+
+ onMount(async () => {
+   if ( ! $person ) {
+     return;
    }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {

@@ -16,7 +16,7 @@
  }
 </style>
 
-<Page shortTitle="Modification profil"
+<Page shortTitle="Modification/profil"
       title="Modifier mes informations" >
 
     {#if $person}
@@ -120,12 +120,12 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson } from '../client/lib.mjs';
+ import { initializePerson, isUser, goto } from '../client/lib.mjs';
  import { sanitizeName, checkEmail, checkPassword, sanitizePassword, chars }
  from '../common/sanitizers.mjs';
- import { sleep } from '../common/utils.mjs';
+ import { sleep, onClient } from '../common/utils.mjs';
 
  let error = undefined;
  let done = false;
@@ -147,12 +147,21 @@
    password2: undefined,
  };
  
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
+     $lastmessage = error = "Désolé, je ne vous connais pas!";
+     goto('/connect');
+   }
+ });
+ 
  onMount(async () => {
    if ( ! $person ) {
      $person = await initializePerson();
    }
    if ( ! $person ) {
      error = "Désolé, je ne vous connais pas!";
+     goto('/connect');
      return;
    }
    newperson = fillDefaultValues($person);

@@ -23,6 +23,8 @@
            placeholder="{defaultlogin}" />
   </div>
 
+  <LastMessage />
+
   {#if error}<Problem bind:error={error} />{/if}
 
   <div class="w3-center w3-margin-top">
@@ -40,12 +42,12 @@
  import InformationSign from '../components/InformationSign.svelte';
  import Problem from '../components/Problem.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
+ import LastMessage from '../components/LastMessage.svelte';
 
- import * as sapper from '@sapper/app';
- import { onMount } from 'svelte';
  import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson, goto } from '../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../client/lib.mjs';
+ import { onClient } from '../common/utils.mjs';
 
  let login = undefined;
  let defaultlogin = 'mon.email@a.moi';
@@ -56,15 +58,18 @@
    error = errorLogin = undefined;
  }
 
- onMount(async () => {
+ onClient(async () => {
    const maybeperson = await initializePerson();
-   if ( maybeperson ) {
+   if ( isUser(maybeperson) ) {
      $person = maybeperson;
      $lastmessage = error =
        `Bonjour ${$person.pseudo}, je vous épargne cette étape
 puisque je vous connais déjà !`;
      goto('/universes');
      return;
+   }
+   if ( $person ) {
+     login = $person.email;
    }
  });
  

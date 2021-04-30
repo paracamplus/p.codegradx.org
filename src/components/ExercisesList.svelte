@@ -17,8 +17,7 @@
       {/if}
     {/each}
   {:else if ! error}
-     <div class='waitingMessage'>Chargement de la liste d'exercices...</div>
-     <WaitingImage />
+     <WaitingImage message="Chargement de la liste d'exercices..." />
   {:else}
      <Problem bind:error={error} />
   {/if}

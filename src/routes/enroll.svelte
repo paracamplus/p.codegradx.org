@@ -78,9 +78,10 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson, goto } from '../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../client/lib.mjs';
+ import { onClient } from '../common/utils.mjs';
 
  let login = undefined;
  let defaultlogin = 'mon.email@a.moi';
@@ -97,8 +98,15 @@
    error = undefined;
  }
 
- onMount(async () => {
-   await initializePerson();
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   //console.log('enroll', {maybeperson});//DEBUG
+   if ( isUser(maybeperson) ) {
+     $person = maybeperson;
+     $lastmessage =
+       "Comme j'ai vu qui vous êtes, je vous emporte directement ici!";
+     goto('/universes');
+   }
  });
 
  async function enroll (event) {
@@ -122,7 +130,7 @@
            $person = await state.userEnroll(login, captchaResponse);
            // $person is partial user with only:
            // confirmedemail, confirmedua, uaversion, login, logins, expires
-           console.log($person);//DEBUG
+           //console.log('enroll', {person: $person});//DEBUG
            goto(`/resume/${$person.token}`);
          } catch (exc) {
            error = "Mauvaise réponse!";

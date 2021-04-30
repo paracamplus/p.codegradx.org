@@ -15,8 +15,7 @@
               bind:rest={rest}
               on:seeMore={seeMore} />
   {:else if ! error}
-    <p class='waitingMessage'>Chargement de l'historique...</p>
-    <WaitingImage height='50px' />
+    <WaitingImage message="Chargement de l'historique..." />
   {/if}
 
 </Page>
@@ -32,9 +31,10 @@
  import { person, campaign, lastmessage } from '../../stores.mjs';
  import { CodeGradX } from 'codegradx/campaign';
  import { CodeGradX as cx } from 'codegradx/campaignlib';
- import { initializePerson, goto } from '../../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../../client/lib.mjs';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { onClient } from '../../common/utils.mjs';
 
  let error = undefined;
  let jobs = [];
@@ -46,10 +46,19 @@
  let count = 20;
  let rest = 0;
 
- onMount(async () => {
+ onClient(async () => {
    const uri = window.document.location.pathname;
    campaignName = uri.replace(/^(.*\/)?history\/([^\/]+)/, '$2');
    campaignTitle = 'dans ' + campaignName;
+   
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     goto('/connect');
+   }
+ });
+ 
+ onMount(async () => {
    if ( ! $person ) {
      $person = await initializePerson();
    }

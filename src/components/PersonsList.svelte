@@ -27,6 +27,7 @@
   {/if}
   <span class='w3-right w3-xxlarge w3-margin-left'
         title="Clore la liste"
+        data-close="PersonsList"
         on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
         title="Télécharger la liste (CSV)"
@@ -69,8 +70,7 @@
 </table>
 
 {:else}
-  <p class='waitingMessage'> Chargement des données...</p>
-  <WaitingImage />  
+  <WaitingImage message="Chargement des données..." />  
 {/if}
 
 

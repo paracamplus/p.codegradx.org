@@ -8,24 +8,18 @@
 </style>
 
 <Page shortTitle={campaignName}
-      title=""
-      showheader={false} >
-
-   <header class='w3-center w3-margin-bottom bold'>
-     {#if ! $campaign}
-     <span>Les exercices de {campaignName}</span>
-     {:else}
-     <div class='bold'>
-       {$campaign.title}
-     </div>
-     <div>
-       du {CodeGradX.Date2str($campaign.starttime).replace(/ .*$/, '')}
-       au {CodeGradX.Date2str($campaign.endtime).replace(/ .*$/, '')}
-     </div>
-     {/if}
-  </header>
+      title="Les exercices de {campaignName}" >
 
   <LastMessage />
+
+  {#if isCampaign($campaign)}
+  <p class='smallHint'>
+    L'univers {$campaign.name} a débuté le
+    {CodeGradX.Date2str($campaign.starttime).replace(/ .*$/, '')}
+    et s'achèvera le 
+    {CodeGradX.Date2str($campaign.endtime).replace(/ .*$/, '')}.
+  </p>
+  {/if}
   
   {#if error}<Problem bind:error={error} />{/if}
 
@@ -39,12 +33,11 @@
     </div>
   </div>
   {/if}
-
+ 
   {#if isCampaign($campaign)}
     <ExercisesList on:authenticate={authenticate} />
   {:else if ! error}
-     <p class='waitingMessage'>Chargement de la liste d'exercices...</p>
-     <WaitingImage />
+     <WaitingImage message="Chargement de la liste d'exercices..." />
   {/if}
 
 </Page>
@@ -61,7 +54,8 @@
  import { CodeGradX } from 'codegradx/campaign';
  import { sleep, onClient } from '../../common/utils.mjs';
  import { person, campaign, lastmessage } from '../../stores.mjs';
- import { initializePerson, isCampaign, goto } from '../../client/lib.mjs';
+ import { initializePerson, isCampaign, goto, isUser }
+   from '../../client/lib.mjs';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
  import { buildGoto } from '../../client/lib.mjs';

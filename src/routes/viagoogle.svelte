@@ -6,7 +6,7 @@
 <style>
 </style>
 
-<Page shortTitle="Identification"
+<Page shortTitle="ViaGoogle"
       title="Se connecter via Google" >
   
   <div>
@@ -37,16 +37,23 @@
  import InformationSign from '../components/InformationSign.svelte';
  import ConnectDoc from '../components/ConnectDoc.svelte';
 
- import * as sapper from '@sapper/app';
- import { onMount } from 'svelte';
- import { person, config } from '../stores.mjs';
- import { initializePerson } from '../client/lib.mjs';
+ import { person, lastmessage } from '../stores.mjs';
+ import { initializePerson, goto, isUser  } from '../client/lib.mjs';
+ import { onClient } from '../common/utils.mjs';
 
  let oauth2url = '/to/be/filled';
 
- onMount(() => {
-   //await initializePerson();
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( isUser(maybeperson) ) {
+     $person = maybeperson;
+     $lastmessage = 
+       `Bonjour ${$person.pseudo}, je vous ai reconnu !`;
+     goto('/universes');
+     return;
+   }
    // compute the url "via Google":
+   const origin = window.document.location.origin;
    oauth2url = 'https://x.codegradx.org';
    oauth2url += `/googleopenid`;
    oauth2url += `?homeUrl=${origin}`;

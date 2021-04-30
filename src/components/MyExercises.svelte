@@ -21,6 +21,7 @@
   <tbody>
     {#each exercises as exercise}
     <tr on:click={mkShowExerciseReports(exercise)}
+        data-uuid={CodeGradX.normalizeUUID(exercise.uuid)}
         title="Voir le rapport de déploiement" >
       <td>{exercise.nickname}</td>
       <td class='w3-hide-small'>{exercise.name}</td>

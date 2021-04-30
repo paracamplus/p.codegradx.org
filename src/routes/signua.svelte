@@ -38,7 +38,7 @@
   {/if}
 
  {:else}
-  <WaitingImage /> 
+  <WaitingImage message="Chargement des conditions d'utilisation..." /> 
  {/if}
 
 </Page>
@@ -54,7 +54,7 @@
  import { onClient } from '../common/utils.mjs';
  import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson, goto } from '../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../client/lib.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
 
  export let withButton = true;
@@ -62,15 +62,19 @@
  let showPage = false;
 
  onClient(async () => {
-   $person = await initializePerson();
-   if ( $person ) {
-     showPage = true;
-   } else {
-     $lastmessage = `\
-Veuillez d'abord vous identifier avant de pouvoir signer
-les conditions d'utilisation.`;
+   const maybeperson = await initializePerson();
+   if ( isUser(maybeperson) ) {
+     $person = maybeperson;
+     $lastmessage = error =
+       "Comme j'ai deviné qui vous étiez, je vous emmène directement ici!";
+     goto('/universes');
+   } else if ( ! maybeperson ) {
+     $lastmessage = error = `Je n'ai aucune idée de qui vous êtes ?
+Pouvez-vous tenter de vous identifier ...`; //'
      goto('/connect');
+     return;
    }
+   showPage = true;
  });
 
  async function sign (event) {

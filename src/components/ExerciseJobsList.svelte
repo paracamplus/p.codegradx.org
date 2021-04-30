@@ -53,6 +53,7 @@
       {#if jobs.length > 0}
         {#each jobs as job}
           <tr class:removed={job.removed}
+              data-jobid={job.jobid}
               class:problematic={!!job.problem}
               on:click={mkShowJob(job)} >
             <td>{CodeGradX.Date2str(job.finished)}</td>

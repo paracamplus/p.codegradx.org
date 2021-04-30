@@ -1,8 +1,7 @@
 <!-- -*- coding: utf-8 -*- -->
 
 {#if urls.length === 0 }
-  <p class='waitingMessage'>Construction d'une Captcha...</p>
-  <WaitingImage />
+  <WaitingImage message="Construction d'une Captcha..." />
 {:else}
 
 <div id='movecaptcha' class='w3-container w3-center'>

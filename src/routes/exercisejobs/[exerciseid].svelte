@@ -33,8 +33,7 @@ NOTA: many parts of code similar to campaignexercisejobs
                      bind:total={total}
                      on:seeMore={seeMore} />
   {:else if ! error}
-    <p class='waitingMessage'>Chargement des copies associées...</p>
-    <WaitingImage />
+    <WaitingImage message="Chargement des copies associées..." />
   {/if}
 
   {#if error}<Problem bind:error={error} />{/if}
@@ -52,12 +51,13 @@ NOTA: many parts of code similar to campaignexercisejobs
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/exercise';
- import { initializePerson } from '../../client/lib.mjs';
+ import { initializePerson, isUser, goto } from '../../client/lib.mjs';
  import { sleep } from '../../common/utils.mjs';
  import { person, current_exercise, campaign, lastmessage }
     from '../../stores.mjs';
  import { doSortColumn } from '../../client/sortlib.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { onClient } from '../../common/utils.mjs';
 
  let error = undefined;
  let exercise = undefined;
@@ -71,9 +71,18 @@ NOTA: many parts of code similar to campaignexercisejobs
  let total = undefined;
  let rest = 0;
  
- onMount(async () => {
+ onClient(async () => {
    const uri = window.document.location.pathname;
    uuid = uri.replace(/\/exercisejobs\/(.+)$/, '$1');
+   
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     goto('/connect');
+   }
+ });
+ 
+ onMount(async () => {
    if ( ! $person ) {
      $person = await initializePerson();
    }

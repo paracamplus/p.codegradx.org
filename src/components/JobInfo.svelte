@@ -4,6 +4,7 @@
     <header class='w3-theme-l4 w3-xlarge'>
       <span> Réponse </span>
       <span class='w3-right w3-margin-right'
+            data-close="JobInfo"
             on:click={close}>&#x2716;</span>
     </header>
 

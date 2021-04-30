@@ -41,6 +41,7 @@
 <div class='w3-container'>
   <h3>Rapport de notation {#if job.label}<code>{job.label}</code>{/if}
     <span class='w3-right w3-margin-left'
+          data-close="JobReport"
           on:click={close}>&#x2716;</span>
     {#if showReport}
     <span class='w3-right w3-margin-left'
@@ -63,8 +64,7 @@
       {@html job.HTMLreport}
     {:else}
       {#if ! error}
-      <p class='waitingMessage'>Chargement du rapport de notation...</p>
-      <WaitingImage />
+      <WaitingImage message="Chargement du rapport de notation..." />
       {/if}
     {/if}
   </div>

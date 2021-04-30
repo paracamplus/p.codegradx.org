@@ -37,7 +37,7 @@
     </ul>
   </div>
   {:else if waiting}
-    <WaitingImage height='33px' />
+    <WaitingImage message="Incorporation des nouveaux apprenants..." />
   {/if}
 
 </div>

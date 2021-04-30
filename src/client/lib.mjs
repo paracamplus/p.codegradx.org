@@ -81,7 +81,7 @@ export async function determineNextUserState (json) {
         }
         // Make sure $person holds a User, not a PartialUser
         if ( ! isUser(json) ) {
-            $person = await CodeGradX.getCurrentUser();
+            person.set(await CodeGradX.getCurrentUser());
         }
     }
     return undefined;
@@ -125,7 +125,10 @@ export async function initializePerson () {
  */
 
 export function isUser (o) {
-    return o && o instanceof CodeGradX.User && o.pseudo;
+    return o &&
+        o instanceof CodeGradX.User &&
+        o.pseudo &&
+        o.cookie;
 }
 
 /**

@@ -11,6 +11,7 @@
   <h3>Rapport de problèmes de notation 
     {#if job.label}<code>{job.label}</code>{/if}
     <span class='w3-right w3-margin-left'
+          data-close="JobProblemReport"
           on:click={() => job = undefined}>&#x2716;</span>
   </h3>
 
@@ -24,9 +25,7 @@
       <div class='report'>{@html problem}</div>
     {:else}
       {#if ! error}
-        <p class='waitingMessage'>
-          Chargement du rapport de problèmes notation...</p>
-        <WaitingImage />
+        <WaitingImage message="Chargement du rapport de problèmes..." />
       {/if}
     {/if}
   </div>

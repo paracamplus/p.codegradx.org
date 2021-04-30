@@ -10,6 +10,7 @@
     <header class='w3-xlarge w3-theme-l4 padding'>
       <span> Comment s'enregistrer... </span>
       <span class='w3-right w3-margin-left'
+            data-close="ConnectDoc"
             on:click={close}>&#x2716;</span>
     </header>
     <div class='w3-container w3-margin w3-left-align'>

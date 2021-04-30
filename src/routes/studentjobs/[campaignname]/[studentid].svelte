@@ -15,8 +15,7 @@
               bind:rest={rest}
               on:seeMore={seeMore} />
   {:else if ! error}
-    <p class='waitingMessage'>Chargement de l'historique...</p>
-    <WaitingImage height='50px' />
+    <WaitingImage message="Chargement de l'historique..." />
   {/if}
     
 </Page>
@@ -32,9 +31,10 @@
  import { person, campaign, lastmessage } from '../../../stores.mjs';
  import { CodeGradX } from 'codegradx/campaign';
  import { CodeGradX as cx } from 'codegradx/campaignlib';
- import { initializePerson, isTeacher, goto } from '../../../client/lib.mjs';
+ import { initializePerson, isTeacher, goto, isUser }
+   from '../../../client/lib.mjs';
  import { fetchCampaign } from '../../../client/campaignlib.mjs';
- import { sleep } from '../../../common/utils.mjs';
+ import { sleep, onClient } from '../../../common/utils.mjs';
  import { parseAnomaly } from '../../../client/errorlib.mjs';
 
  let error = undefined;
@@ -45,25 +45,30 @@
  let rest = 0;
  let showStudentJobs = false;
  let studentid = undefined;
+ let campaignName = '';
  let campaignTitle = '';
  let studentTitle = '';
  let student = undefined;
 
- onMount(async () => {
+ onClient(async () => {
    const uri = window.document.location.pathname;
-   const campaignName = uri
+   campaignName = uri
         .replace(/^(.*\/)?studentjobs\/([^\/]+)\/([^\/]+)/, '$2');
    campaignTitle = `dans ${campaignName}`;
    studentid = uri.replace(/^(.*\/)?studentjobs\/([^\/]+)\/([^\/]+)/, '$3');
-   // $person is the invoker of the page
-   if ( ! $person ) {
-     $person = await initializePerson();
-   }
-   if ( ! $person ) {
+   
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
      $lastmessage = error = "Veuillez d'abord vous identifier!";
      goto('/connect');
      return;
+   } else {
+     $person = maybeperson;
    }
+ });
+
+ onMount(async () => {
+   // $person is the invoker of the page
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
      $lastmessage = error = "Veuillez d'abord choisir un univers! ...";

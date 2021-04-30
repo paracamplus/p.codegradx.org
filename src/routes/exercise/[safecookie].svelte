@@ -5,8 +5,8 @@
 <style>
 </style>
 
-<Page shortTitle="Exercice"
-      title=""
+<Page shortTitle="Exercice/"
+      title="Exercice {exerciseTitle}"
       showheader={false} >
 
   {#if error}<Problem bind:error={error} />{/if}
@@ -45,8 +45,7 @@
    {#if job}<JobReport bind:job={job} />{/if}
 
   {:else if ! error && ! showAuthentication}
-    <p class='waitingMessage'> Chargement de l'exercice ... </p>
-    <WaitingImage />
+    <WaitingImage message="Chargement de l'exercice ..." />
   {/if}
 
 </Page>
@@ -65,9 +64,12 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/exercise';
- import { initializePerson, goto, buildGoto } from '../../client/lib.mjs';
- import { person, current_exercise, campaign } from '../../stores.mjs';
+ import { initializePerson, goto, buildGoto, isUser }
+    from '../../client/lib.mjs';
+ import { person, current_exercise, campaign, lastmessage }
+   from '../../stores.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { onClient } from '../../common/utils.mjs';
 
  let error = undefined;
  let showinfo = false;
@@ -75,6 +77,15 @@
  let showExercise = false;
  let exerciseTitle = '...';
  let showAuthentication = false;
+
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
+     $lastmessage = error = 
+       "Pour pratiquer cet exercice, vous devez d'abord vous identifier!";
+     goto('/connect');
+   }
+ });
  
  onMount(async () => {
    const uri = window.document.location.pathname;

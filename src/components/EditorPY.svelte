@@ -59,6 +59,7 @@
   <div class='code'>
     <span class='w3-right higher'
           title='Effacer ces résultats'
+          data-close="EditorPy"
           on:click={() => result = ''}>&#x2716;</span>
     <pre>{@html result}</pre>
   </div>

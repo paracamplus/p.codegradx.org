@@ -8,6 +8,7 @@
 
 <div>
   <span class='w3-right w3-xxlarge w3-margin-left'
+        data-close="StudentsStats"
         on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={downloadStudentsStats}><DownloadSign /></span>

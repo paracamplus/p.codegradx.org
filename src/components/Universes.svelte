@@ -57,6 +57,7 @@
  export let campaigns = [];
 
  onMount(async () => {
+   // reset the current campaign:
    $campaign = undefined;
  });
  

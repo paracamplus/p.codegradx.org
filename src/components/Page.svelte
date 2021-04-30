@@ -7,10 +7,12 @@
 
 <Header on:logout={logout} />
 
-<section id='Page' class='w3-container w3-margin-top w3-padding'>
+<section id='Page'
+         data-shortTitle={shortTitle}
+         class='w3-container w3-margin-top w3-padding'>
   {#if showheader}
   <header class='w3-center w3-margin-bottom bold'>
-    {title}
+    <h1>{title}</h1>
   </header>
   {/if}
 

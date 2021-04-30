@@ -47,7 +47,7 @@
    <div class='w3-center'>
    {#if exercise.safecookie}
         <a class='w3-button w3-round-xxlarge w3-theme-l4'
-           title="voir l'exercise déployé"
+           title="voir l'exercice déployé"
            href={buildGoto(`/exercise/${exercise.safecookie}`)}
            >exercice {exercise.nickname}</a>
    {/if}
@@ -93,8 +93,9 @@
    {/if}
 
   {:else if ! error}
-     <p class='waitingMessage'> Recherche du rapport d'analyse...</p>
-     <WaitingImage />
+     <WaitingImage message="Recherche du rapport d'analyse..." />
+
+     <Notifications from={Date.now()} delay={5} />
   {/if}
 
   {#if currentJob}
@@ -127,16 +128,17 @@
  import InformationSign from '../../components/InformationSign.svelte';
  import JobReport from '../../components/JobReport.svelte';
  import JobProblemReport from '../../components/JobProblemReport.svelte';
+ import Notifications from '../../components/Notifications.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person, lastmessage, current_exercise } from '../../stores.mjs';
- import { initializePerson } from '../../client/lib.mjs';
+ import { initializePerson, isUser, goto, buildGoto }
+    from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx/exercise';
  import queryString from 'query-string';
  import { massagePRE } from '../../client/utils.mjs';
- import { goto, buildGoto } from '../../client/lib.mjs';
  import { onClient } from '../../common/utils.mjs';
 
  let newexercise = false;
@@ -149,26 +151,20 @@
  let currentJob = undefined;
  let currentJobProblem = undefined;
 
- onClient(() => {
+ onClient(async () => {
    const uri = window.document.location.pathname;
    const exerciseid = uri.replace(/^(.*\/)?myexercise\/([^\/]+)/, '$2');
    const location = '/e' + exerciseid.replace(/-/g, '').replace(/(.)/g, '/$1');
    exerciseTitle = CodeGradX.normalizeUUID(exerciseid);
- });
-
- onMount(async () => {
-   const uri = window.document.location.pathname;
-   const exerciseid = uri.replace(/^(.*\/)?myexercise\/([^\/]+)/, '$2');
-   const location = '/e' + exerciseid.replace(/-/g, '').replace(/(.)/g, '/$1');
-   exerciseTitle = CodeGradX.normalizeUUID(exerciseid);
-   if ( ! $person ) {
-     $person = await initializePerson();
-   }
-   if ( ! $person ) {
-     $lastmessage = error = "Veuillez d'abord vous identifier";
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
+     $lastmessage = error = "Vous devez d'abord vous identifier!";
      goto('/connect');
      return;
-   } else if ( ! $person.isauthor ) {
+   } else {
+     $person = maybeperson;
+   }
+   if ( ! $person.isauthor ) {
      error = "Navré mais vous n'êtes pas auteur d'exercices!";
      return;
    }

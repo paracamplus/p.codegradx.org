@@ -9,7 +9,7 @@
 <Page title="Mes exercices {campaignTitle}"
   shortTitle="Auteurs" >      
 
-  {#if showexercises }
+  {#if isauthor && exercisesloaded }
     <p>
     {#if exercises.length > 0 }
       Voici les {exercises.length} exercices dont vous êtes l'auteur
@@ -31,11 +31,10 @@
 
   {#if error}<Problem bind:error={error} />{/if}
 
-  {#if showexercises}
+  {#if exercisesloaded}
     <MyExercises bind:exercises={exercises} />
-  {:else}
-    <p class='waitingMessage'>Recherche de vos exercices...</p>
-    <WaitingImage height='33px'/>
+  {:else if isauthor}
+    <WaitingImage message="Recherche de vos exercices..." />
   {/if}
 
 </Page>
@@ -51,35 +50,44 @@
  import { onMount } from 'svelte';
  import { person, campaign, current_exercise, lastmessage }
     from '../../stores.mjs';
- import { initializePerson, goto } from '../../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx/src/newexercise';
  import { CodeGradX as _ } from 'codegradx/src/userlib';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { onClient } from '../../common/utils.mjs';
 
  let error = undefined;
  let chosenfile = undefined;
  let campaignTitle = '...';
+ let campaignName = '';
  let exercises = [];
- let showexercises = false;
+ let exercisesloaded = false;
+ let isauthor = false;
+
+ onClient(async () => {
+   const uri = window.document.location.pathname;
+   campaignName = uri.replace(/^(.*\/)?author\/([^\/]+)/, '$2');
+   campaignTitle = `dans ${campaignName} ...`;
+   
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
+     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     await goto('/connect');
+     return;
+   }
+ });
 
  onMount(async () => {
-   const uri = window.document.location.pathname;
-   const campaignName = uri.replace(/^(.*\/)?author\/([^\/]+)/, '$2');
-   campaignTitle = `dans ${campaignName} ...`;
    if ( ! $person ) {
      $person = await initializePerson();
    }
-   if ( ! $person ) {
-     $lastmessage = error = "Veuillez d'abord vous identifier!";
-     goto('/connect');
-     return;
-   }
-   if ( ! $person.isauthor ) {
+   if ( ! $person || ! $person.isauthor ) {
      error = "Navré mais vous n'êtes pas auteur d'exercices!";
      return;
    }
+   isauthor = true;
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
      $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
@@ -89,7 +97,7 @@
    campaignTitle = `dans ${$campaign.name}`;
    try {
      exercises = await $person.getAllExercises();
-     showexercises = true;
+     exercisesloaded = true;
    } catch (exc) {
      console.log('author', {exc});
      error = parseAnomaly(exc);

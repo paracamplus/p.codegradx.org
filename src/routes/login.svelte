@@ -71,9 +71,10 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson, goto } from '../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../client/lib.mjs';
+ import { onClient } from '../common/utils.mjs';
 
  let login = undefined;
  let password = undefined;
@@ -89,8 +90,14 @@
    error = errorLogin = errorPassword = undefined;
  }
 
- onMount(async () => {
-   return initializePerson();
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( isUser(maybeperson) ) {
+     $person = maybeperson;
+     $lastmessage = error = `Comme j'ai deviné qui vous étiez, 
+je vous emporte directement vers une page plus appropriée!`; //'
+     goto('/universes');
+   }
  });
 
  async function authenticate (event) {

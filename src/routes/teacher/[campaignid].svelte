@@ -9,10 +9,14 @@
       shortTitle="Enseignant" >
 
   {#if $campaign}
-  <p class='smallHint'>L'univers {$campaign.name} est
+  <p class='smallHint'>L'univers 
+    <span class='campaignName'>{$campaign.name}</span> est
     {#if $campaign.active}
-    en cours [{CodeGradX.Date2str($campaign.starttime).replace(/ .*$/, '')} -
-      {CodeGradX.Date2str($campaign.endtime).replace(/ .*$/, '')}]
+      <span>en cours depuis le
+        {CodeGradX.Date2str($campaign.starttime).replace(/ .*$/, '')}
+        et jusqu'au
+        {CodeGradX.Date2str($campaign.endtime).replace(/ .*$/, '')}
+      </span>
     {:else}inactif{/if}
   </p>
   {/if}
@@ -37,6 +41,9 @@
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
             on:click={mkCloseAllBut('showExercisesSet')}>
       jeu d'exercices</button>
+    <button class='w3-btn w3-round-xxlarge w3-theme-l4'
+            on:click={mkCloseAllBut('showBatches')}>
+      lots</button>
   </div>
 
   {#if widgets.showStudentsCreationForm}
@@ -49,6 +56,8 @@
     <AllExercicesList on:close={closeAll} />
   {:else if widgets.showExercisesSet}
     <ExercisesSetCreation on:close={closeAll} />
+  {:else if widgets.showBatches}
+    <BatchesList on:close={closeAll} />
   {/if}
 
   <h2>Statistiques</h2>
@@ -85,8 +94,7 @@
 
   {:else if ! error}
   <div>
-    <p class='waitingMessage'>Chargement des données de l'univers...</p>
-    <WaitingImage />
+    <WaitingImage message="Chargement des données de l'univers..." />
   </div>
   {/if}
   
@@ -101,6 +109,7 @@
  import StudentsCreation from '../../components/StudentsCreation.svelte';
  import TeachersList from '../../components/TeachersList.svelte';
  import AllExercicesList from '../../components/AllExercisesList.svelte';
+ import BatchesList from '../../components/BatchesList.svelte';
  import StudentsStats from '../../components/StudentsStats.svelte';
  import ExercisesStats from '../../components/ExercisesStats.svelte';
  import DaysStats from '../../components/DaysStats.svelte';
@@ -109,13 +118,15 @@
 
  import { onMount } from 'svelte';
  import { person, campaign, lastmessage } from '../../stores.mjs';
- import { initializePerson, isTeacher, goto } from '../../client/lib.mjs';
+ import { initializePerson, isTeacher, goto, isUser }
+   from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
  import { CodeGradX } from 'codegradx/src/newexercise';
  import { CodeGradX as _ } from 'codegradx/src/userlib';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
- import { sleep } from '../../common/utils.mjs';
+ import { sleep, onClient } from '../../common/utils.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
+ import queryString from 'query-string';
 
  let error = undefined;
  let personTitle = "";
@@ -129,6 +140,7 @@
    showExercisesList: false,
    showStudentsStats: false,
    showExercisesStats: false,
+   showBatches: false,
    showDaysStats: false,
    showNotifications: false
  };
@@ -144,21 +156,35 @@
      const old = widgets[widget];
      closeAll();
      widgets[widget] = ! old;
+     if ( widgets[widget] ) {
+       const url = window.location.href.replace(/[?].*$/, '');
+       window.history.replaceState(null, '', `${url}?open=${widget}`);
+     }
    };
  }
 
- onMount(async () => {
-   if ( ! $person ) {
-     $person = await initializePerson();
-   }
-   if ( ! $person ) {
-     error = "Désolé, j'ignore qui vous êtes!";
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
+     $lastmessage = error = "Désolé, j'ignore qui vous êtes!";
+     goto('/connect');
      return;
+   } else {
+     $person = maybeperson;
    }
    //console.log($person);
    personTitle = $person.pseudo;
+ });
+
+ onMount(async () => {
    const uri = window.document.location.pathname;
    const campaignName = uri.replace(/^(.*\/)?teacher\/([^\/]+)/, '$2');
+   $person = await initializePerson();
+   if (  ! isUser($person) ) {
+     $lastmessage = error = "Désolé, j'ignore qui vous êtes!";
+     goto('/connect');
+     return;
+   }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
      $lastmessage = error = "Je ne vois pas d'univers ainsi nommé!";
@@ -171,6 +197,10 @@
      error = "Vous n'êtes pas un enseignant de cet univers!";
      return;
    }
+   const params = queryString.parse(window.document.location.search);
+   if ( 'open' in params && params.open in widgets ) {
+     mkCloseAllBut(params.open)();
+   }     
  });
 
 </script>

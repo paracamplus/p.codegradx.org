@@ -41,7 +41,6 @@
     Pouvez-vous tenter de vous identifier ...
   </p>
   
-  {#if showauthentication}
   <div class='w3-container'>
     <div class='w3-center w3-animate-zoom'>
       <a class='w3-btn w3-center w3-round-xlarge w3-theme-d4'
@@ -50,7 +49,6 @@
       </a>
     </div>
   </div>
-  {/if}
   
 {/if}
 
@@ -65,22 +63,27 @@
  import ShowStore from '../components/ShowStore.svelte';
 
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson, buildGoto, goto } from '../client/lib.mjs';
+ import { initializePerson, buildGoto, goto, isUser } from '../client/lib.mjs';
  import { sleep } from '../common/utils.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
+ import { onClient } from '../common/utils.mjs';
 
  let sendmail = true;
  let error = undefined;
- let showauthentication = false;
  
- onMount(async () => {
-   if ( ! $person ) {
-     $person = await initializePerson();
-   }
-   if ( ! $person ) {
-     showauthentication = true;
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( isUser(maybeperson) ) {
+     $person = maybeperson;
+     $lastmessage = error =
+       "Comme j'ai deviné qui vous étiez, je vous emmène directement ici!";
+     goto('/universes');
+   } else if ( ! maybeperson ) {
+     $lastmessage = error = `Je n'ai aucune idée de qui vous êtes ?
+Pouvez-vous tenter de vous identifier ...`; //'
+     goto('/connect');
    }
  });
 

@@ -15,10 +15,11 @@ import { campaign } from '../stores.mjs';
 */
 
 export async function fetchCampaign (person, campaignName) {
-    if ( get(campaign) ) {
+    if ( false && get(campaign) ) {
         return get(campaign);
     }
     const state = CodeGradX.getCurrentState();
+    //console.log({person});//DEBUG
     if ( isUser(person) ) {
         try {
             const campaign = await person.getCampaign(campaignName);
@@ -35,6 +36,31 @@ export async function fetchCampaign (person, campaignName) {
         state.currentCampaign = campaign;
         return campaign;
     }
+}
+
+/** 
+    Given an ExercisesSet, return an object filled with all mentioned
+    exercises. 
+
+    @returns Object mapping exercise.exerciseid (an UUID) to exercise
+
+ */
+
+export function flattenExercisesSet (exercisesSet) {
+    const exercises = {};
+    if ( exercisesSet.exercises ) {
+        for ( const es of exercisesSet.exercises ) {
+            if ( es instanceof CodeGradX.ExercisesSet ) {
+                const otherexercises = flattenExercisesSet(es);
+                for ( const e of otherexercises ) {
+                    exercises[e.exerciseid] = e;
+                }
+            } else if ( es instanceof CodeGradX.Exercise ) {
+                exercises[es.exerciseid] = es;
+            }
+        }
+    }
+    return exercises;
 }
 
 // end of campaignlib.mjs

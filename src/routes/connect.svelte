@@ -24,11 +24,11 @@
   </p>
 
   <div class="w3-center w3-margin-top">
-    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
-            name="enroll"
-            on:click={enroll}>
+    <a class="w3-btn w3-theme-d2 w3-round-xxlarge"
+       name="enroll"
+       href={buildGoto('/enroll')}>
       Je m'inscris!
-    </button>
+    </a>
     <a href='viagoogle' name="viaGoogle1"
        class="w3-btn w3-theme-d2 w3-round-xxlarge"
        >via Google</a>
@@ -39,19 +39,18 @@
   </p>
   
   <div class="w3-center w3-margin-top">
-    <button type="submit" name="signin" 
-            class="w3-btn w3-theme-d2 w3-round-xxlarge"
-            on:click={authenticate}>
+    <a href={buildGoto('/login')} name="signin" 
+       class="w3-btn w3-theme-d2 w3-round-xxlarge">
       Je m'identifie!
-    </button>
-    <a href='viagoogle' name="viaGoogle2"
+    </a>
+    <a href={buildGoto('/viagoogle')} name="viaGoogle2"
        class="w3-btn w3-theme-d2 w3-round-xxlarge"
        >via Google</a>
-    <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
-            name="lostpassword"
-            on:click={lostpassword}>
+    <a class="w3-btn w3-theme-d2 w3-round-xxlarge"
+       name="lostpassword"
+       href={buildGoto('/lostpassword')}>
       J'ai perdu mon mot de passe!
-    </button>
+    </a>
   </div>
 
 </Page>
@@ -64,25 +63,22 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { person } from '../stores.mjs';
+ import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { initializePerson, goto } from '../client/lib.mjs';
+ import { initializePerson, buildGoto, goto, isUser } from '../client/lib.mjs';
+ import { onClient } from '../common/utils.mjs';
 
  let helpshown = false;
 
- onMount(async () => {
-   return initializePerson()
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( isUser(maybeperson) ) {
+     $person = maybeperson;
+     $lastmessage = 
+       "Comme j'ai deviné qui vous étiez, je vous emmène directement ici!";
+     goto('/universes');
+   }
  });
-
- function enroll (event) {
-   goto('/enroll');
- }
- function authenticate (event) {
-   goto('/login');
- }
- function lostpassword (event) {
-   goto('/lostpassword');
- }
 
  function showHelp (event) {
    helpshown = true;

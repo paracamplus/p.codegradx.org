@@ -9,9 +9,6 @@
       title="Connexion à CodeGradX" >
 
 {#if $person}
-   <header class='w3-center w3-large bold'>
-     Connexion à CodeGradX
-   </header>
    <p>
      Si <code class='personName'>{$person.login}</code> est connu
      de CodeGradX, alors un courriel vient de lui être adressé.
@@ -45,38 +42,24 @@
  import { onMount } from 'svelte';
  import { person, lastmessage } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
- import { isUser, initializePerson, goto } from '../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../client/lib.mjs';
+ import { onClient } from '../common/utils.mjs';
 
- let path = undefined;
-
- async function XXXreconnect (event) {
-   // Redirect to the /universes page with renewed credentials:
-   try {
-     await CodeGradX.getCurrentState().sendAXServer('x', {
-       path: path,
-       method: 'GET',
-       headers: {
-         'Accept': 'application/json',
-         'Content-Type': 'application/x-www-form-urlencoded'
-       }
-     });
-   } catch (exc) {
-     console.log({exc});//DEBUG
-   }
- }
-
- onMount(async () => {
-   if ( ! $person ) {
-     // In case the User has already completed its enrollment and has
-     // a valid safeCookie:
-     $person = await CodeGradX.getCurrentUser();
-     // assert(isUser($person))
+ onClient(async () => {
+   const maybeperson = await initializePerson();
+   if ( isUser(maybeperson) ) {
+     $person = maybeperson;
+     $lastmessage = 
+       `Bonjour ${$person.pseudo}, je vous épargne cette étape
+puisque je vous connais déjà !`;
+     goto('/universes');
+     return;
    }
    // If coming from /connect, then $person is a partial user:
    if ( ! $person ) {
-     $lastmessage = error = "Veuillez d'abord vous identifier!";
+     $lastmessage = "Veuillez d'abord vous identifier!";
      goto('/connect');
    }
  });
-
+ 
 </script>

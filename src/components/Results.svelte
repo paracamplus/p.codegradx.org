@@ -11,8 +11,7 @@
     <ResultsSet bind:exercisesSet={exercisesSet}
                 bind:results={results} />
   {:else if ! error}
-     <div class='waitingMessage'>Chargement de vos résultats...</div>
-     <WaitingImage />
+     <WaitingImage message="Chargement de vos résultats..." />
   {/if}
   
 </section>

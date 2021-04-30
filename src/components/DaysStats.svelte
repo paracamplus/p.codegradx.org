@@ -32,6 +32,7 @@
 
 <div>
   <span class='w3-right w3-xxlarge w3-margin-left'
+        data-close="DaysStats"
         on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={downloadDaysStats}><DownloadSign /></span>
@@ -87,7 +88,7 @@
               {#if showSubItems}
                 <tr><td colspan='5'>Aucune entrée!</td></tr>
               {:else}
-                <tr><td colspan='5'><WaitingImage height='50px'/></td></tr>
+                <tr><td colspan='5'><WaitingImage /></td></tr>
               {/if}
               {/each}
             </tbody>

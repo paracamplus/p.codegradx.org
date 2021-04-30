@@ -105,7 +105,7 @@
  
  import * as sapper from '@sapper/app';
  import { onMount, createEventDispatcher } from 'svelte';
- import { person, campaign, config } from '../stores.mjs';
+ import { person, campaign, config, lastmessage } from '../stores.mjs';
  import { isUser, isTeacher } from '../client/lib.mjs';
  const dispatch = createEventDispatcher();
  import { buildGoto } from '../client/lib.mjs';
@@ -144,6 +144,8 @@
 
  async function logout (event) {
    dispatch('logout', {});
+   showMenu = false;
+   //$lastmessage = "Vous n'êtes plus identifié!";
  }
 
  function handleOutsideClick (event) {
@@ -153,7 +155,7 @@
      } else {
        event.stopPropagation();
        event.preventDefault();
-       showMenu = ! showMenu;
+       showMenu = false;
      }
    } else {
      // nothing: the menu is not open

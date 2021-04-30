@@ -6,9 +6,13 @@
 */
 
 const messages = {
-    e215: "Cette action ne vous est pas autorisée.",
+    e109: "Je ne vois le fichier que vous m'avez envoyé!",
+    e115: "Vous n'avez pas le statut d'auteur d'exercices",
+    e126: "Je ne vous connais point!",
+    e146: "Vous n'êtes pas un apprenant de cet univers!",
     e190: "Êtes-vous sûr du nom de cet univers ?",
-    e146: "Vous n'êtes pas un apprenant de cet univers!"
+    e215: "Cette action ne vous est pas autorisée.",
+    XXXYYYZZ: ''
 };
 
 export function parseAnomaly (o) {

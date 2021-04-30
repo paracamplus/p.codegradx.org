@@ -21,27 +21,29 @@
   
  import { onMount } from 'svelte';
  import { person, campaign, lastmessage } from '../../stores.mjs';
- import { initializePerson, goto } from '../../client/lib.mjs';
+ import { initializePerson, goto, isUser } from '../../client/lib.mjs';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
+ import { onClient } from '../../common/utils.mjs';
 
  let error = undefined;
  let campaignName = '';
  let campaignTitle = '';
 
- onMount(async () => {
+ onClient(async () => {
    const uri = window.document.location.pathname;
    const campaignName = uri.replace(/^(.*\/)?results\/([^\/]+)/, '$2');
    campaignTitle = 'dans ' + campaignName;
  
-   if ( ! $person ) {
-     $person = await initializePerson();
-   }
-   if ( ! $person ) {
+   const maybeperson = await initializePerson();
+   if ( ! isUser(maybeperson) ) {
      $lastmessage = error = "Veuillez d'abord vous identifier!";
      goto('/connect');
      return;
+   } else {
+     $person = maybeperson;
    }
+   
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
      $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
