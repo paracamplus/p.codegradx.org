@@ -55,7 +55,6 @@ NOTA: many parts of code similar to campaignexercisejobs
  import { sleep } from '../../common/utils.mjs';
  import { person, current_exercise, campaign, lastmessage }
     from '../../stores.mjs';
- import { doSortColumn } from '../../client/sortlib.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';
  import { onClient } from '../../common/utils.mjs';
 
@@ -66,7 +65,7 @@ NOTA: many parts of code similar to campaignexercisejobs
  let showjobs = false;
  let jobs = [];
  let uuid = undefined;
- let count = 10;
+ let count = 20;
  let offset = 0;
  let total = undefined;
  let rest = 0;

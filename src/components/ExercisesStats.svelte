@@ -15,7 +15,9 @@
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={refreshExercisesStats}><RefreshSign /></span>
 </div>
-<table class='w3-table w3-center w3-hoverable'>
+<table id='exercisesstats'
+       bind:this={table}
+       class='w3-table w3-center w3-hoverable'>
   <thead class="w3-theme-l3">
     <tr>
       <th class='w3-hide-small'
@@ -38,7 +40,9 @@
       <td>{item.successes}</td>
     </tr>
     {:else}
-    <tr><td colspan='6'><WaitingImage /></td></tr>
+    <tr><td colspan='6'>
+      <WaitingImage message="Chargement des statistiques..." />
+    </td></tr>
     {/each}
   </tbody>
 </table>
@@ -60,6 +64,7 @@
 
  let items = [];
  let entryPointName = 'perExercise';
+ let table;
   
  onMount(async () => {
    await refreshExercisesStats();
@@ -70,7 +75,7 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     items = doSortColumn(key, items, hint);
+     items = doSortColumn(table, key, items, hint);
    };
  }
 

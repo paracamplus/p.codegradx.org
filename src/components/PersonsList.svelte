@@ -21,7 +21,7 @@
   <div class='w3-margin-top'>
   {#if persons.length > 0}
     {total} personnes en tout,
-    {persons.length} affichées ci-dessous dont
+    seulement {persons.length} affichées ci-dessous dont
     {persons.filter(item => item.confirmedemail).length} avec courriel confirmé,
     et {persons.filter(item => item.confirmedua).length} avec UA confirmé.
   {/if}
@@ -30,14 +30,16 @@
         data-close="PersonsList"
         on:click={() => dispatch('close')}>&#x2716;</span>
   <span class='w3-right w3-xlarge w3-margin-left'
-        title="Télécharger la liste (CSV)"
+        title="Télécharger la liste (CSV) ci-dessous"
         on:click={downloadPersonsList}><DownloadSign /></span>
   <span class='w3-right w3-xlarge w3-margin-left'
-        title="Rafraîchir la liste"
+        title="Rafraîchir la liste ci-dessous"
         on:click={refreshPersonsList}><RefreshSign /></span>
   </div>
 
-<table class='w3-table w3-center w3-hoverable'>
+<table id='personsList' 
+       bind:this={table}
+       class='w3-table w3-center w3-hoverable'>
   <thead class="w3-theme-l3">
     <tr>
       <th on:click={sortColumn('pseudo')}>pseudo</th>
@@ -49,16 +51,23 @@
     </tr>
   </thead>
   <tbody bind:this={tbody} >
-    {#each persons as person}
-      <PersonLine person={person}
-                  bind:entryKeyName={entryKeyName}
-                  on:removePerson={removePerson} />
+    {#each personsSets as personsSet}
+      {#if personsSet.show}
+        {#each personsSet.persons as person}
+          <PersonLine
+            person={person}
+            showMenu={person.personid === currentlyopened.personid}
+            on:openmenu={mkCloseAllMenuBut(person)}
+            bind:entryKeyName={entryKeyName}
+            on:removePerson={removePerson} />
+        {/each}
+      {/if}
     {:else}
       <tr><td class='w3-center' colspan='6'>Personne!</td></tr>
     {/each}
 
     {#if rest}
-      <tr>
+      <tr bind:this={LastLineTarget}>
         <td on:click={seeMore}
             class='w3-center'
             colspan='6'>
@@ -97,15 +106,24 @@
 
  export let entryPointName = undefined;
  export let entryKeyName = undefined;
+ let table;
  let showPersonsList = false;
  let persons = [];
- let otherPerson = undefined;
  let error = undefined;
  let total = undefined;
  let offset = 0;
  let count = 20;
  let rest = 0;
  let tbody;
+ let currentlyopened = { personid: 'xx' };
+ let LastLineTarget;
+
+ let personsSetsIndex = 0;
+ let personsSets = [{
+   show: false,    // display this set of persons
+   filling: false, // a refreshPersonsList is active!
+   persons: []
+ }];
 
  onMount(async () => {
    await refreshPersonsList();
@@ -115,12 +133,26 @@
    dispatch('close', {});
  }
 
+ function mkCloseAllMenuBut (person) {
+   currentlyopened = person;
+ }
+
   // Sort exercises with key.
  function sortColumn (key, hint) {
    return function (event) {
-     event.stopPropagation();
-     event.preventDefault();
-     persons = doSortColumn(key, persons, hint);
+     if ( event ) {
+       event.stopPropagation();
+       event.preventDefault();
+     }
+     persons = doSortColumn(table, key, persons, hint);
+     let index = 0;
+     for ( const personsSet of personsSets ) {
+       const newindex = index + personsSet.persons.length;
+       personsSet.persons = persons.slice(index, newindex);
+       index = newindex;
+     }
+     // Force redisplay of all personsSets:
+     personsSets = [].concat(personsSets);
    };
  }
 
@@ -128,8 +160,25 @@
    refreshPersonsList(event);
  }
 
- async function refreshPersonsList (event) {
-   showPersonsList = false;
+ async function refreshPersonsList () {
+   function initializePersonsSets (jsontotal) {
+     if ( typeof total === 'undefined' ) {
+       total = jsontotal;
+     }
+     if ( personsSetsIndex === 0 ) {
+       for ( let i = 0 ; i < Math.ceil((total * 1.0)/count) ; i++ ) {
+         personsSets[i] = {
+           show: false,
+           filling: false,
+           persons: [] };
+       }
+     }
+   }
+   if ( personsSets.length > 0 &&
+        personsSets[personsSetsIndex].filling ) {
+     return;
+   }
+   personsSets[personsSetsIndex].filling = true;
    const state = CodeGradX.getCurrentState();
    try {
      const path = `/campaign/${entryPointName}/${$campaign.name}`;
@@ -142,12 +191,16 @@
      });
      if ( response.ok ) {
        const json = response.entity;
-       total = json.total;
+       initializePersonsSets(json.total);
        count = json.count;
        // prepare next offset:
        offset = json.offset + count;
        rest = Math.max(0, total - offset);
+       if ( rest ) installTarget();
        const newpersons = json[entryKeyName].map(u => new CodeGradX.User(u));
+       personsSets[personsSetsIndex].persons = newpersons;
+       personsSets[personsSetsIndex].show = true;
+       personsSetsIndex++;
        persons = persons.concat(newpersons);
        showPersonsList = true;
      } else {
@@ -169,18 +222,6 @@
      }
    }
    persons = newpersons;
-   /*
-   const trs = tbody.childNodes;
-   const toremove = [];
-   trs.forEach(tr => {
-     if ( tr.nodeName === 'TR' &&
-          tr.dataset.personid === person.personid ) {
-       toremove.push(tr);
-     }
-   });
-   toremove.forEach(tr => tbody.removeChild(tr));
-    */
-   otherPerson = false;
  }
 
  const keyNames =
@@ -207,6 +248,27 @@
    document.body.appendChild(element);
    element.click();
    document.body.removeChild(element);
+ }
+
+ function installTarget () {
+   function handleIntersection (entries, observer) {
+     //console.log('installTarget', {entries});
+     if ( entries[0].isIntersecting ) {
+       /* await */ refreshPersonsList().then(() => {
+       });
+     }
+   }
+   function doInstallTarget () {
+     let observer = new IntersectionObserver(
+       handleIntersection, {
+         root: null,
+         rootMargin: "100px",
+         threshold: 0.5
+       });
+     observer.observe(LastLineTarget);
+   }
+   // Leave time for target to be mounted:
+   setTimeout(doInstallTarget, 0);
  }
 
 </script>

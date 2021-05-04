@@ -42,7 +42,9 @@
     {/if}
   </p>
   
-  <table class='w3-table w3-center w3-hoverable w3-bordered'>
+  <table id='exercisesjobslist'
+         bind:this={table}
+         class='w3-table w3-center w3-hoverable w3-bordered'>
     <thead class="w3-theme-l3">
       <th on:click={sortColumn('finished', 'date')}>date</th>
       <th on:click={sortColumn('person_id', 'int')}>apprenant</th>
@@ -99,7 +101,7 @@
  $: totalMark = exercise ? exercise.totalMark : 1;
  let currentJob = undefined;
  let currentJobProblem = undefined;
-
+ let table;
  
  function reverse (array) {
    const result = [];
@@ -114,7 +116,7 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     jobs = doSortColumn(key, jobs, hint);
+     jobs = doSortColumn(table, key, jobs, hint);
    };
  }
 

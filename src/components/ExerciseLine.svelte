@@ -11,7 +11,7 @@
  }
 </style>
 
-<tr on:click={() => showMenu = ! showMenu}
+<tr on:click={mkShowExerciseMenu(exercise)}
     class='hover-item'
     data-uuid={exercise.uuid}>
   <td>{CodeGradX.normalizeUUID(exercise.uuid)}</td>
@@ -57,21 +57,44 @@
  import FileChooser from './FileChooser.svelte';
  import Problem from './Problem.svelte';
  
- import { CodeGradX } from 'codegradx';
- import { CodeGradX as _ } from 'codegradx/src/batch';
+ import { createEventDispatcher  } from 'svelte';
+ const dispatch = createEventDispatcher();
+ import { CodeGradX } from 'codegradx/src/batch';
  import { campaign, current_exercise } from '../stores.mjs';
  import { goto } from '../client/lib.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
 
  export let exercise = undefined;
- let showMenu = false;
+ export let showMenu = false;
  let sendBatch = false;
  let error = undefined;
+
+ function mkShowExerciseMenu (exercise) {
+   return function (event) {
+     showMenu = ! showMenu;
+     if ( showMenu ) {
+       dispatch('openmenu', {exercise});
+     }
+   }
+ }
 
  function mkShowJobsPerExercise (exercise) {
    return function (event) {
      error = undefined;
-     goto(`/campaignexercisejobs/${$campaign.name}/${exercise.uuid}`);
+     const href = `/campaignexercisejobs/${$campaign.name}/${exercise.uuid}`;
+     if ( true ) {
+       event.stopPropagation();
+       event.preventDefault();
+       const element = document.createElement('a');
+       element.setAttribute('href', href);
+       element.setAttribute('target', '_blank');
+       element.style.display = 'none';
+       document.body.appendChild(element);
+       element.click();
+       document.body.removeChild(element);
+     } else {
+       goto(href);
+     }
    };
  }
 

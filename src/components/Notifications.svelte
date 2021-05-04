@@ -8,7 +8,9 @@
 
 {#if error}<Problem bind:error={error} />{/if}
 
-<table class='w3-table w3-center w3-hoverable'>
+<table id='notificationslist'
+       bind:this={table}
+       class='w3-table w3-center w3-hoverable'>
   <thead class="w3-theme-l3">
     <tr>
       <th on:click={sortColumn('date', 'date')}>date</th>
@@ -61,7 +63,8 @@
  export let delay = undefined;
  let items = [];
  let loaded = false;
- let error = undefined
+ let error = undefined;
+ let table;
   
  onMount(async () => {
    await refreshNotifications();
@@ -87,7 +90,7 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     items = doSortColumn(key, items, hint);
+     items = doSortColumn(table, key, items, hint);
    };
  }
 

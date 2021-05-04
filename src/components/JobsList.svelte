@@ -25,11 +25,22 @@
     Cliquer sur un titre trie les lignes.
   </p>
 
-  <p> Il y a {jobs.length} copies différentes affichées ci-dessous.
-    {#if rest}Et encore, au plus, {rest} copies non encore affichées{/if}.
+  <p>
+    {#if jobs.length > 0}
+      {#if jobs.length > 1}
+        Il y a {jobs.length} copies différentes affichées ci-dessous.
+       {#if rest}Et encore, au plus, {rest} copies non encore affichées{/if}.
+      {:else}
+        Il y a une copie.
+      {/if}
+    {:else}
+       Il n'y a aucune copie!
+    {/if}
   </p>
 
-  <table class='w3-table w3-center w3-hoverable w3-bordered'>
+  <table id='jobslist'
+         bind:this={table}
+         class='w3-table w3-center w3-hoverable w3-bordered'>
     <thead>
       <tr class="w3-theme-l3">
         <th on:click={sortColumn('exercise_nickname')}>surnom</th>
@@ -77,7 +88,7 @@
 <script>
  import JobReport from './JobReport.svelte';
 
- import { onMount, createEventDispatcher  } from 'svelte';
+ import { createEventDispatcher  } from 'svelte';
  const dispatch = createEventDispatcher();
  import { doSortColumn } from '../client/sortlib.mjs';
  import { massageMark } from '../client/marklib.mjs';
@@ -87,6 +98,7 @@
  export let jobs = [];
  export let factor = 100;
  export let rest;
+ let table;
  
  function reverse (array) {
    const result = [];
@@ -101,7 +113,7 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     jobs = doSortColumn(key, jobs, hint);
+     jobs = doSortColumn(table, key, jobs, hint);
    };
  }
 

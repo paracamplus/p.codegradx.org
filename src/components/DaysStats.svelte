@@ -39,7 +39,9 @@
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={refreshDaysStats}><RefreshSign /></span>
 </div>
-<table class='w3-table w3-center'>
+<table id='daysstats'
+       bind:this={table}
+       class='w3-table w3-center'>
   <thead class="w3-theme-l3">
     <tr>
       <th on:click={sortColumn('date', 'date')}>date</th>
@@ -88,7 +90,9 @@
               {#if showSubItems}
                 <tr><td colspan='5'>Aucune entrée!</td></tr>
               {:else}
-                <tr><td colspan='5'><WaitingImage /></td></tr>
+                <tr><td colspan='5'>
+                  <WaitingImage message="Chargement des entrées..." />
+                </td></tr>
               {/if}
               {/each}
             </tbody>
@@ -98,7 +102,9 @@
     </tr>
     {/if}
     {:else}
-    <tr><td colspan='5'><WaitingImage /></td></tr>
+    <tr><td colspan='5'>
+      <WaitingImage message="Chargement des statistiques..." />
+    </td></tr>
     {/each}
   </tbody>
 </table>
@@ -126,6 +132,7 @@
  let subitems = [];
  let showSubItems = false;
  let currentJob = undefined;
+ let table;
   
  onMount(async () => {
    await refreshDaysStats();
@@ -137,7 +144,7 @@
      event.stopPropagation();
      event.preventDefault();
      subitemDate = showSubItems = false;
-     items = doSortColumn(key, items, hint);
+     items = doSortColumn(table, key, items, hint);
    };
  }
 

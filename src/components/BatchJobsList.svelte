@@ -25,7 +25,9 @@
     </section>
   {/if}
 
-  <table class='w3-table w3-center w3-hoverable w3-bordered'>
+  <table id='batchjobslist'
+         bind:this={table}
+         class='w3-table w3-center w3-hoverable w3-bordered'>
     <thead class="w3-theme-l3">
       <tr>
         <th on:click={sortColumn('label')}>label</th>
@@ -73,13 +75,14 @@
  export let totaljobs = undefined;
  let currentJob = undefined;
  let currentJobProblem = undefined;
+ let table;
 
  // Sort jobs with key.
  function sortColumn (key, hint) {
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     jobs = doSortColumn(key, jobs, hint);
+     jobs = doSortColumn(table, key, jobs, hint);
    };
  }
 

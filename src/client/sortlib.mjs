@@ -2,18 +2,19 @@
 
 let tablestates = {};
 
-export function doSortColumn (key, items, hint) {
-    function findTable (element) {
-        if ( element.tagName !== 'TABLE' ) {
-            return findTable(element.parentElement);
-        } else {
-            return element;
-        }
-    }
+export function doSortColumn (table, key, items, hint) {
     function comparator (a, b) {
         let akey = a.key || ' ';
         let bkey = b.key || ' ';
-        return ((akey <= bkey) ?
+        if ( Number.isInteger(akey) &&
+             Number.isInteger(bkey) ) {
+            return ((akey <= bkey) ?
+                    (tablestates[tableId][key]*(-1)) :
+                    (tablestates[tableId][key]*(+1)) );
+        }
+        akey = `${akey}`;
+        bkey = `${bkey}`;
+        return ((akey.toLowerCase() <= bkey.toLowerCase()) ?
                 (tablestates[tableId][key]*(-1)) :
                 (tablestates[tableId][key]*(+1)) );
     }
@@ -27,7 +28,6 @@ export function doSortColumn (key, items, hint) {
             tablestates[tableId][key] = -(tablestates[tableId][key]);
         }
     }
-    let table = findTable(event.target);
     let tableId = table.getAttribute('id');
     recordColumnOrder(tableId, key);
     let keys = [];

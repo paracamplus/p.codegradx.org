@@ -24,7 +24,9 @@
   {$campaign.name} ou d'envoyer un lot de copies à noter.
 </p>
 
-<table class='w3-table w3-center w3-hoverable'>
+<table id='allexerciseslist'
+       bind:this={table}
+       class='w3-table w3-center w3-hoverable'>
   <thead class="w3-theme-l3">
     <tr>
       <th on:click={sortColumn('uuid')}>UUID</th>
@@ -35,7 +37,9 @@
   </thead>
   <tbody>
     {#each exercises as exercise}
-    <ExerciseLine exercise={exercise} />
+    <ExerciseLine exercise={exercise}
+                  showMenu={exercise.exerciseid === currentlyopened.exerciseid}
+                  on:openmenu={mkCloseAllMenuBut(exercise)} />
     {:else}
     <tr><td colspan='4'>Aucun exercice!</td></tr>
     {/each}
@@ -70,6 +74,8 @@
  let objexercises = {};
  let exercises = [];
  let error = undefined;
+ let currentlyopened = { exerciseid: 'xx' };
+ let table;
 
  /* In objexercises, exercise have a safecookie. 
     allexercises list all exercises without safecookie.
@@ -99,8 +105,12 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     exercises = doSortColumn(key, exercises, hint);
+     exercises = doSortColumn(table, key, exercises, hint);
    };
+ }
+
+ function mkCloseAllMenuBut (exercise) {
+   currentlyopened = exercise;
  }
 
  async function refreshExercisesList (event) {

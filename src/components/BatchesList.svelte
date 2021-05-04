@@ -20,7 +20,9 @@
   d'afficher les réponses dans ce lot de copies.
 </p>
 
-<table class='w3-table w3-center w3-hoverable'>
+<table id='batcheslist'
+       bind:this={table}
+       class='w3-table w3-center w3-hoverable'>
   <thead class="w3-theme-l3">
     <tr>
       <th on:click={sortColumn('uuid')}>UUID</th>
@@ -63,13 +65,14 @@
  export let entryKeyName = 'batches';
  let batches = [];
  let error = undefined;
+ let table;
  
  // Sort batches with key.
  function sortColumn (key, hint) {
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     batches = doSortColumn(key, batches, hint);
+     batches = doSortColumn(table, key, batches, hint);
    };
  }
 

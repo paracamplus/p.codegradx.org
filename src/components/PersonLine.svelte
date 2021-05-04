@@ -6,45 +6,46 @@
 </style>
 
 {#if person}
-      <tr data-personid={person.personid}
-        on:click={mkShowPersonMenu(person)} >
-        <td>{@html shorten(htmlencode(person.pseudo))}</td>
-        <td>{@html shorten(htmlencode(person.lastname))}</td>
-        <td>{@html shorten(htmlencode(person.firstname))}</td>
-        <td>{#if person.confirmedemail}
-              <a href='mailto:{person.email}'>
-                {@html htmlencode(person.email)}</a>
-            {:else}
-              <span title='à confirmer'>
-                {@html htmlencode(person.email)}</span>
-            {/if}</td>
-        <td>{person.confirmedua}</td>
-        <td>{CodeGradX.Date2str(person.start)}</td>
-      </tr>
+<tr data-personid={person.personid}
+    on:click={mkShowPersonMenu(person)} >
+  <td>{@html shorten(htmlencode(person.pseudo))}</td>
+  <td>{@html shorten(htmlencode(person.lastname))}</td>
+  <td>{@html shorten(htmlencode(person.firstname))}</td>
+  <td>{#if person.confirmedemail}
+    <a href='mailto:{person.email}'>
+      {@html htmlencode(person.email)}</a>
+    {:else}
+    <span title='à confirmer'>
+      {@html htmlencode(person.email)}</span>
+    {/if}</td>
+  <td>{person.confirmedua}</td>
+  <td>{CodeGradX.Date2str(person.start)}</td>
+</tr>
     
-      {#if otherPerson && otherPerson.personid === person.personid }
-      <tr data-personid={person.personid}>
-        <td colspan='6'>
-          <div class='w3-container innerTable'>
-            <span class='w3-btn w3-round-xxlarge w3-theme-l4'
-                  title="Historique des réponses de {person.pseudo}"
-                  on:click={mkHistory(person)} >historique</span>
-            {#if entryKeyName === 'students'}
-            <span class='w3-btn w3-round-xxlarge w3-theme-l4'
-                  title="Transformer {person.pseudo} en enseignant"
-                  on:click={mkPromote(person)} >promouvoir</span>
-            <span class='w3-btn w3-round-xxlarge w3-theme-l4'
-                  title="Retirer {person.pseudo} des apprenants"
-                  on:click={mkDemote(person)} >retirer</span>
-            {:else if entryKeyName === 'teachers'}
-            <span class='w3-btn w3-round-xxlarge w3-theme-l4'
-                  title="Transformer {person.pseudo} en apprenant"
-                  on:click={mkDemote(person)} >rétrograder</span>          
-            {/if}
-          </div>
-        </td>
-      </tr>
+{#if showMenu}
+<tr data-personid={person.personid}>
+  <td colspan='6'>
+    <div class='w3-container innerTable'>
+      <span class='w3-btn w3-round-xxlarge w3-theme-l4'
+            title="Historique des réponses de {person.pseudo}"
+            on:click={mkHistory(person)} >historique</span>
+      {#if entryKeyName === 'students'}
+      <span class='w3-btn w3-round-xxlarge w3-theme-l4'
+            title="Transformer {person.pseudo} en enseignant"
+            on:click={mkPromote(person)} >promouvoir</span>
+      <span class='w3-btn w3-round-xxlarge w3-theme-l4'
+            title="Retirer {person.pseudo} des apprenants"
+            on:click={mkDemote(person)} >retirer</span>
+      {:else if entryKeyName === 'teachers'}
+      <span class='w3-btn w3-round-xxlarge w3-theme-l4'
+            title="Transformer {person.pseudo} en apprenant"
+            on:click={mkDemote(person)} >rétrograder</span>          
       {/if}
+    </div>
+  </td>
+</tr>
+{/if}
+
 {/if}
       
 <script>
@@ -58,13 +59,15 @@
  
  export let person;
  export let entryKeyName;
+ export let showMenu = false;
  let otherPerson = false;
  
  function mkShowPersonMenu (person) {
    return function (event) {
-     event.stopPropagation();
-     event.preventDefault();
-     otherPerson = person;
+     showMenu = ! showMenu;
+     if ( showMenu ) {
+       dispatch('openmenu', {person});
+     }
    };
  }
 

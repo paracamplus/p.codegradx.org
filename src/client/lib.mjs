@@ -47,7 +47,12 @@ export async function configureConfig () {
 */
 
 export function goto (uri) {
-    return sapper.goto(buildGoto(uri));
+    const newUrl = buildGoto(uri);
+    window.history.pushState({
+        previousUrl: window.document.location.pathname,
+        newUrl
+    }, null, newUrl );
+    return sapper.goto(newUrl);
 }
 
 /*

@@ -15,12 +15,14 @@
   <span class='w3-right w3-xlarge w3-margin-left'
         on:click={refreshStudentsStats}><RefreshSign /></span>
 </div>
-<table class='w3-table w3-center w3-hoverable'>
+<table id='studentsstats'
+       bind:this={table}
+       class='w3-table w3-center w3-hoverable'>
   <thead class="w3-theme-l3">
     <tr>
-      <th on:click={sortColumn('lastname')}>nom</th>
-      <th on:click={sortColumn('firstname')}>prénom</th>
-      <th on:click={sortColumn('pseudo')}>pseudo</th>
+      <th on:click={sortColumn('studentLastName')}>nom</th>
+      <th on:click={sortColumn('studentFirstName')}>prénom</th>
+      <th on:click={sortColumn('studentPseudo')}>pseudo</th>
       <th on:click={sortColumn('exercises')}>#exercices</th>
       <th on:click={sortColumn('successes')}>#succès</th>
       <th on:click={sortColumn('attempts')}>#essais</th>
@@ -37,7 +39,9 @@
       <td>{item.attempts}</td>
     </tr>
     {:else}
-    <tr><td colspan='6'><WaitingImage /></td></tr>
+    <tr><td colspan='6'>
+      <WaitingImage message="Chargement des statistiques..." />
+    </td></tr>
     {/each}
   </tbody>
 </table>
@@ -59,6 +63,7 @@
 
  let items = [];
  let entryPointName = 'perStudent';
+ let table;
   
  onMount(async () => {
    await refreshStudentsStats();
@@ -69,7 +74,7 @@
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     items = doSortColumn(key, items, hint);
+     items = doSortColumn(table, key, items, hint);
    };
  }
 

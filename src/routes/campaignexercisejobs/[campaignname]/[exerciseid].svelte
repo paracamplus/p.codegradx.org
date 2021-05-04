@@ -19,6 +19,9 @@ NOTA: many parts of code similar to exercisejobs
            title={"Information sur l'exercice"}
            on:click='{() => showinfo = true}'><InformationSign /></span>
      {/if}
+    <span class='w3-right w3-margin-left'
+          data-close="JobsList"
+          on:click={close}>&#x2716;</span>
    </header>
   
    {#if showinfo && exercise}
@@ -69,7 +72,7 @@ NOTA: many parts of code similar to exercisejobs
  let showjobs = false;
  let jobs = [];
  let uuid = undefined;
- let count = 10;
+ let count = 20;
  let offset = 0;
  let total = undefined;
  let rest = 0;
@@ -93,7 +96,7 @@ NOTA: many parts of code similar to exercisejobs
 
  onMount(async () => {
    if ( ! $person ) {
-     return;
+     $person = await initializePerson();
    }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
@@ -101,7 +104,7 @@ NOTA: many parts of code similar to exercisejobs
      goto('/universes');
      return;
    }
-   if ( $current_exercise ) {
+   if ( ! uuid && $current_exercise ) {
      exercise = $current_exercise;
      uuid = $current_exercise.uuid;
    }
@@ -150,6 +153,28 @@ NOTA: many parts of code similar to exercisejobs
      console.log('exercisejobs2', {exc});
      error = parseAnomaly(exc);
    }
+ }
+
+ function close (event) {
+   const uri = window.document.location.pathname;
+   if ( uri.match(/\/campaignexercisejobs\//) ) {
+     window.close();
+   } else {
+     showinfo = false;
+   }
+   
+   /*
+   const listener = window.addEventListener('popstate', (event) => {
+     console.log('popstate1', {event}); // DEBUG
+     setTimeout(() => {
+       console.log('popstate2', {event}); // DEBUG
+       window.removeEventListener('popstate', listener);
+       const previousUrl = event.state.previousUrl;
+       goto(previousUrl);
+     }, 0);
+   });
+   window.history.back();
+   */
  }
 
 </script>

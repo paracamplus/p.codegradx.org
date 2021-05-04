@@ -39,7 +39,7 @@
 
  let error = undefined;
  let jobs = [];
- let count = 10;
+ let count = 20;
  let offset = 0;
  let total = undefined;
  let rest = 0;

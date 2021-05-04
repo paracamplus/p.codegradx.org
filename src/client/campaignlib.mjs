@@ -52,9 +52,7 @@ export function flattenExercisesSet (exercisesSet) {
         for ( const es of exercisesSet.exercises ) {
             if ( es instanceof CodeGradX.ExercisesSet ) {
                 const otherexercises = flattenExercisesSet(es);
-                for ( const e of otherexercises ) {
-                    exercises[e.exerciseid] = e;
-                }
+                Object.assign(exercises, otherexercises);
             } else if ( es instanceof CodeGradX.Exercise ) {
                 exercises[es.exerciseid] = es;
             }

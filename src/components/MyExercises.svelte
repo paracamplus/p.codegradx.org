@@ -9,7 +9,10 @@
   déploiement et permet également d'accéder aux copies associées à cet
   exercice. Cliquer sur les titres du tableau permet de le trier.
 </p>
-<table class='w3-table w3-center w3-hoverable w3-bordered'>
+
+<table id='myexerciseslist'
+       bind:this={table}
+       class='w3-table w3-center w3-hoverable w3-bordered'>
   <thead>
     <tr class="w3-theme-l3">
       <th on:click={sortColumn('nickname')}>Surnom</th>
@@ -47,13 +50,14 @@
  import { goto } from '../client/lib.mjs';
 
  export let exercises = [];
+ let table;
  
  // Sort exercises with key.
  function sortColumn (key, hint) {
    return function (event) {
      event.stopPropagation();
      event.preventDefault();
-     exercises = doSortColumn(key, exercises, hint);
+     exercises = doSortColumn(table, key, exercises, hint);
    };
  }
 
