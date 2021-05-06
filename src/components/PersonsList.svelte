@@ -50,7 +50,7 @@
       <th on:click={sortColumn('start', 'date')}>inscription</th>
     </tr>
   </thead>
-  <tbody bind:this={tbody} >
+  <tbody>
     {#each personsSets as personsSet}
       {#if personsSet.show}
         {#each personsSet.persons as person}
@@ -114,7 +114,6 @@
  let offset = 0;
  let count = 20;
  let rest = 0;
- let tbody;
  let currentlyopened = { personid: 'xx' };
  let LastLineTarget;
 

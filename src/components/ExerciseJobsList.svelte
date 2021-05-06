@@ -32,15 +32,19 @@
   {/if}
 
   <p class='smallHint'>
-    {#if jobs && jobs.length}
-    Il y a {total} copies, {jobs.length} sont listées ci-dessous.
     Les copies sur fond rose sont problématiques: cliquer sur Pb donne
     des renseignements bruts sur les circonstances du problème.
     Cliquer sur une ligne affiche le rapport de notation associé (sauf
     si la ligne est grisée), cliquer+CTRL l'affiche dans un onglet différent.
     Cliquer sur un titre trie les lignes.
-    {/if}
   </p>
+
+  {#if jobs && jobs.length}
+  <p>
+    Il y a {total} copies en tout.
+    Seulement {jobs.length} sont actuellement listées ci-dessous.
+  </p>
+  {/if}
   
   <table id='exercisesjobslist'
          bind:this={table}
@@ -48,7 +52,7 @@
     <thead class="w3-theme-l3">
       <th on:click={sortColumn('finished', 'date')}>date</th>
       <th on:click={sortColumn('person_id', 'int')}>apprenant</th>
-      <th on:click={sortColumn('mark', 'float')}>note / {totalMark}</th>
+      <th on:click={sortColumn('mark', 'float')}>note / {totalMark || '?'}</th>
       <th on:click={sortColumn('problem')}>problème</th>
     </thead>
     <tbody>
@@ -66,14 +70,12 @@
               <span title="Afficher les problèmes">Pb</span>{/if}</td>
           </tr>
         {/each}
+
         {#if rest}
-          <tr>
-            <td on:click={seeMore}
-                class='w3-center'
-                colspan='4'>
-              <span class='w3-btn w3-round-xxlarge w3-theme-l4'>
-                encore {rest} copies restantes ...</span></td>
-          </tr>
+          <LastLineTarget
+            colspan={4}
+            message="encore {rest} copies restantes ..."
+            seeMore={displayMore} />
         {/if}
       {:else}
           <tr>
@@ -87,6 +89,7 @@
 <script>
  import JobReport from './JobReport.svelte';
  import JobProblemReport from './JobProblemReport.svelte';
+ import LastLineTarget from './LastLineTarget.svelte';
 
  import { onMount, createEventDispatcher  } from 'svelte';
  const dispatch = createEventDispatcher();
@@ -98,17 +101,14 @@
  export let rest;
  export let total = undefined;
  export let exercise = undefined;
+ export let seeMore;
  $: totalMark = exercise ? exercise.totalMark : 1;
  let currentJob = undefined;
  let currentJobProblem = undefined;
  let table;
  
- function reverse (array) {
-   const result = [];
-   for ( let i=0 ; i<array.length ; i++ ) {
-     result[i] = array[array.length - 1 - i];
-   }
-   return result;
+ async function displayMore (event) {
+   await seeMore();
  }
 
  // Sort jobs with key.
@@ -146,10 +146,6 @@
      currentJob = undefined;
      currentJobProblem = job;
    };
- }
-
- function seeMore (event) {
-   dispatch('seeMore', {});
  }
 
 </script>      

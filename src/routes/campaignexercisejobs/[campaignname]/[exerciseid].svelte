@@ -35,7 +35,7 @@ NOTA: many parts of code similar to exercisejobs
                      bind:total={total}
                      bind:rest={rest}
                      bind:exercise={exercise}
-                     on:seeMore={seeMore} />
+                     seeMore={seeMore} />
   {:else if ! error}
     <WaitingImage message="Chargement des copies associées..." />
   {/if}
@@ -89,8 +89,6 @@ NOTA: many parts of code similar to exercisejobs
      $lastmessage = error = "Veuillez d'abord vous identifier!";
      await goto('/connect');
      return;
-   } else {
-     $person = maybeperson;
    }
  });
 

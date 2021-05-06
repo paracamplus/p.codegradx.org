@@ -12,10 +12,12 @@
 
   {#if showStudentJobs}
     <JobsList bind:jobs={jobs}
+              bind:count={count}
+              bind:total={total}
               bind:rest={rest}
-              on:seeMore={seeMore} />
+              seeMore={seeMore} />
   {:else if ! error}
-    <WaitingImage message="Chargement de l'historique..." />
+    <WaitingImage message="Chargement de mon historique..." />
   {/if}
 
 </Page>
@@ -38,13 +40,13 @@
 
  let error = undefined;
  let jobs = [];
- let showStudentJobs = false;
- let campaignName = '';
- let campaignTitle = '';
- let total = undefined;
  let offset = 0;
  let count = 20;
  let rest = 0;
+ let total = 0;
+ let showStudentJobs = false;
+ let campaignName = '';
+ let campaignTitle = '';
 
  onClient(async () => {
    const uri = window.document.location.pathname;
@@ -62,11 +64,6 @@
    if ( ! $person ) {
      $person = await initializePerson();
    }
-   if ( ! $person ) {
-     $lastmessage = error = "Veuillez d'abord vous identifier!";
-     goto('/connect');
-     return;
-   }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
      $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
@@ -82,7 +79,6 @@
  }
 
  async function refreshHistory (person, campaign) {
-   showStudentJobs = false;
    try {
      const state = CodeGradX.getCurrentState();
      const path = `/history/campaign/${campaign.name}`;
@@ -101,7 +97,7 @@
        offset = json.offset + count;
        rest = Math.max(0, total - offset);
        const newjobs = json.jobs.map(CodeGradX.Job.js2job);
-       jobs = jobs.concat(newjobs);
+       jobs = [].concat(jobs, newjobs);
        showStudentJobs = true;
      } else {
        throw response;

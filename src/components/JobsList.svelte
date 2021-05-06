@@ -38,6 +38,7 @@
     {/if}
   </p>
 
+  {#if showJobsList}
   <table id='jobslist'
          bind:this={table}
          class='w3-table w3-center w3-hoverable w3-bordered'>
@@ -53,8 +54,9 @@
           date</th>
     </thead>
     <tbody>
-      {#if jobs.length > 0}
-         {#each reverse(jobs) as job}
+      {#each jobsSets as jobsSet}
+        {#if jobsSet.show || jobsSet.dirty }
+          {#each jobsSet.items as job}
           <tr class:hidden={job.removed}
               on:click={mkShowJob(job)}>
             <td>{job.exercise_nickname}</td>
@@ -67,45 +69,69 @@
                 class='w3-hide-small'>{CodeGradX.Date2str(job.archived)}</td>
           </tr>
          {/each}
-         {#if rest}
-          <tr>
-            <td on:click={seeMore}
-                class='w3-center'
-                colspan='4'>
-              <span class='w3-btn w3-round-xxlarge w3-theme-l4'>
-                encore {rest} copies restantes ...</span></td>
-          </tr>
-         {/if}
+        {/if}
       {:else}
           <tr><td colspan='4'>
             <p class='w3-center'> rien du tout! </p>
           </td></tr>
+      {/each}
+
+      {#if rest}
+          <LastLineTarget
+            colspan={4}
+            message="encore {rest} copies restantes ..."
+            seeMore={displayMore} />
       {/if}
     </tbody>
   </table>
+  {/if}
+  
 </div>
 
 <script>
  import JobReport from './JobReport.svelte';
+ import LastLineTarget from './LastLineTarget.svelte';
 
- import { createEventDispatcher  } from 'svelte';
+ import { onMount, createEventDispatcher, tick } from 'svelte';
  const dispatch = createEventDispatcher();
  import { doSortColumn } from '../client/sortlib.mjs';
  import { massageMark } from '../client/marklib.mjs';
+ import { spreadItems, installTarget, reverse } from '../client/spreadlib.mjs';
  import { CodeGradX } from 'codegradx';
  
  let currentJob = undefined;
- export let jobs = [];
  export let factor = 100;
+ export let jobs = [];
+ export let count;
  export let rest;
+ export let total;
+ export let seeMore;
  let table;
- 
- function reverse (array) {
-   const result = [];
-   for ( let i=0 ; i<array.length ; i++ ) {
-     result[i] = array[array.length - 1 - i];
+ let lastLineTarget;
+ let showJobsList = false;
+ let jobsSets = [{
+   items: []
+ }];
+
+ onMount(async () => {
+   const result = spreadItems(jobsSets, jobs, total, count);
+   jobsSets = result.itemsSets;
+   console.log('JobsList onMount', {jobsSets, jobs}); // DEBUG
+   if ( jobs.length < count && rest > 0 ) {
+     await seeMore();
    }
-   return result;
+   showJobsList = true;
+ });
+
+ async function displayMore (event) {
+   if ( jobsSets.initialized ) {
+     await seeMore()
+     const result = spreadItems(jobsSets, jobs, total, count);
+     result.itemsSets = [].concat(result.itemsSets);
+     result.itemsSets.initialized = true;
+     jobsSets = result.itemsSets;
+     console.log('JobsList displayMore', {jobsSets, jobs}); // DEBUG
+   }
  }
 
  // Sort jobs with key.
@@ -114,6 +140,9 @@
      event.stopPropagation();
      event.preventDefault();
      jobs = doSortColumn(table, key, jobs, hint);
+     spreadItems(jobsSets, jobs, total, count);
+     // Force redisplay of all jobsSets:
+     jobsSets = [].concat(jobsSets);
    };
  }
 
@@ -134,10 +163,6 @@
        currentJob = job;
      }
    };
- }
-
- function seeMore (event) {
-   dispatch('seeMore', {});
  }
 
 </script>

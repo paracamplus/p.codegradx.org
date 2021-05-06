@@ -8,12 +8,14 @@
 <Page title={`Historique ${studentTitle} ${campaignTitle}`}
       shortTitle="Historique" >
 
-  <Problem bind:error={error} />
+  {#if error}<Problem bind:error={error} />{/if}
 
   {#if showStudentJobs}
     <JobsList bind:jobs={jobs}
+              bind:count={count}
+              bind:total={total}
               bind:rest={rest}
-              on:seeMore={seeMore} />
+              seeMore={seeMore} />
   {:else if ! error}
     <WaitingImage message="Chargement de l'historique..." />
   {/if}
@@ -34,7 +36,7 @@
  import { initializePerson, isTeacher, goto, isUser }
    from '../../../client/lib.mjs';
  import { fetchCampaign } from '../../../client/campaignlib.mjs';
- import { sleep, onClient } from '../../../common/utils.mjs';
+ import { onClient } from '../../../common/utils.mjs';
  import { parseAnomaly } from '../../../client/errorlib.mjs';
 
  let error = undefined;
@@ -62,13 +64,13 @@
      $lastmessage = error = "Veuillez d'abord vous identifier!";
      goto('/connect');
      return;
-   } else {
-     $person = maybeperson;
    }
  });
 
  onMount(async () => {
-   // $person is the invoker of the page
+   if ( ! $person ) {
+     $person = await initializePerson();
+   }
    $campaign = await fetchCampaign($person, campaignName);
    if ( ! $campaign ) {
      $lastmessage = error = "Veuillez d'abord choisir un univers! ...";
@@ -106,9 +108,12 @@
        offset = json.offset + count;
        rest = Math.max(0, total - offset);
        const newjobs = json.jobs.map(CodeGradX.Job.js2job);
-       jobs = jobs.concat(newjobs);
-       student = new CodeGradX.User(json.student);
-       studentTitle = 'de ' + student.pseudo;
+       jobs = [].concat(jobs, newjobs);
+       //console.log('studentjobs', {jobs});//DEBUG
+       if ( ! student ) {
+         student = new CodeGradX.User(json.student);
+         studentTitle = 'de ' + student.pseudo;
+       }
        showStudentJobs = true;
      } else {
        throw response;

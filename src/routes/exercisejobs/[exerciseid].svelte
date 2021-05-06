@@ -27,17 +27,18 @@ NOTA: many parts of code similar to campaignexercisejobs
    {/if}
   {/if}
 
+  {#if error}<Problem bind:error={error} />{/if}
+  
   {#if showjobs}
    <ExerciseJobsList bind:jobs={jobs}
-                     bind:rest={rest}
+                     bind:count={count}
                      bind:total={total}
-                     on:seeMore={seeMore} />
+                     bind:rest={rest}
+                     seeMore={seeMore} />
   {:else if ! error}
     <WaitingImage message="Chargement des copies associées..." />
   {/if}
 
-  {#if error}<Problem bind:error={error} />{/if}
-  
 </Page>
 
 <script>
@@ -85,11 +86,7 @@ NOTA: many parts of code similar to campaignexercisejobs
    if ( ! $person ) {
      $person = await initializePerson();
    }
-   if ( ! $person ) {
-     $lastmessage = error = "Veuillez d'abord vous identifier!";
-     goto('/connect');
-     return;
-   } else if ( ! $person.isauthor ) {
+   if ( ! $person.isauthor ) {
      error = "Navré mais vous n'êtes pas auteur d'exercices!";
      return;
    }
