@@ -7,6 +7,9 @@
    font-weight: bolder;
    margin-right: 1em;
  }
+ div.line {
+   display: flex;
+ }
  div.line:hover {
    background-color: var(--color-hover-gray);
    cursor: pointer;

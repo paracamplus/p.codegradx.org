@@ -5,7 +5,7 @@
  }
  span.adjustBadge {
    position: relative;
-   top: 0.75em;
+   top: 0.95em;
    right: -0.5em;
  }
  tr.hover-item:hover {
@@ -65,7 +65,8 @@
       <td colspan='5'>
         <div class='w3-center innerTable'>
           <span class='w3-right w3-badge w3-xlarge adjustBadge'
-                on:click={() => subitemDate = undefined} >&#x2716;</span>
+                on:click={() => subitemDate = undefined} >
+          <CloseSign color='white' /></span>
           <table class='w3-table w3-hoverable w3-border'>
             <thead class="w3-theme-l3">
               <tr>
@@ -114,6 +115,7 @@
  import RefreshSign from '../components/RefreshSign.svelte';
  import JobReport from '../components/JobReport.svelte';
  import DownloadSign from '../components/DownloadSign.svelte';
+ import CloseSign from '../components/CloseSign.svelte';
  
  import { onMount, createEventDispatcher } from 'svelte';
  const dispatch = createEventDispatcher();

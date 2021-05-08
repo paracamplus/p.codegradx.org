@@ -11,6 +11,9 @@
    display: inline-block;
    box-sizing: content-box !important;
  }
+ div.line {
+   display: flex;
+ }
  div.line:hover {
    background-color: var(--color-hover-gray);
    cursor: pointer;
@@ -61,7 +64,7 @@
      const mark = computeMark(exercise, results)
      if ( mark ) {
        markTitle = `${massageMark(mark)}%`;
-       if ( 0 < mark && mark < 0.75 ) {
+       if ( 0 !== mark && mark < 0.75 ) {
          bad = true;
        } else if ( 0.75 < mark && mark < 0.95 ) {
          good = true;

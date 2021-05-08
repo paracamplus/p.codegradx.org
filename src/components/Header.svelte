@@ -39,7 +39,7 @@
       
           {#if isUser($person)}
 
-            {#if dev && $person.isadmin}
+            {#if $person.isadmin }
             <!-- *********************************** -->
             <a class='w3-bar-item w3-btn'
                href={buildGoto('guts/')}>TRIPES</a>

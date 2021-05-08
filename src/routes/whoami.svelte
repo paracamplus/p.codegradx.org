@@ -48,7 +48,7 @@
         {/each}
       </ul>
       {/if}
-      {#if $person.admin}<p> Vous êtes administrateur </p>{/if}
+      {#if $person.isadmin}<p> Vous êtes administrateur </p>{/if}
       {#if $person.isauthor}
       <p> Vous êtes auteur et les préfixes possibles
         pour vos exercices sont:</p>

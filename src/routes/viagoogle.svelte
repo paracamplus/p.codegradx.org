@@ -14,7 +14,9 @@
       S'inscrire ou s'identifier via Google est aisé, facile, pratique
       mais a des conséquences. CodeGradX n'affiche pas de publicité et
       n'utilise pas de captchas fournies par des tiers,
-      l'infrastructure CodeGradX est ainsi respectueuse du RGPD. 
+      l'infrastructure CodeGradX est ainsi respectueuse du
+      <a href='https://www.cnil.fr/fr/reglement-europeen-protection-donnees'>
+        RGPD</a>.
     </p>
     <p>
       Si vous passez par Google, votre nom de connexion sera le
