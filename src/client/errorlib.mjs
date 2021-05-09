@@ -33,12 +33,15 @@ export function parseAnomaly (o) {
             return o.statusText;
         }
         return "o is a Response";
-    }
-    if ( o instanceof TypeError || o instanceof ReferenceError ) {
+    } else if ( o instanceof TypeError || o instanceof ReferenceError ) {
         console.log(o);
         return `Erreur interne au client!`;
+    } else if ( o instanceof Error ) {
+        console.log(o.message);
+        return o.message;
+    } else {
+        return JSON.stringify(o);
     }
-    return JSON.stringify(o);
 }
 
 // end of errorlib.mjs

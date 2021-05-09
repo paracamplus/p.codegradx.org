@@ -26,7 +26,7 @@
     <code>{exercise.inlineFileName}</code>{/if} puis cliquer sur le
     bouton « noter ma réponse ». Enfin, s'agissant de JavaScript, vous
     pouvez demander l'évaluation de votre code. Vous pouvez utiliser
-    <code>console.log</code> mais pas <code>require</code>.
+    <code>console.log</code> et <code>require('lodash')</code>.
   </div>
 
   <form class='w3-form w3-padding-16 w3-center'
@@ -98,7 +98,7 @@
     from '../client/editorlib.mjs';
  import { buildGoto } from '../client/lib.mjs';
 
- export let exercise;
+  export let exercise;
  export let file;
  export let language = 'javascript';
  let editor = undefined;
@@ -109,9 +109,13 @@
  let chosenfile;
  let preferFile = false;
  let result = undefined;
+ let libraries = {};
+ let libNames = [ 'lodash', 'util', 'request', 'assert', 'xml2js', 'sax',
+                  'url', 'when', 'bluebird' ];
 
  onMount(async () => {
    editor = await makeInitializeEditor(language, file, textareaInput);
+   await fillLibraries();
  });
 
  function getAnswer () {
@@ -138,24 +142,49 @@
    wrap(makeSendEditorContent(exercise, getAnswer, dispatch));
  const sendFile = wrap(makeSendFile(exercise, dispatch));
 
+ async function fillLibraries () {
+   if ( ! libraries.bluebird ) {
+     try {
+       libraries.lodash = await import('lodash');
+       //libraries.yasmini = await import('yasmini');
+       //libraries.util = await import('util');
+       //libraries.request = await import('request');
+       ////libraries.assert = await import('./assert');
+       // for exercise org.codegradx.js.xmljson.1:
+       //libraries.xml2js = await import('xml2js');
+       ////libraries.sax = await import('sax');
+       //libraries.url = await import('url');
+       ////libraries.when = await import('when');
+       //libraries.bluebird = await import('bluebird');
+     } catch (exc) {
+       console.log('EditorJS fillLibraries', {exc});
+     }
+   }
+   return libraries;
+ }
+
  function evaluateEditorContent (event) {
    event.preventDefault();
    event.stopPropagation();
    error = undefined;
    result = '';
-   const lib = {};
-   lib.console = {
+   libraries.console = {
      log: function lib_console_log (...args) {
        for ( const arg of args ) {
-         result += `${arg} `;
+         result += HTMLize(`${arg} `);
        }
        result += "\n";
      }
    };
-   lib.require = function lib_require (pkg) {
+   libraries.require = function lib_require (pkg) {
      // Maybe take inspiration from
-     //   Servers/w.js/Paracamplus-FW4EX-JS/js/helpers/js-exercise.js 
-     throw "require() n'est pas disponible!";
+     //   Servers/w.js/Paracamplus-FW4EX-JS/js/helpers/js-exercise.js
+     for ( const libName of libNames ) {
+       if ( libName === pkg ) {
+         return libraries[libName];
+       }
+     }
+     throw `require('${pkg}') n'est pas disponible!`; //'
    };
    try {
      const answer = getAnswer();
@@ -168,7 +197,7 @@
 })();
 `;
      const f = evaluator(jsprogram);
-     const value = f(lib.console, lib.require);
+     const value = f(libraries.console, libraries.require);
      result += HTMLize(value);
    } catch (exc) {
      result += exc.toString();
@@ -184,7 +213,7 @@ function min3 (a, b, c) {
 
 console.log(min3(1,2,3));
 console.log('<', min3(11,2,3));
-//require('lodash');
+console.log(require('lodash').filter);
 
 
  */
