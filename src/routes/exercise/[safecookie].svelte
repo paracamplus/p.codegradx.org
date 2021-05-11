@@ -23,7 +23,7 @@
   {/if}
 
   {#if showExercise}
-   <header class='w3-center w3-large bold'>
+   <header class='w3-center w3-large'>
      Exercice {exerciseTitle}
      <span class='w3-right w3-margin-left w3-xlarge'
            title={"Information sur l'exercice"}

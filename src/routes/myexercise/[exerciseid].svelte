@@ -17,7 +17,7 @@
       shortTitle={`Exercice ${exerciseTitle}`}
       showheader={false} >
 
-   <header class='w3-center w3-large bold'>
+   <header class='w3-center w3-large'>
      Exercice {exerciseTitle}
      {#if showexercise}
      <span class='w3-right w3-margin-left w3-xlarge'

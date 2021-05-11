@@ -20,13 +20,17 @@
 
 <section class='w3-container'>
   <div class='smallHint'>
-    Vous pouvez composer votre réponse dans l'éditeur ci-dessous ou bien
-    utiliser tout autre moyen pour produire un fichier
+    Vous pouvez composer votre réponse dans l'éditeur ci-dessous
+    puis cliquer sur le bouton « Noter ma réponse ».
+    Vous pouvez également utiliser tout autre moyen pour produire un fichier
     {#if exercise.inlineFileName}nommé
     <code>{exercise.inlineFileName}</code>{/if} puis cliquer sur le
-    bouton « noter ma réponse ». Enfin, s'agissant de JavaScript, vous
-    pouvez demander l'évaluation de votre code. Vous pouvez utiliser
-    <code>console.log</code> et <code>require('lodash')</code>.
+    bouton « choisir fichier {#if exercise.inlineFileName}
+    <code>{exercise.inlineFileName}</code>{/if} ».
+    Enfin, s'il s'agit d'exercices simples en JavaScript,
+    vous pouvez demander l'évaluation de votre code dans votre navigateur.
+    Vous pouvez utiliser alors <code>console.log</code>
+    et <code>require('lodash')</code>.
   </div>
 
   <form class='w3-form w3-padding-16 w3-center'
@@ -110,8 +114,22 @@
  let preferFile = false;
  let result = undefined;
  let libraries = {};
- let libNames = [ 'lodash', 'util', 'request', 'assert', 'xml2js', 'sax',
-                  'url', 'when', 'bluebird' ];
+
+ /*
+   Used require() in exercises exercise org.codegradx.js.../pseudos/.../
+   http https pngjs fs sqlite3 events util url sax lodash
+  */
+ let libNames = [
+   'lodash',
+   //'util',
+   //'request',
+   //'assert',
+   //'xml2js',
+   //'sax',
+   //'url',
+   //'when',
+   //'bluebird'
+ ];
 
  onMount(async () => {
    editor = await makeInitializeEditor(language, file, textareaInput);
@@ -143,7 +161,7 @@
  const sendFile = wrap(makeSendFile(exercise, dispatch));
 
  async function fillLibraries () {
-   if ( ! libraries.bluebird ) {
+   if ( ! libraries.__loaded__ ) {
      try {
        libraries.lodash = await import('lodash');
        //libraries.yasmini = await import('yasmini');
@@ -156,6 +174,7 @@
        //libraries.url = await import('url');
        ////libraries.when = await import('when');
        //libraries.bluebird = await import('bluebird');
+       libraries.__loaded__ = true;
      } catch (exc) {
        console.log('EditorJS fillLibraries', {exc});
      }

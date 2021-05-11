@@ -8,7 +8,7 @@
 <Page shortTitle="Identification"
       showheader={false} >
 
-  <header class='w3-center w3-large bold'>
+  <header class='w3-center w3-large'>
     Qui êtes vous ?
     <span class='w3-right w3-margin-left w3-xlarge'
           on:click={showHelp}><InformationSign /></span>
@@ -29,7 +29,7 @@
        href={buildGoto('/enroll')}>
       Je m'inscris!
     </a>
-    <a href='viagoogle' name="viaGoogle1"
+    <a href={buildGoto('viagoogle')} name="viaGoogle1"
        class="w3-btn w3-theme-d2 w3-round-xxlarge"
        >via Google</a>
   </div>

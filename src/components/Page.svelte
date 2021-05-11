@@ -11,8 +11,8 @@
          data-shortTitle={shortTitle}
          class='w3-container w3-margin-top w3-padding'>
   {#if showheader}
-  <header class='w3-center w3-margin-bottom bold'>
-    <h1>{title}</h1>
+  <header class='w3-center w3-margin-bottom mainTitle'>
+    {title}
   </header>
   {/if}
 

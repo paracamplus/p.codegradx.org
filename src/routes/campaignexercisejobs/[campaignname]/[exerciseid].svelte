@@ -12,7 +12,7 @@ NOTA: many parts of code similar to exercisejobs
       showheader={false} >      
 
   {#if exerciseTitle}
-   <header class='w3-center w3-large bold'>
+   <header class='w3-center w3-large'>
      Copies associées à {exerciseTitle}
      {#if exercise}
      <span class='w3-right w3-margin-left w3-xlarge'

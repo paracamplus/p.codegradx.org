@@ -3,7 +3,7 @@
 
 {#if exercisesSet}
   <div class='w3-card-4 w3-margin'>
-    <div class='w3-container w3-theme-l4 w3-margin-top bold'>
+    <div class='w3-container w3-theme-l4 w3-margin-top'>
        {@html exercisesSet.title || ''}
     </div>
     <div class='w3-container'>

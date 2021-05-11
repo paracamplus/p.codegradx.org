@@ -15,7 +15,7 @@
       title="Qui êtes vous ?"
       showheader={false} >
 
-  <header class='w3-center w3-large bold'>
+  <header class='w3-center w3-large'>
     Qui êtes vous ?
     <span class='w3-right w3-margin-left w3-xlarge'
           on:click={showHelp}><InformationSign /></span>

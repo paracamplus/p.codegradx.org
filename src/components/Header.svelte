@@ -28,6 +28,8 @@
           <a class='w3-bar-item w3-btn'
              href={buildGoto('apropos')}>à propos</a>
           <a class='w3-bar-item w3-btn'
+             href={buildGoto('help')}>aides</a>
+          <a class='w3-bar-item w3-btn'
              href={buildGoto('universes')}>
             {#if $campaign}autres{:else}voir les {/if} univers</a>
       

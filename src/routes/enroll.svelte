@@ -16,7 +16,7 @@
       showheader={false}>
 
   <section class='w3-container w3-margin-top w3-padding'>
-    <header class='w3-center w3-margin-bottom bold'>
+    <header class='w3-center w3-margin-bottom'>
       Inscription à CodeGradX
       <span class='w3-right w3-margin-left w3-xlarge'
             on:click={showHelp}><InformationSign /></span>
