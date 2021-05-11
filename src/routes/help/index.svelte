@@ -3,6 +3,7 @@
  div.row {
    display: flex;
    flex-direction: row;
+   flex-wrap: wrap;
    justify-content: center;
  }
  div.row div {
@@ -22,15 +23,11 @@
     <div><a class="w3-btn w3-theme-l4 w3-round-xlarge"
             href={buildGoto('help/learner')}>Aide pour apprenant</a></div>
 
-    {#if $person && $campaign && isTeacher($campaign, $person)}
     <div><a class="w3-btn w3-theme-l4 w3-round-xlarge"
             href={buildGoto('help/teacher')}>Aide pour enseignants</a></div>
-    {/if}
     
-    {#if $person && $person.isauthor}
     <div><a class="w3-btn w3-theme-l4 w3-round-xlarge"
             href={buildGoto('help/author')}> Aide pour auteurs</a></div>
-    {/if}
 
   </div>
 
@@ -41,7 +38,7 @@
 <script>
  import Page from '../../components/Page.svelte';
  
- import { buildGoto } from '../../client/lib.mjs';
+ import { buildGoto, initializePerson } from '../../client/lib.mjs';
  import { onMount } from 'svelte';
  import { person, campaign } from '../../stores.mjs';
  import { isUser, isTeacher } from '../../client/lib.mjs';

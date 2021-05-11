@@ -2,6 +2,8 @@
  header.firstLine {
    /* max-height: 2rem; */
    max-width: 100vw;
+   display: flex;
+   justify-content: space-between;
  }
  header.firstLine div.w3-dropdown-content {
    font-weight: initial;
@@ -15,33 +17,31 @@
 <svelte:body on:click={handleOutsideClick} />
 
 <div>
- <header id='Header' class='w3-container w3-theme-d2 firstLine'>
-  <div class='w3-cell-row'>
-    <div class='w3-container w3-cell w3-third'>
-      <div class='w3-theme-d2 w3-dropdown-click'>
-        <span id='MenuButton' on:click={displayMenu}>
-          <MenuSign size={$config.logo ? $config.logo.height : '1em'} />
-        </span>
-        <div id='MenuContent' bind:this={menuContent}
-             class:show={showMenu}
-             class='w3-dropdown-content w3-bar-block w3-card-4'>
-          <a class='w3-bar-item w3-btn'
-             href={buildGoto('apropos')}>à propos</a>
-          <a class='w3-bar-item w3-btn'
-             href={buildGoto('help')}>aides</a>
-          <a class='w3-bar-item w3-btn'
-             href={buildGoto('universes')}>
-            {#if $campaign}autres{:else}voir les {/if} univers</a>
-      
-          {#if $campaign}
-          <a class='w3-bar-item w3-btn'
-             href={buildGoto(`universe/${$campaign.name}`)}>
-            l'univers {$campaign.name}</a>
-          {/if}
-      
-          {#if isUser($person)}
-
-            {#if $person.isadmin }
+  <header id='Header' class='w3-theme-d2 firstLine'>
+    <div class='w3-container w3-theme-d2 w3-dropdown-click'>
+      <span id='MenuButton' on:click={displayMenu}>
+        <MenuSign size={$config.logo ? $config.logo.height : '1em'} />
+      </span>
+      <div id='MenuContent' bind:this={menuContent}
+           class:show={showMenu}
+           class='w3-dropdown-content w3-bar-block w3-card-4'>
+        <a class='w3-bar-item w3-btn'
+           href={buildGoto('apropos')}>à propos</a>
+        <a class='w3-bar-item w3-btn'
+           href={buildGoto('help')}>aides</a>
+        <a class='w3-bar-item w3-btn'
+           href={buildGoto('universes')}>
+          {#if $campaign}autres{:else}voir les {/if} univers</a>
+        
+        {#if $campaign}
+        <a class='w3-bar-item w3-btn'
+           href={buildGoto(`universe/${$campaign.name}`)}>
+          l'univers {$campaign.name}</a>
+        {/if}
+        
+        {#if isUser($person)}
+        
+          {#if $person.isadmin }
             <!-- *********************************** -->
             <a class='w3-bar-item w3-btn'
                href={buildGoto('guts/')}>TRIPES</a>
@@ -74,27 +74,23 @@
             <a class='w3-bar-item w3-btn'
                href={buildGoto('connect')} >m'identifier</a>
           {/if}
-        </div>
       </div>
     </div>
 
     <!-- if a logo here, then adjust max-height ! -->
-    <div class='w3-container w3-cell w3-third'>
+    <div class='w3-container'>
       {#if $config.logo}<img src={$config.logo.url}
                              alt='{$config.logo.alt}'
                              height={$config.logo.height} />
       {:else}CodeGradX{/if}
     </div>
 
-    <div class='w3-container w3-cell w3-third w3-hide-small'>
-      <div class='w3-right'>
-        {#if isUser($person) }
+    <div class='w3-container w3-hide-small'>
+      {#if isUser($person) }
         <span class='w3-margin-left'
               title="Votre pseudo" >{$person.pseudo}</span>
-        {:else}???{/if}
-      </div>
+      {:else}???{/if}
     </div>
-  </div>
  </header>
 
  <Publicity bind:dev={dev} />

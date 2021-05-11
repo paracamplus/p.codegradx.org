@@ -2,6 +2,8 @@
  footer {
    max-height: 2rem;
    max-width: 100vw;
+   display: flex;
+   justify-content: space-between;
  }
  a {
    text-decoration : none;
@@ -15,16 +17,16 @@
  }
 </style>
 
-<footer id='Footer' class="w3-cell-row w3-small w3-theme-d2">
-  <div class="w3-container w3-cell w3-third">
+<footer id='Footer' class="w3-small w3-theme-d2">
+  <div class="w3-container">
     <a href='https://codegradx.org/spip.php?article22'
        target='_blank' rel="noopener"
        title="Mentions légales">Mentions légales</a>
   </div>
-  <div class="w3-container w3-cell w3-third hidden">
+  <div class="w3-container hidden">
     Version <code>{version}</code>
   </div>
-  <div class="w3-container w3-cell w3-third">
+  <div class="w3-container">
     <div class='w3-right'>
       <span class='w3-hide-small'>Une technologie de</span>
       <a href="https://paracamplus.com/" 
