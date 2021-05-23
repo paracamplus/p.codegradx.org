@@ -7,7 +7,7 @@
     <picture style='height: {height};'>
       <source srcset='/fw4ex-512x512.webp'
               type='image/webp'
-              alt='logo' />
+              alt='logo tournoyant' />
       <img src='/fw4ex-512x512.png' alt='logo' />
     </picture>
   </div>

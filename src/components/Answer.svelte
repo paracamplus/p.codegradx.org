@@ -12,6 +12,10 @@
         <EditorJS file={file}
                   exercise={exercise}
                   on:jobPromise />
+      {:else if language === 'scheme'}
+        <EditorSCM file={file}
+                   exercise={exercise}
+                   on:jobPromise />
       {:else}
         <Editor language={language}
                 file={file}
@@ -36,7 +40,7 @@
  import SingleLineString from '../components/SingleLineString.svelte';
  import Editor from '../components/Editor.svelte';
  import EditorJS from '../components/EditorJS.svelte';
- //import EditorSCM from '../components/EditorSCM.svelte';
+ import EditorSCM from '../components/EditorSCM.svelte';
 
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/exercise';

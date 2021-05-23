@@ -40,7 +40,7 @@
               title="Envoyer un fichier local au serveur pour notation"
               on:click={() => preferFile = true} >
         Choisir fichier {#if exercise.inlineFileName}
-        <code>{exercise.inlineFileName}</code>{/if}
+        <code>{exercise.inlineFileName || ''}</code>{/if}
       </button>
       <button class='w3-btn w3-round-xxlarge w3-theme-l4'
               title="Stocker ma réponse sur mon ordinateur"

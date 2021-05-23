@@ -1,6 +1,6 @@
 {
     "name": "p.codegradx.org",
-    "version": "0.1.45",
+    "version": "0.1.46",
     "description": "General CodeGradX Portal",
     "keywords": [
         "CodeGradX",
@@ -19,11 +19,12 @@
         "build-storybook": "build-storybook"
     },
     "dependencies": {
-        "codegradx": "^3.0.60",
+        "codegradx": "^3.0.61",
         "codemirror": "^5.59.2",
         "compression": "^1.7.1",
         "events": "^3.2.0",
         "lodash": "^4.17.21",
+        "mrscheme": "^1.0.6",
         "node-fetch": "^2.6.1",
         "polka": "next",
         "query-string": "^5.1.1",

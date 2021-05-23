@@ -17,6 +17,6 @@
 
 <script>
  export let image = '';
- export let alt = '';
+ export let alt = "image tournoyante d'attente...";
  export let height = '100px';
 </script>

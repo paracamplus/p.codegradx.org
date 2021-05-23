@@ -27,12 +27,16 @@ export async function makeInitializeEditor (language, file, textareaInput) {
         mode: language
     };
     const editor = cm.fromTextArea(textareaInput, options);
-    setTimeout(() => {
+    function filler () {
+        editor.setOption('mode', language);
         editor.setValue(initialValue);
         editor.addKeyMap(cm.keyMap.emacsy);
-        editor.setOption('mode', language);
         editor.refresh();
-    }, 800);
+    }
+    editor.setValue("... chargement de l'éditeur ...");
+    setTimeout(filler, 800);
+    // Information useful for the invoker:
+    editor.__cx__ = { cm, language, file };
     return editor;
 }
 

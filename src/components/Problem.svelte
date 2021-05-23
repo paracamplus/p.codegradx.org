@@ -1,5 +1,11 @@
+<style>
+ div.w3-panel {
+   background-color: var(--color-error);
+ }
+</style>
+
 {#if error}
-<div class='w3-panel w3-red'
+<div class='w3-panel'
      transition:fade
      data-within={within}>{error}</div>
 {/if}

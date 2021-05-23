@@ -2,17 +2,36 @@
  div.textareaParent {
    text-align: left;
  }
+ section.Evaluation {
+   border: solid 1px var(--color-hover-gray);
+ }
  div.code {
    font-family: monospace;
    font-size: 1em;
    color: black;
-   background-color: var(--color-hover-gray);
    padding: 0.5em;
+ }
+ :global(.Program) {
+   color: black;
+   background-color: var(--color-hover-gray);
+ }
+ :global(.Value) {
+   color: black;
+   background-color: white;
  }
  span.higher {
    position: relative;
    top: -0.5em;
    font-size: 2em !important;
+ }
+ :global(span.value span.tooltip) {
+   display: none;
+ }
+ :global(span.error) {
+ }
+ :global(.inError) {
+   color: black;
+   background-color: var(--color-error);
  }
 </style>
 
@@ -20,11 +39,14 @@
 
 <section class='w3-container'>
   <div class='smallHint'>
-    Vous pouvez composer votre réponse dans l'éditeur ci-dessous ou bien
-    utiliser tout autre moyen pour produire un fichier
+    Vous pouvez composer votre réponse dans l'éditeur ci-dessous
+    puis cliquer sur le bouton « Évaluer localement ma réponse »
+    et, si tout est correct, cliquer sur le bouton « Noter ma réponse ».
+    Vous pouvez également utiliser tout autre moyen pour produire un fichier
     {#if exercise.inlineFileName}nommé
     <code>{exercise.inlineFileName}</code>{/if} puis cliquer sur le
-    bouton « noter ma réponse ». ...
+    bouton « choisir fichier {#if exercise.inlineFileName}
+    <code>{exercise.inlineFileName}</code>{/if} ».
   </div>
 
   <form class='w3-form w3-padding-16 w3-center'
@@ -52,16 +74,22 @@
         Évaluer localement ma réponse
       </button>
     </div>
+
+    {#if error}<Problem bind:error={error}/>{/if}
   </form>
 
   {#if result}
-  <div class='code'>
-    <span class='w3-right higher'
-          title='Effacer ces résultats'
-          data-close="EditorSCM"
-          on:click={() => result = ''}>&#x2716;</span>
-    <pre>{@html result}</pre>
-  </div>
+  <section class='w3-container Evaluation'>
+    <header class='w3-padding-16'>Résultats d'évaluation
+      <span class='w3-right higher'
+            title='Effacer ces résultats'
+            data-close="EditorSCM"
+            on:click={() => result = ''}>&#x2716;</span>
+    </header>
+    <div class='code'>
+      {@html result}
+    </div>
+  </section>
   {/if}
 </section>
 
@@ -78,7 +106,7 @@
           customizeEditorForLanguage }
     from '../client/editorlib.mjs';
  import { Parser, defaultEnvironment, Evaluator }
-   from "../client/MrScheme/index.mjs";
+    from "../../node_modules/mrscheme/index.mjs";
  import { buildGoto } from '../client/lib.mjs';
 
  export let exercise;
@@ -89,10 +117,20 @@
  let textareaParent;
  let textareaInput;
  let result = undefined;
+ let textMarker = undefined;
 
  onMount(async () => {
    editor = await makeInitializeEditor(language, file, textareaInput);
+   editor.on('change', clear);
  });
+
+ function clear (event) {
+   error = undefined;
+   if ( textMarker ) {
+     textMarker.clear();
+     textMarker = undefined;
+   }
+ }
 
  function getAnswer () {
    return editor.getValue();
@@ -112,44 +150,90 @@
    // See Servers/w.scm/Paracamplus-FW4EX-SCM/Templates/mrscheme.tt
    event.preventDefault();
    event.stopPropagation();
-   error = undefined;
-   result = '';
+   clear();
    const prog = getAnswer(0);
    const parser = new Parser(prog);
    const exprs = [];
+   const penv = defaultEnvironment();
+   const evaluator = new Evaluator(penv);
+   result = '';
+   
    while ( true ) {
      const expr = parser.parseNext();
      if ( expr.type === 'parseError' ) {
-       error = "parse pb";
+       //console.log('evaluateEditorContent', {expr});
+       error = parseError2text(expr);
+       break;
+
      } else if ( expr.type !== 'unit' ) {
-       exprs.push(expr);
+       try {
+         console.log('evaluateEditorContent', {expr});
+         result += getExpression(expr);
+         const value = evaluator.eval(expr, false);
+         console.log('evaluateEditorContent', {value});
+         if ( value.type === 'evalError' ) {
+           error = evalError2text(value);
+           result += wrapError(expr, value);
+           break;
+         }
+         result += wrapValue(expr, value);
+       } catch (exc) {
+         error = exc.toString();
+         break;
+       }
+       
      } else {
        break;
      }
    }
-   const penv = defaultEnvironment();
-   const evaluator = new Evaluator(penv);
-   for ( const expr of exprs ) {
-     try {
-       const value = evaluator.eval(expr, false);
-       if ( value.type === 'evalError' ) {
-         error = value;
-         break;
-       }
-       result += value.toHTML();
-     } catch (exc) {
-       error = exc.toString();
-       break;
-     }
+   if ( ! error ) {
+     result += ";;; Fin d'évaluation";
    }
-       
+ }
+ 
+ function parseError2text (expr) {
+   let error = `Anomalie syntaxique "${expr.message}" `;
+   clear();
+   textMarker = editor.getDoc().markText(
+     {line: expr.startPos.lpos - 1, ch: expr.startPos.cpos - 1},
+     {line: expr.endPos.lpos - 1,   ch: expr.endPos.cpos - 1},
+     { className: "inError" } );
+   return error;
  }
 
+ function evalError2text (expr) {
+   let error = `Erreur d'évaluation "${expr.message}" `; //'
+   clear();
+   textMarker = editor.getDoc().markText(
+     {line: expr.startPos.lpos - 1, ch: expr.startPos.cpos - 2},
+     {line: expr.endPos.lpos - 1,   ch: expr.endPos.cpos - 1},
+     { className: "inError" } );
+   return error;
+ }
 
- /*
+ function getExpression (expr) {
+   const text = editor.getDoc().getRange(
+     {line: expr.startPos.lpos - 1, ch: expr.startPos.cpos - 2},
+     {line: expr.endPos.lpos - 1,   ch: expr.endPos.cpos - 1});
+   return `<pre class="Program">${text}</pre>`;
+ }
 
+ function wrapValue (expr, value) {
+   let html = '';
+   if ( value.type === 'unit' ) {
+     if ( expr.type.match(/^(define|test)$/) ) {
+       html = ';;; OK';
+     }
+   } else {
+     html = value.toHTML();
+   }
+   return `<pre class="Value">${html}\n</pre>`;
+ }
 
- */
+ function wrapError (expr, value) {
+   let html = `<span class='inError'>${value.message}</span>`;
+   return  html;
+ }
 
 </script>
 
