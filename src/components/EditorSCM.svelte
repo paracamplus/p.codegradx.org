@@ -4,6 +4,10 @@
  }
  section.Evaluation {
    border: solid 1px var(--color-hover-gray);
+   display: none;
+ }
+ section.visible {
+   display: block;
  }
  div.code {
    font-family: monospace;
@@ -33,12 +37,23 @@
    color: black;
    background-color: var(--color-error);
  }
+ :global(font a) {
+   text-decoration: none;
+ }
+ :global(.econode) {
+    position: absolute;
+    text-overflow: clip;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: xx-small;
+    padding: 2px;
+}
 </style>
 
 <link rel='stylesheet' href={buildGoto('codemirror.css')} />
 
 <section class='w3-container'>
   <div class='smallHint'>
+    <p>
     Vous pouvez composer votre réponse dans l'éditeur ci-dessous
     puis cliquer sur le bouton « Évaluer localement ma réponse »
     et, si tout est correct, cliquer sur le bouton « Noter ma réponse ».
@@ -47,6 +62,16 @@
     <code>{exercise.inlineFileName}</code>{/if} puis cliquer sur le
     bouton « choisir fichier {#if exercise.inlineFileName}
     <code>{exercise.inlineFileName}</code>{/if} ».
+    </p><p>
+      Vous devez résoudre ces exercices à l'aide du sous-ensemble de
+      Scheme enseigné dans le 
+      <a target='_blank' rel='noopener'
+         href="https://programmation-recursive.net/">MOOC «
+        Programmation récursive »</a> et résumé dans la
+      <a target='_blank' rel='noopener'
+         href={buildGoto('/carteref.pdf')}>carte
+      de référence</a>.
+    </p>
   </div>
 
   <form class='w3-form w3-padding-16 w3-center'
@@ -78,23 +103,24 @@
     {#if error}<Problem bind:error={error}/>{/if}
   </form>
 
-  {#if result}
-  <section class='w3-container Evaluation'>
+  <section id='EvaluationResults'
+           class:visible={showResults}
+           class='w3-container Evaluation'>
     <header class='w3-padding-16'>Résultats d'évaluation
       <span class='w3-right higher'
             title='Effacer ces résultats'
             data-close="EditorSCM"
-            on:click={() => result = ''}>&#x2716;</span>
+            on:click={hideResults}>&#x2716;</span>
     </header>
     <div class='code'>
       {@html result}
     </div>
   </section>
-  {/if}
+
 </section>
 
 <script>
- import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+ import { onMount, onDestroy, createEventDispatcher, tick } from 'svelte';
  const dispatch = createEventDispatcher();
  import Problem from '../components/Problem.svelte';
  import { CodeGradX } from 'codegradx';
@@ -105,7 +131,7 @@
           HTMLize,
           customizeEditorForLanguage }
     from '../client/editorlib.mjs';
- import { Parser, defaultEnvironment, Evaluator }
+ import { Parser, defaultEnvironment, Evaluator, TreeLib }
     from "../../node_modules/mrscheme/index.mjs";
  import { buildGoto } from '../client/lib.mjs';
 
@@ -118,6 +144,8 @@
  let textareaInput;
  let result = undefined;
  let textMarker = undefined;
+ let startTime;
+ let showResults = false;
 
  onMount(async () => {
    editor = await makeInitializeEditor(language, file, textareaInput);
@@ -130,6 +158,12 @@
      textMarker.clear();
      textMarker = undefined;
    }
+   showResults = false;
+ }
+
+ function hideResults (event) {
+   showResults = false;
+   result = '';
  }
 
  function getAnswer () {
@@ -146,17 +180,21 @@
    }
  }
 
- function evaluateEditorContent (event) {
+ async function evaluateEditorContent (event) {
    // See Servers/w.scm/Paracamplus-FW4EX-SCM/Templates/mrscheme.tt
    event.preventDefault();
    event.stopPropagation();
    clear();
+   startTime = new Date().getTime();
    const prog = getAnswer(0);
    const parser = new Parser(prog);
    const exprs = [];
    const penv = defaultEnvironment();
    const evaluator = new Evaluator(penv);
    result = '';
+   showResults = true;
+   await tick();
+   const values = [];
    
    while ( true ) {
      const expr = parser.parseNext();
@@ -169,14 +207,20 @@
        try {
          console.log('evaluateEditorContent', {expr});
          result += getExpression(expr);
+         await tick();
          const value = evaluator.eval(expr, false);
          console.log('evaluateEditorContent', {value});
+         window.lastvalue = value; // DEBUG
          if ( value.type === 'evalError' ) {
            error = evalError2text(value);
            result += wrapError(expr, value);
            break;
          }
          result += wrapValue(expr, value);
+         await tick();
+         if ( value.afterOutput ) {
+           values.push(value);
+         }
        } catch (exc) {
          error = exc.toString();
          break;
@@ -186,8 +230,12 @@
        break;
      }
    }
-   if ( ! error ) {
-     result += ";;; Fin d'évaluation";
+   const endTime = new Date().getTime();
+   const duration = (endTime - startTime)
+   result += `;;; Fin d'évaluation (${duration} ms)`; //'
+   await tick();
+   for ( const value of values ) {
+     value.afterOutput();
    }
  }
  
@@ -198,6 +246,8 @@
      {line: expr.startPos.lpos - 1, ch: expr.startPos.cpos - 1},
      {line: expr.endPos.lpos - 1,   ch: expr.endPos.cpos - 1},
      { className: "inError" } );
+   editor.getDoc().setCursor({line: expr.startPos.lpos - 1,
+                              ch: expr.startPos.cpos - 1});
    return error;
  }
 
@@ -208,6 +258,8 @@
      {line: expr.startPos.lpos - 1, ch: expr.startPos.cpos - 2},
      {line: expr.endPos.lpos - 1,   ch: expr.endPos.cpos - 1},
      { className: "inError" } );
+   editor.getDoc().setCursor({line: expr.startPos.lpos - 1,
+                              ch: expr.startPos.cpos - 1});
    return error;
  }
 
@@ -221,17 +273,21 @@
  function wrapValue (expr, value) {
    let html = '';
    if ( value.type === 'unit' ) {
-     if ( expr.type.match(/^(define|test)$/) ) {
-       html = ';;; OK';
+     if ( expr.type === 'define' ) {
+       html = `;;; fonction ${expr.fname} définie`;
+     } else if ( expr.type === 'test' ) {
+       html = `;;; ${expr.testCases.length} tests OK`;
      }
+   } else if ( value.type.match(/^(btree|btreeview)$/) ) {
+     html = value.toHTML();
    } else {
      html = value.toHTML();
    }
-   return `<pre class="Value">${html}\n</pre>`;
+   return `<pre class="Value">${html}\n</pre>\n`;
  }
 
  function wrapError (expr, value) {
-   let html = `<span class='inError'>${value.message}</span>`;
+   let html = `<div class='inError'>${value.message}</div>`;
    return  html;
  }
 
