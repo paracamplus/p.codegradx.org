@@ -46,6 +46,16 @@
     font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
     font-size: xx-small;
     padding: 2px;
+ }
+ :global(.canvas101) {
+    border: 1px solid black;
+    position: relative;  
+    display: inline-block;  
+    vertical-align: top; 
+    margin:12px 18px;
+    box-shadow: 2px 2px 4px #555; 
+    -moz-box-shadow: 2px 2px 4px #555; 
+    -webkit-box-shadow: 2px 2px 4px #555; 
 }
 </style>
 
@@ -278,8 +288,6 @@
      } else if ( expr.type === 'test' ) {
        html = `;;; ${expr.testCases.length} tests OK`;
      }
-   } else if ( value.type.match(/^(btree|btreeview)$/) ) {
-     html = value.toHTML();
    } else {
      html = value.toHTML();
    }
