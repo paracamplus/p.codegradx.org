@@ -2,20 +2,24 @@
 </style>
 
 <section class='w3-container'>
-  {#if exercisesSet && exercisesSet.exercises}
-    {#each exercisesSet.exercises as es}
-      {#if es instanceof CodeGradX.ExercisesSet}
-        <ExercisesSet exercisesSet={es} 
-                      on:authenticate />
-      {:else if es instanceof CodeGradX.Exercise}
-        <div class='w3-container w3-section'>
-          <ExerciseTitle exercise={es} 
-                         on:authenticate />
-        </div>
-      {:else}
-        <div></div>
-      {/if}
-    {/each}
+  {#if exercisesSet}
+    {#if exercisesSet.exercises}
+       {#each exercisesSet.exercises as es}
+          {#if es instanceof CodeGradX.ExercisesSet}
+          <ExercisesSet exercisesSet={es} 
+                        on:authenticate />
+          {:else if es instanceof CodeGradX.Exercise}
+          <div class='w3-container w3-section'>
+            <ExerciseTitle exercise={es} 
+                           on:authenticate />
+          </div>
+          {:else}
+          <div></div>
+          {/if}
+       {/each}
+    {:else}
+       <div>Cet univers n'a pas encore d'exercices associés!</div>
+    {/if}
   {:else if ! error}
      <WaitingImage message="Chargement de la liste d'exercices..." />
   {:else}
@@ -51,9 +55,10 @@ ${$campaign.name}, veuillez choisir un autre univers!`;
 
  async function fetchExercisesSet (campaign) {
    try {
-     return campaign.getExercisesSet();
+     return await campaign.getExercisesSet();
    } catch (exc) {
      error = parseAnomaly(exc);
+     return {};
    }
  }
 
