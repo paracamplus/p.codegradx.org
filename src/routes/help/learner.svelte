@@ -54,7 +54,7 @@ de programmation, d'un cours ou d'un MOOC.
     avec le bouton « envoyer fichier » associé. Dans ce cas, vous
     devez disposer, sur l'ordinateur sur lequel vous travaillez, d'un
     environnement de développement avec les outils afférents à savoir
-    éditeur, évaluateur (interprète ou compilateur), etc.
+    éditeur, évaluateur (interprète ou compilateur), metteur au point, etc.
     
   </p>
   <p>
@@ -64,6 +64,10 @@ de programmation, d'un cours ou d'un MOOC.
     ou un <code>.zip</code>) pour le transmettre. L'énoncé vous renseigne
     pour ce faire.
     
+  </p>
+  <p>
+    Lorsqu'un fichier vous est demandé, son nom exact est spécifié.
+    Vous devez impérativement utiliser ce nom.
   </p>
 </section>
 
@@ -90,10 +94,11 @@ de programmation, d'un cours ou d'un MOOC.
   <p>
 
     En tant qu'apprenant, vous avez accès à votre historique et à vos
-    résultats. L'historique montre tous les programmes qui ont été
-    notés au sein de l'univers courant. Les résultats vous donnent un
-    aperçu, semblable à la liste des exercices d'un univers, des
-    exercices que vous avez entamés ou résolus.
+    résultats. L'historique montre tous les programmes que vous avez
+    commis et qui ont été notés au sein de l'univers courant. Les
+    résultats vous donnent un aperçu, semblable à la liste des
+    exercices d'un univers, des exercices que vous avez entamés ou
+    pleinement résolus.
 
   </p>
 </section>

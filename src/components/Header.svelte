@@ -4,6 +4,7 @@
    max-width: 100vw;
    display: flex;
    justify-content: space-between;
+   align-items: center;
  }
  header.firstLine div.w3-dropdown-content {
    font-weight: initial;
@@ -20,7 +21,7 @@
   <header id='Header' class='w3-theme-d2 firstLine'>
     <div class='w3-container w3-theme-d2 w3-dropdown-click'>
       <span id='MenuButton' on:click={displayMenu}>
-        <MenuSign size={$config.logo ? $config.logo.height : '1em'} />
+        <MenuSign size={$config.logo ? $config.logo.height : '1.5em'} />
       </span>
       <div id='MenuContent' bind:this={menuContent}
            class:show={showMenu}
@@ -104,7 +105,7 @@
  import * as sapper from '@sapper/app';
  import { onMount, createEventDispatcher } from 'svelte';
  import { person, campaign, config, lastmessage } from '../stores.mjs';
- import { isUser, isTeacher } from '../client/lib.mjs';
+ import { isUser, isTeacher, configureConfig } from '../client/lib.mjs';
  const dispatch = createEventDispatcher();
  import { buildGoto } from '../client/lib.mjs';
  import { stores } from '@sapper/app';
@@ -121,6 +122,7 @@
  let campaignName = 'free';
  
  onMount(async () => {
+   await configureConfig();
    try {
      dev = get(session).dev;
    } catch (exc) {
