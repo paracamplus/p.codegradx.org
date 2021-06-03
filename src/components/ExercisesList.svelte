@@ -18,7 +18,9 @@
           {/if}
        {/each}
     {:else}
-       <div>Cet univers n'a pas encore d'exercices associés!</div>
+       <div class='w3-center'>
+         Cet univers n'a pas encore d'exercices associés!
+       </div>
     {/if}
   {:else if ! error}
      <WaitingImage message="Chargement de la liste d'exercices..." />

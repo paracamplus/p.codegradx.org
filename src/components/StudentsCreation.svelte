@@ -3,6 +3,10 @@
    rows: 6;
    width: 80%;
  }
+ .remark {
+   padding-left: 1em;
+   padding-right: 1em;
+ }
 </style>
 
 <div class='w3-container'>
@@ -37,9 +41,9 @@
     <ul>
       {#each messages as message}
         {#if message.ok}
-          <li>{message.email}: <span class='w3-green'>OK</span></li>
+          <li>{message.email}: <span class='w3-green remark'>OK</span></li>
         {:else}
-          <li>{message.email}: <span class='w3-red'>{message.reason}</span></li>
+          <li>{message.email}: <span class='w3-red remark'>{message.reason}</span></li>
         {/if}
       {/each}
     </ul>

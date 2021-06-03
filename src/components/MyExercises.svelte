@@ -33,7 +33,7 @@
     </tr>
     {:else}
     <tr>
-      <td colspan='4'>Aucun exercice!</td>
+      <td colspan='4' class='w3-center'>Aucun exercice!</td>
     </tr>
     {/each}
   </tbody>

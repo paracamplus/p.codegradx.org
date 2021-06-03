@@ -12,6 +12,10 @@
 
   {#if error}<Problem bind:error={error} />{/if}
 
+  {#if waiting}
+  <WaitingImage message="Analyse du nouveau jeu d'exercices..." />
+  {/if}
+
 </div>
 
 <script>
@@ -38,6 +42,7 @@
    const basefilename = chosenfile.replace(new RegExp("^.*/"), '');
    error = undefined;
    try {
+     waiting = true;
      const state = CodeGradX.getCurrentState();
      const response = await state.sendAXServer('x', {
        path: `/exercisesset/yml2json/${$campaign.name}`,
@@ -51,13 +56,16 @@
        entity: fd
      });
      if ( response.ok ) {
+       waiting = false;
        dispatch('close');
        $lastmessage = "Voici le nouveau jeu d'exercices";
        goto(`/universe/${$campaign.name}`);
      } else {
+       waiting = false;
        throw response;
      }
    } catch (exc) {
+     waiting = false;
      console.log('sendExercisesSetFile', {exc});
      error = parseAnomaly(exc);
    }

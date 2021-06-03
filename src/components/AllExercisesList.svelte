@@ -41,7 +41,7 @@
                   showMenu={exercise.exerciseid === currentlyopened.exerciseid}
                   on:openmenu={mkCloseAllMenuBut(exercise)} />
     {:else}
-    <tr><td colspan='4'>Aucun exercice!</td></tr>
+    <tr><td colspan='4' class='w3-center'>Aucun exercice!</td></tr>
     {/each}
   </tbody>
 </table>
@@ -85,10 +85,18 @@
    try {
      $person = await initializePerson();
      $campaign = await fetchCampaign($person, $campaign.name);
-     const exercisesSet = await $campaign.getExercisesSet();
-     objexercises = flattenExercisesSet(exercisesSet);
-     //console.log({objexercises}); // DEBUG
-     exercises = Object.values(objexercises);
+     let exercisesSet;
+     try {
+       exercisesSet = await $campaign.getExercisesSet();
+       if ( exercisesSet.exercises ) {
+         objexercises = flattenExercisesSet(exercisesSet);
+         //console.log({objexercises}); // DEBUG
+         exercises = Object.values(objexercises);
+       }
+     } catch (exc) {
+       // Probably missing exercisesSet.json
+       console.log('AllExercisesList2', {exc});
+     }
    } catch (exc) {
      console.log('AllExercisesList', {exc});
      error = parseAnomaly(exc);

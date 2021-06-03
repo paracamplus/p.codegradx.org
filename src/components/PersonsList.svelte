@@ -18,13 +18,12 @@
   {/if}
   </p>
 
-  <div class='w3-margin-top'>
   {#if persons.length > 0}
+  <div class='w3-margin-top'>
     {total} personnes en tout,
     seulement {persons.length} affichées ci-dessous dont
     {persons.filter(item => item.confirmedemail).length} avec courriel confirmé,
     et {persons.filter(item => item.confirmedua).length} avec UA confirmé.
-  {/if}
   <span class='w3-right w3-xxlarge w3-margin-left'
         title="Clore la liste"
         data-close="PersonsList"
@@ -77,6 +76,12 @@
     {/if}
   </tbody>
 </table>
+
+  {:else}
+  <div class='w3-margin-top w3-center'>
+    Cette liste est vide!
+  </div>
+  {/if}
 
 {:else}
   <WaitingImage message="Chargement des données..." />  

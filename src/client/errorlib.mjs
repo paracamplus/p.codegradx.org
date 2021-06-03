@@ -8,6 +8,7 @@
 const messages = {
     e109: "Je ne vois le fichier que vous m'avez envoyé!",
     e115: "Vous n'avez pas le statut d'auteur d'exercices",
+    e118: "Je ne peux archiver votre jeu d'exercices!",
     e126: "Je ne vous connais point!",
     e146: "Vous n'êtes pas un apprenant de cet univers!",
     e190: "Êtes-vous sûr du nom de cet univers ?",
