@@ -39,9 +39,15 @@
       <td>{item.attempts}</td>
     </tr>
     {:else}
-    <tr><td colspan='6'>
-      <WaitingImage message="Chargement des statistiques..." />
-    </td></tr>
+      {#if answered}
+      <tr><td colspan='6' class='w3-center'>
+        Aucune statistique encore visible!
+      </td></tr>
+      {:else}
+      <tr><td colspan='6'>
+        <WaitingImage message="Chargement des statistiques..." />
+      </td></tr>
+      {/if}
     {/each}
   </tbody>
 </table>
@@ -62,6 +68,7 @@
  import { parseAnomaly } from '../client/errorlib.mjs';
 
  let items = [];
+ let answered = false;
  let entryPointName = 'perStudent';
  let table;
   
@@ -81,6 +88,7 @@
  async function refreshStudentsStats (event) {
    const state = CodeGradX.getCurrentState();
    try {
+     answered = false;
      const response = await state.sendAXServer('x', {
        path: `/statistics/${entryPointName}/${$campaign.name}`,
        method: 'GET',
@@ -90,6 +98,7 @@
      });
      if ( response.ok ) {
        items = response.entity;
+       answered = true;
      } else {
        throw response;
      }

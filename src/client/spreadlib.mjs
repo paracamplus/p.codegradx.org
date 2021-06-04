@@ -77,7 +77,7 @@ export function spreadItems (itemsSets, items, total, count = 20) {
 
 export function installTarget (lastLineTarget, seeMore) {
     async function handleIntersection (entries, observer) {
-        console.log('handleIntersection', {entries});
+        //console.log('handleIntersection', {entries});
         if ( entries[0].isIntersecting ) {
             await seeMore();
         }

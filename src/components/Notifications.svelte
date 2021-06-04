@@ -31,7 +31,7 @@
       <tr>
         <td colspan='3' class='w3-center'>aucune notification</td></tr>
       {/each}
-      {:else}
+    {:else}
       <tr><td colspan='3'>
         <WaitingImage message="Chargement des notifications" /></td></tr>
     {/if}

@@ -99,7 +99,7 @@
      exercises = await $person.getAllExercises();
      exercisesloaded = true;
    } catch (exc) {
-     console.log('author', {exc});
+     //console.log('author', {exc});
      error = parseAnomaly(exc);
    }
  });
@@ -117,7 +117,7 @@
      //console.log(exercise);
      goto(`/myexercise/${exercise.exerciseid}?newexercise=1`);
    } catch (exc) {
-     console.log('author sendExerciseFile', {exc});
+     //console.log('author sendExerciseFile', {exc});
      error = parseAnomaly(exc);
    }
  }
