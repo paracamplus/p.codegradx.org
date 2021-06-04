@@ -116,7 +116,7 @@
  onMount(async () => {
    const result = spreadItems(jobsSets, jobs, total, count);
    jobsSets = result.itemsSets;
-   console.log('JobsList onMount', {jobsSets, jobs}); // DEBUG
+   //console.log('JobsList onMount', {jobsSets, jobs}); // DEBUG
    if ( jobs.length < count && rest > 0 ) {
      await seeMore();
    }
@@ -130,7 +130,7 @@
      result.itemsSets = [].concat(result.itemsSets);
      result.itemsSets.initialized = true;
      jobsSets = result.itemsSets;
-     console.log('JobsList displayMore', {jobsSets, jobs}); // DEBUG
+     //console.log('JobsList displayMore', {jobsSets, jobs}); // DEBUG
    }
  }
 

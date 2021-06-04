@@ -7,6 +7,13 @@
    color: white;
    font-size: 200%;
  }
+ span.marquee {
+   animation: marquee 1s infinite linear;
+ }
+ @keyframes marquee {
+   0%   {opacity: 1;}
+   50%  {opacity: 0;}
+   100% {opacity: 1;}
 </style>
 
 <svelte:head>
@@ -32,7 +39,7 @@
     
     <p class='text'>
       Découvrez ses exercices de programmation à notation
-      automatique...
+      automatique <span class='marquee'>...</span>
     </p>
   </div>
 </div>
