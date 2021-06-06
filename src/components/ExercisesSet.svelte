@@ -1,4 +1,8 @@
 <style>
+ div.intertitle {
+   font-style: italic;
+   margin-left: 5em;
+ }
 </style>
 
 {#if exercisesSet}
@@ -20,6 +24,9 @@
         {:else if exercise instanceof CodeGradX.Exercise}
           <ExerciseTitle exercise={exercise}
                          on:authenticate />
+
+        {:else if typeof exercise === 'string'}
+          <div class='intertitle'>{exercise}</div>
 
         {:else}
           <div></div>

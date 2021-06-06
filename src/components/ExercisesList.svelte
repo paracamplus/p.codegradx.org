@@ -1,4 +1,8 @@
 <style>
+ div.intertitle {
+   font-style: italic;
+   margin-left: 5em;
+ }
 </style>
 
 <section class='w3-container'>
@@ -8,11 +12,16 @@
           {#if es instanceof CodeGradX.ExercisesSet}
           <ExercisesSet exercisesSet={es} 
                         on:authenticate />
+          
           {:else if es instanceof CodeGradX.Exercise}
           <div class='w3-container w3-section'>
             <ExerciseTitle exercise={es} 
                            on:authenticate />
           </div>
+          
+          {:else if typeof es === 'string'}
+          <div class='intertitle'>{es}</div>
+          
           {:else}
           <div></div>
           {/if}

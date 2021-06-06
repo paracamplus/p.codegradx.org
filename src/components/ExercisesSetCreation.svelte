@@ -59,6 +59,9 @@
        waiting = false;
        dispatch('close');
        $lastmessage = "Voici le nouveau jeu d'exercices";
+       $campaign.exercisesSet = new CodeGradX.ExercisesSet(response.entity);
+       state.cachedExercisesSet(campaign.exercisesname,
+                                campaign.exercisesSet );
        goto(`/universe/${$campaign.name}`);
      } else {
        waiting = false;

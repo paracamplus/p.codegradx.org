@@ -36,7 +36,13 @@
       <td>{batch.archived}</td>
     </tr>
     {:else}
-    <tr><td colspan='4'>Aucun lot!</td></tr>
+      {#if answered}
+      <tr><td colspan='4' class='w3-center'>Aucun lot!</td></tr>
+      {:else}
+      <tr><td colspan='4'>
+        <WaitingImage message="Chargement des données..." />
+      </td></tr>
+      {/if}
     {/each}
   </tbody>
 </table>
@@ -64,6 +70,7 @@
  export let entryPointName = 'listBatches';
  export let entryKeyName = 'batches';
  let batches = [];
+ let answered = false;
  let error = undefined;
  let table;
  
@@ -90,6 +97,7 @@
  async function refreshBatchesList (event) {
    const state = CodeGradX.getCurrentState();
    try {
+     answered = false;
      const response = await state.sendAXServer('x', {
        path: `/campaign/${entryPointName}/${$campaign.name}`,
        method: 'GET',
@@ -101,6 +109,7 @@
        batches = response.entity[entryKeyName]
                          .map(e => new CodeGradX.Batch(e));
        showBatchesList = true;
+       answered = true;
        return batches;
      } else {
        throw response;

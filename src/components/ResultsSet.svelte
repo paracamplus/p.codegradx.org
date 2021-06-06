@@ -1,3 +1,9 @@
+<style>
+ div.intertitle {
+   font-style: italic;
+   margin-left: 5em;
+ }
+</style>
 
 {#if exercisesSet}
     <div class='w3-container w3-theme-l4 w3-margin-top'>
@@ -19,6 +25,9 @@
         {:else if exercise instanceof CodeGradX.Exercise}
           <ResultTitle exercise={exercise}
                        bind:results={results} />
+
+        {:else if typeof exercise === 'string'}
+          <div class='intertitle'>{exercise}</div>
 
         {:else}
           <div></div>
