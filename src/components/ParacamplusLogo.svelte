@@ -1,6 +1,9 @@
 <!-- -*- coding: utf-8 -*- -->
 
 <style>
+ svg {
+   filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+ }
 </style>
 
 <svg 
@@ -39,6 +42,9 @@
 </svg>
 
 <script>
+ //import { draw  } from 'svelte/transition';
+ // and modify <path in:draw={{ speed: 1 }}
+ 
  export let size = '1em';
  let originalWidth = 332.73508;
  let originalHeight = 341.99368;
@@ -46,5 +52,6 @@
  export let bgcolor = '#20295b';
  let width = size;
  let height = size;
+
 </script>
   

@@ -51,7 +51,8 @@
  import { onMount } from 'svelte';
  import { person, config } from '../stores.mjs';
  import { isUser, initializePerson, configureConfig, goto }
-    from '../client/lib.mjs';
+ from '../client/lib.mjs';
+ import { sleep } from '../common/utils.mjs';
 
  onMount(async () => {
    /* no await */ sapper.prefetchRoutes(['/universes']);
@@ -60,7 +61,8 @@
    return pursue();
  });
 
- function pursue (event) {
+ async function pursue (event) {
+   //await sleep(1);
    const host = window.document.location.hostname
           .replace(/^([^.]+)[.].*$/, '$1');
    if ( host.match(/^(test)?p$/) ) {
@@ -68,7 +70,6 @@
    } else {
      return goto(`/universe/${host}`);
    }
- }
-   
+ }   
  
 </script>

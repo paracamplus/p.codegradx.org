@@ -8,8 +8,8 @@
 <Header on:logout={logout} />
 
 <section id='Page'
-         in:blur="{{ duration: 250, delay: 250 }}"
-         out:fade="{{ duration: 250 }}" 
+         in:fade="{{ duration: 300, delay: 300 }}"
+         out:fade="{{ duration: 300 }}" 
          data-shortTitle={shortTitle}
          class='w3-container w3-margin-top w3-padding'>
   {#if showheader}
@@ -33,7 +33,7 @@
  import { person, lastmessage } from '../stores.mjs';
  import { isUser, goto } from '../client/lib.mjs';
  import { CodeGradX } from 'codegradx';
- import { blur, fade } from 'svelte/transition';
+ import { fade } from 'svelte/transition';
 
  export let title;
  export let shortTitle;

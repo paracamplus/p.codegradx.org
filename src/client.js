@@ -8,15 +8,24 @@ import { configureConfig } from './client/lib.mjs';
 
 window.CodeGradX = CodeGradX; // Make CodeGradX global!
 
+const cacherType = 'LocalStorageCache';
+const caches = [ 'Exercise', 'Job', 'ExercisesSet', 'Campaign' ];
+
 function customizer (state) {
     // Cache is performed in service-worker:
     //state.cacher = plugCache(CodeGradX, 'NoCache', state);
     //state.cacher = plugCache(CodeGradX, 'InlineCache', state);
-    state.cacher = plugCache(CodeGradX, 'LocalStorageCache', state);
-    state.mkCacheFor('Exercise');
-    state.mkCacheFor('Job');
-    state.mkCacheFor('ExercisesSet');
-    state.mkCacheFor('Campaign');
+    state.cacher = plugCache(CodeGradX, cacherType, state);
+    caches.forEach((name) => state.mkCacheFor(name));
+    if ( state.cacherType === 'LocalStorageCache' ) {
+        caches.forEach((name) => {
+            // Only Jobs are immutable!
+            // Exercise are immutable (except mine!)
+            if ( name !== 'Job' && name !== 'Exercise' ) {
+                state.caches[name].clear();
+            }
+        });
+    }
     return state;
 }
 

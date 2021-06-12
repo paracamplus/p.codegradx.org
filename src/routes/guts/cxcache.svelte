@@ -2,11 +2,15 @@
       title='Guts/CodeGradX cache' >
 
   <section class='w3-container'>
+    <span class='w3-btn w3-round-xxlarge w3-theme-l4 w3-right'
+          on:click={refresh}
+          title="Rafraîchir les listes">
+      <RefreshSign /></span>
     <p class='smallHint'>
       Cliquer une entrée la révèle ou la masque.
     </p>
     
-    {#if state}
+    {#if state && redisplay}
       {#each Object.keys(state.caches) as kind}
       <section class='w3-container w3-margin-top'>
         <header> Cache {kind} ({state.cacherType}) </header>
@@ -32,6 +36,7 @@
 <script>
  import Page from '../../components/Page.svelte';
  import WaitingImage from '../../components/WaitingImage.svelte';
+ import RefreshSign from '../../components/RefreshSign.svelte';
 
  import { onMount } from 'svelte';
  import { parseAnomaly } from '../../client/errorlib.mjs';
@@ -39,6 +44,8 @@
 
  let state;
  let shown = {};
+ // Hack 
+ let redisplay = 1; // -1 or 1
 
  function mkShowEntry (kind, key) {
    return function showEntry (event) {
@@ -56,14 +63,22 @@
      return o;
    } else if ( typeof o === 'object' ) {
      return JSON.stringify(o, null, 4);
-   } else {
+   } else if ( o ) {
      return o.toString();
+   } else {
+     return o;
    }
  }
 
  onMount(() => {
-   state = CodeGradX.getCurrentState();
+   refresh();
    //console.log('cxcache', {caches: state.caches});
  });
+
+ function refresh (event) {
+   redisplay = - redisplay;
+   state = CodeGradX.getCurrentState();
+ }
+ 
 
 </script>
