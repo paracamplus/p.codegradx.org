@@ -107,15 +107,20 @@ export async function determineNextUserState (json) {
 export async function initializePerson () {
     let $person = get(person);
     if ( ! $person ) {
-        $person = await CodeGradX.getCurrentUser();
-        person.set($person);
+        try {
+            $person = await CodeGradX.getCurrentUser();
+            person.set($person);
+        } catch (exc) {
+            // ignore! the user is not authenticated and will be
+            // considered as anonymous
+        }
     }
     if ( $person ) {
         // Redirect towards email confirmation or UA signature if needed:
         const href = await determineNextUserState($person);
         const where = document.location.pathname.replace(/^.*(\/\w+)/, '$1');
         if ( href && href !== where ) {
-            console.log(`From ${where}: goto ${href}`);
+            //console.log(`From ${where}: goto ${href}`);
             return goto(href);
         }
     }

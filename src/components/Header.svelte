@@ -53,9 +53,6 @@
               <a class='w3-bar-item w3-btn'
                  href={buildGoto(`history/${$campaign.name}`)} >
                 mon historique</a>
-              <a class='w3-bar-item w3-btn'
-                 href={buildGoto(`results/${$campaign.name}`)} >
-                mes résultats</a>
             {/if}
             {#if $campaign && isTeacher($campaign, $person)}
               <a class='w3-bar-item w3-btn'

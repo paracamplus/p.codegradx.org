@@ -66,9 +66,9 @@
        markTitle = `${massageMark(mark)}%`;
        if ( 0 !== mark && mark < 0.75 ) {
          bad = true;
-       } else if ( 0.75 < mark && mark < 0.95 ) {
+       } else if ( 0.75 <= mark && mark < 0.95 ) {
          good = true;
-       } else {
+       } else if ( 0.95 <= mark ) {
          verygood = true;
        }
      } else {

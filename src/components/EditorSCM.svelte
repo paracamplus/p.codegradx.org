@@ -215,11 +215,11 @@
 
      } else if ( expr.type !== 'unit' ) {
        try {
-         console.log('evaluateEditorContent', {expr});
+         //console.log('evaluateEditorContent', {expr});
          result += getExpression(expr);
          await tick();
          const value = evaluator.eval(expr, false);
-         console.log('evaluateEditorContent', {value});
+         //console.log('evaluateEditorContent', {value});
          window.lastvalue = value; // DEBUG
          if ( value.type === 'evalError' ) {
            error = evalError2text(value);

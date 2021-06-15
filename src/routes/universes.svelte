@@ -39,7 +39,7 @@
    {/if}
 
   {#if showauthentication}
-  <div class='w3-container'>
+  <div class='w3-container' role='alert'>
     <div class='w3-center w3-animate-zoom'>
       <a class='w3-btn w3-center w3-round-xlarge w3-theme-d4'
          href={buildGoto('/connect')} >

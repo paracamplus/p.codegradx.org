@@ -27,17 +27,19 @@ export async function makeInitializeEditor (language, file, textareaInput) {
         mode: language
     };
     const editor = cm.fromTextArea(textareaInput, options);
-    function filler () {
-        editor.setOption('mode', language);
-        editor.setValue(initialValue);
-        editor.addKeyMap(cm.keyMap.emacsy);
-        editor.refresh();
-    }
-    editor.setValue("... chargement de l'éditeur ...");
-    setTimeout(filler, 800);
-    // Information useful for the invoker:
-    editor.__cx__ = { cm, language, file };
-    return editor;
+    return new Promise((resolve, reject) => {
+        function filler () {
+            editor.setOption('mode', language);
+            editor.setValue(initialValue);
+            editor.addKeyMap(cm.keyMap.emacsy);
+            editor.refresh();
+            resolve(editor);
+        }
+        editor.setValue("... chargement de l'éditeur ...");
+        setTimeout(filler, 800);
+        // Information useful for the invoker:
+        editor.__cx__ = { cm, language, file };
+    });
 }
 
 export function makeStoreEventHandler (exercise, getAnswer) {

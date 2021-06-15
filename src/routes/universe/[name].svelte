@@ -52,7 +52,7 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { CodeGradX } from 'codegradx/campaign';
- import { sleep, onClient } from '../../common/utils.mjs';
+ import { sleep } from '../../common/utils.mjs';
  import { person, campaign, lastmessage } from '../../stores.mjs';
  import { initializePerson, isCampaign, goto, isUser }
    from '../../client/lib.mjs';
@@ -64,16 +64,23 @@
  let campaignName = '...';
  let showAuthentication = false;
  
- onClient(async () => {
+ onMount(async () => {
    const uri = window.document.location.pathname;
    campaignName = uri.replace(/^(.*\/)?universe\/([^\/]+)/, '$2');
    try {
      $person = await initializePerson();
-     $campaign = await fetchCampaign($person, campaignName);
-     if ( ! $campaign ) {
-       $lastmessage = `Je ne vois pas d'univers ainsi nommé!
+     if ( $person ) {
+       $campaign = await fetchCampaign($person, campaignName);
+       if ( $campaign ) {
+         //console.log('universe', {person: $person, campaign: $campaign});
+         goto(`/results/${$campaign.name}`);
+       } else {
+         $lastmessage = `Je ne vois pas d'univers ainsi nommé!
 Veuillez donc choisir un nouvel univers.`; //'
-       goto('/universes');
+         goto('/universes');
+       }
+     } else {
+       showAuthentication = true;
      }
    } catch (exc) {
      console.log('universe', {exc});
