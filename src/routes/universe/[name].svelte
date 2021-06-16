@@ -69,17 +69,18 @@
    campaignName = uri.replace(/^(.*\/)?universe\/([^\/]+)/, '$2');
    try {
      $person = await initializePerson();
+     let _campaign = await fetchCampaign($person, campaignName);
      if ( $person ) {
-       $campaign = await fetchCampaign($person, campaignName);
-       if ( $campaign ) {
+       if ( _campaign ) {
          //console.log('universe', {person: $person, campaign: $campaign});
-         goto(`/results/${$campaign.name}`);
+         goto(`/results/${_campaign.name}`);
        } else {
          $lastmessage = `Je ne vois pas d'univers ainsi nommé!
 Veuillez donc choisir un nouvel univers.`; //'
          goto('/universes');
        }
      } else {
+       $campaign = _campaign;
        showAuthentication = true;
      }
    } catch (exc) {

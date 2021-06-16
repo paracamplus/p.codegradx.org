@@ -14,6 +14,7 @@
       {#if summary.bad > 0}débuté {summary.bad} exercices,{/if}
       {#if summary.good > 0}résolu partiellement {summary.good} exercices,{/if}
       {#if summary.verygood}résolu {summary.verygood} exercices{/if}.
+      Plus que {summary.rest} pour finir. Bon courage!
     {/if}
     
     <ResultsSet bind:exercisesSet={exercisesSet}
@@ -59,6 +60,8 @@
      showresults = true;
      summary = computeSummary(results);
      summary.total = computeNumberOfExercises(campaign);
+     summary.rest = summary.total -
+       summary.bad - summary.good - summary.verygood;
    } catch (exc) {
      console.log('Results refresh', {exc});
      error = parseAnomaly(exc);
