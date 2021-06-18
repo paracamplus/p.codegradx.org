@@ -83,7 +83,7 @@
       {:else}CodeGradX{/if}
     </div>
 
-    <div class='w3-container w3-hide-small'>
+    <div class='w3-container w3-hide-small' id='Pseudo'>
       {#if isUser($person) }
         <span class='w3-margin-left'
               title="Votre pseudo" >{$person.pseudo}</span>
