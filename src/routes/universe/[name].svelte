@@ -76,16 +76,18 @@
          goto(`/results/${_campaign.name}`);
        } else {
          $lastmessage = `Je ne vois pas d'univers ainsi nommé!
-Veuillez donc choisir un nouvel univers.`; //'
+Veuillez donc choisir l'univers qui vous tente.`; //'
          goto('/universes');
        }
      } else if ( _campaign ) {
        $campaign = _campaign;
        showAuthentication = true;
      } else {
-       $lastmessage = `Je ne vois pas d'univers ainsi nommé!
-Veuillez donc choisir un nouvel univers.`; //'
-       goto('/universes');
+       // user is unknown but ask for a specific campaignName
+       // ...
+       $lastmessage = `Pour accéder à l'univers ${campaignName}, vous
+devez d'abord vous identifier!`;
+       goto('/connect');
      }
    } catch (exc) {
      console.log('universe', {exc});
@@ -101,4 +103,3 @@ Veuillez donc choisir un nouvel univers.`; //'
  }
 
 </script>
-    

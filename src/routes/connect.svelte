@@ -6,6 +6,7 @@
 </style>
 
 <Page shortTitle="Identification"
+      title="Identification"
       showheader={false} >
 
   <header class='w3-center w3-large'>

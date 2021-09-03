@@ -10,11 +10,20 @@
     </p>
 
     {#if summary}
+    {#if summary.bad + summary.good + summary.verygood > 0}
     <p> Parmi les {summary.total} exercices proposés, vous avez
-      {#if summary.bad > 0}débuté {summary.bad} exercices,{/if}
-      {#if summary.good > 0}résolu partiellement {summary.good} exercices,{/if}
-      {#if summary.verygood}résolu {summary.verygood} exercices{/if}.
+      {#if summary.bad > 0}débuté {summary.bad} exercice{s(summary.bad)}{/if}
+      {#if summary.good > 0}
+        {#if summary.bad > 0},{/if}
+        résolu partiellement {summary.good} exercice{s(summary.good)}{/if}
+      {#if summary.verygood}
+        {#if summary.bad > 0 || summary.good > 0},{/if}
+        résolu {summary.verygood} exercice{s(summary.verygood)}{/if}.
       Plus que {summary.rest} pour finir. Bon courage!
+    </p>
+    {:else}
+    <p> Sont proposés {summary.total} exercices. À vous de coder! </p>
+    {/if}
     {/if}
     
     <ResultsSet bind:exercisesSet={exercisesSet}
@@ -101,5 +110,13 @@
    count(campaign.exercisesSet);
    return counter;
  }
-  
+
+ function s (n) {
+   if ( n > 1 ) {
+     return 's';
+   } else {
+     return '';
+   }
+ }
+ 
 </script>

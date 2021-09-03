@@ -31,7 +31,7 @@ function customizer (state) {
 
 CodeGradX.initialize(true, customizer)
     .then(async () => {
-        await configureConfig();
+        //await configureConfig();
         sapper.start({
             target: document.querySelector('#sapper')
         });

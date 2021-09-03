@@ -11,8 +11,8 @@
  }
 </style>
 
-<Page shortTitle="Mot de passe perdu"
-      title="Mot de passe perdu" >
+<Page shortTitle="Mot de passe inconnu"
+      title="Mot de passe inconnu" >
     
   <div class="w3-margin-top">
     <label for="login">Votre courriel:</label>
@@ -31,7 +31,7 @@
     <button class="w3-btn w3-theme-d2 w3-round-xxlarge"
             name="lostpassword"
             on:click={lostpassword}>
-      J'ai perdu mon mot de passe!
+      {buttonName}
     </button>
   </div>
 
@@ -49,8 +49,10 @@
  import { initializePerson, goto, isUser } from '../client/lib.mjs';
  import { onClient } from '../common/utils.mjs';
 
+ export let defaultlogin = 'mon.email@a.moi';
+ export let buttonName = "Quel est mon mot de passe?";
+ 
  let login = undefined;
- let defaultlogin = 'mon.email@a.moi';
  let error = undefined;
  let errorLogin = false;
 

@@ -32,7 +32,7 @@ export async function configureConfig () {
         }
     } catch (exc) {
         // ignore
-        console.log(`fetch  config problem from ${hostname}`, {exc});//DEBUG
+        console.log(`fetch config problem from ${hostname}`, {exc}); //DEBUG
     } finally {
         config.set($config);
         //console.log($config);//DEBUG
