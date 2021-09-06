@@ -66,7 +66,7 @@
  import { initializePerson, goto }
    from '../client/lib.mjs';
 
- let campaignName = 'ensta';
+ let campaignName = 'ensta-2021';
 
  onMount(async () => {
    try {

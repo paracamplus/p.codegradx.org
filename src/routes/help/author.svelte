@@ -35,7 +35,13 @@
   sera sélectionné. Un jeu d'exercices peut aussi mentionner un UUID
   pour imposer la version choisie de l'exercice.
 
-  </p>
+  </p> <p>
+
+    Sur le <a href='https://codegradx.org/spip.php?article6'>site de
+    CodeGradX</a> se trouvent des ressources réutilisables pour
+    l'écriture d'exercices.
+    
+  </p>  
 
 </section>
 

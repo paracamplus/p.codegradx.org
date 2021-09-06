@@ -72,14 +72,14 @@
      summary.rest = summary.total -
        summary.bad - summary.good - summary.verygood;
    } catch (exc) {
-     console.log('Results refresh', {exc});
+     //console.log('Results refresh', {exc});
      error = parseAnomaly(exc);
    }
  }
 
  // Cf. ResultTitle
  function computeSummary (results) {
-   console.log('results', {results}); // DEBUG
+   //console.log('results', {results}); // DEBUG
    let verygood = 0;
    let good = 0;
    let bad = 0;

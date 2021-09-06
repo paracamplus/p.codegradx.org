@@ -3,6 +3,7 @@
 import { isUser } from './lib.mjs';
 import { get } from 'svelte/store';
 import { campaign } from '../stores.mjs';
+import { CodeGradX } from 'codegradx';
 
 /*
   Try to find a campaign. Look first in person otherwise look among
@@ -35,6 +36,30 @@ export async function fetchCampaign (person, campaignName) {
         state.currentCampaignName = campaignName;
         state.currentCampaign = campaign;
         return campaign;
+    }
+}
+
+/**
+   Ensure a person is enrolled in an open campaign.
+
+   @returns {User}
+*/
+
+export async function register_in_open_campaign (person, campaignName) {
+    const state = CodeGradX.getCurrentState();
+    const response = await state.sendAXServer('x', {
+        path: `/fromp/openregistration/${campaignName}`,
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
+    if ( response.ok ) {
+        state.currentUser = new CodeGradX.User(response.entity);
+        return state.currentUser;
+    } else {
+        throw response;
     }
 }
 

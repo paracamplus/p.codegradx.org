@@ -27,6 +27,8 @@
            class:show={showMenu}
            class='w3-dropdown-content w3-bar-block w3-card-4'>
         <a class='w3-bar-item w3-btn'
+           href={buildGoto(homepage)}>début</a>
+        <a class='w3-bar-item w3-btn'
            href={buildGoto('apropos')}>à propos</a>
         <a class='w3-bar-item w3-btn'
            href={buildGoto('help')}>aides</a>
@@ -117,9 +119,13 @@
  };
  let dev = false;
  let campaignName = 'free';
+ let homepage = '/';
  
  onMount(async () => {
-   await configureConfig();
+   $config = await configureConfig();
+   if ( $config.homepage ) {
+     homepage = $config.homepage;
+   }
    try {
      dev = get(session).dev;
    } catch (exc) {
