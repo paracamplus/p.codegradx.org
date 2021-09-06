@@ -81,6 +81,7 @@
     <div class='w3-container'>
       {#if $config.logo}<img src={$config.logo.url}
                              alt='{$config.logo.alt}'
+                             width={$config.logo.width}
                              height={$config.logo.height} />
       {:else}CodeGradX{/if}
     </div>
