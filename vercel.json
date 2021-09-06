@@ -45,7 +45,7 @@
               "value": "on"
           }, {
               "key": "Content-Security-Policy-Report-Only",
-              "value": "default-src 'self'; script-src 'nonce-random123' 'strict-dynamic' 'unsafe-inline' https:; object-src 'none'; base-uri 'none'; report-uri mailto:webmaster@codegradx.org;"
+              "value": "default-src 'self'; script-src 'https://*.codegradx.org'; object-src 'none'; style-src 'unsafe-inline'; base-uri 'https://*.codegradx.org'; report-uri 'https://x10.codegradx.org/report';"
           }, {
               "key": "Content-Security-Policy",
               "value": "default-src 'self' codegradx.org *.codegradx.org; "
