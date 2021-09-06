@@ -39,7 +39,7 @@
                        { "key": "Cache-Control",
                          "value": "s-max-age=1, stale-while-revalidate" }
                      ] },
-        { "source": "/.*",
+        { "source": "/(.*)",
           "headers": [ {
               "key": "X-DNS-Prefetch-Control",
               "value": "on"
@@ -48,7 +48,7 @@
               "value": "default-src 'self'; script-src 'nonce-random123' 'strict-dynamic' 'unsafe-inline' https:; object-src 'none'; base-uri 'none'; report-uri mailto:webmaster@codegradx.org;"
           }, {
               "key": "Content-Security-Policy",
-              "value": "default-src 'self' codegradx.org *.codegradx.org; ",
+              "value": "default-src 'self' codegradx.org *.codegradx.org; "
           }, {
               "key": "X-XSS-Protection",
               "value": "1; mode=block"
