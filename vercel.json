@@ -45,7 +45,7 @@
               "value": "on"
           }, {
               "key": "Content-Security-Policy-Report-Only",
-              "value": "default-src 'self'; script-src 'https://*.codegradx.org'; object-src 'none'; style-src 'unsafe-inline'; base-uri 'https://*.codegradx.org'; report-uri 'https://x10.codegradx.org/report';"
+              "value": "default-src 'self' *.codegradx.org; object-src 'none'; media-src https://www.youtube.com/; frame-src https://www.youtube.com/; style-src 'unsafe-inline' 'self' *.codegradx.org; base-uri *.codegradx.org; form-action *.codegradx.org; report-uri 'https://x10.codegradx.org/report';"
           }, {
               "key": "X-XSS-Protection",
               "value": "1; mode=block"
