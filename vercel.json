@@ -45,7 +45,7 @@
               "value": "on"
           }, {
               "key": "Content-Security-Policy-Report-Only",
-              "value": "default-src *.codegradx.org; object-src 'none'; media-src www.youtube.com; frame-src www.youtube.com; img-src *.ytimg.com; style-src 'unsafe-inline' *.codegradx.org; script-src 'unsafe-eval' 'unsafe-inline' *.codegradx.org; base-uri *.codegradx.org; form-action *.codegradx.org; report-uri https://x10.codegradx.org/CSPreport;"
+              "value": "default-src *.codegradx.org; object-src 'none'; media-src www.youtube.com; frame-src www.youtube.com; img-src *.codegradx.org *.ytimg.com; style-src 'unsafe-inline' *.codegradx.org; script-src 'unsafe-eval' 'unsafe-inline' *.codegradx.org; base-uri *.codegradx.org; form-action *.codegradx.org; report-uri https://x10.codegradx.org/CSPreport;"
           }, {
               "key": "X-XSS-Protection",
               "value": "1; mode=block"
