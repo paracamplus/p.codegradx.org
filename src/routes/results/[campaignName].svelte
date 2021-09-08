@@ -45,15 +45,16 @@
      $person = maybeperson;
    }
    
-   $campaign = await fetchCampaign($person, campaignName);
-   if ( $campaign ) {
+   let _campaign = await fetchCampaign($person, campaignName);
+   if ( _campaign ) {
      // ATTENTION: $person may not be enrolled in $campaign if
      // $campaign is an open campaign
      try {
-       $person = await register_in_open_campaign($person, campaignName);
+       $person = await register_in_open_campaign($person, _campaign);
+       $campaign = _campaign;
      } catch (response) {
        $lastmessage = error = `Je n'ai pas réussi à vous inscrire
-dans l'univers ${$campaign.name} !?`;
+dans l'univers ${campaignName} !?`;
        return goto('/universes');
      }
    } else {
@@ -65,7 +66,7 @@ apprenants de l'univers ${campaignName} !`; //'
        return goto('/universes');
      }
    }
-   campaignTitle = `dans ${$campaign.name}`;
+   campaignTitle = `dans ${campaignName}`;
  });
  
 </script>

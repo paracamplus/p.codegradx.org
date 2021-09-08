@@ -73,6 +73,7 @@
      if ( $person ) {
        if ( _campaign ) {
          //console.log('universe', {person: $person, campaign: $campaign});
+         $campaign = _campaign;
          goto(`/results/${_campaign.name}`);
        } else {
          $lastmessage = `Je ne vois pas d'univers ainsi nommé!

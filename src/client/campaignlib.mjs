@@ -45,21 +45,25 @@ export async function fetchCampaign (person, campaignName) {
    @returns {User}
 */
 
-export async function register_in_open_campaign (person, campaignName) {
-    const state = CodeGradX.getCurrentState();
-    const response = await state.sendAXServer('x', {
-        path: `/fromp/openregistration/${campaignName}`,
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
+export async function register_in_open_campaign (person, campaign) {
+    if ( campaign.open ) {
+        const state = CodeGradX.getCurrentState();
+        const response = await state.sendAXServer('x', {
+            path: `/fromp/openregistration/${campaign.name}`,
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        if ( response.ok ) {
+            state.currentUser = new CodeGradX.User(response.entity);
+            return state.currentUser;
+        } else {
+            throw response;
         }
-    });
-    if ( response.ok ) {
-        state.currentUser = new CodeGradX.User(response.entity);
-        return state.currentUser;
     } else {
-        throw response;
+        return person;
     }
 }
 
