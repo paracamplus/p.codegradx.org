@@ -28,10 +28,10 @@
   <p>
     {#if jobs.length > 0}
       {#if jobs.length > 1}
-        Il y a {jobs.length} copies différentes affichées ci-dessous.
+        Il y a (au plus) {jobs.length} copies différentes affichées ci-dessous.
        {#if rest}Et encore, au plus, {rest} copies non encore affichées{/if}.
       {:else}
-        Il y a une copie.
+        Il y a une seule copie.
       {/if}
     {:else}
        Il n'y a aucune copie!
