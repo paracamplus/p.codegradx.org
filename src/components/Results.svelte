@@ -41,7 +41,7 @@
  
  import { onMount } from 'svelte';
  import { parseAnomaly } from '../client/errorlib.mjs';
- import { CodeGradX } from 'codegradx/campaignlib';
+ import { CodeGradX } from 'codegradx/src/campaignlib';
  import { CodeGradX as _ } from 'codegradx/src/userlib';
  
  export let person = undefined;

@@ -54,8 +54,8 @@ NOTA: many parts of code similar to exercisejobs
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { CodeGradX } from 'codegradx/exercise';
- import { CodeGradX as _ } from 'codegradx/campaign';
+ import { CodeGradX } from 'codegradx/src/exercise';
+ import { CodeGradX as _ } from 'codegradx/src/campaign';
  import { initializePerson, goto, isUser } from '../../../client/lib.mjs';
  import { person, current_exercise, campaign, lastmessage } 
     from '../../../stores.mjs';

@@ -31,8 +31,8 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { person, campaign, lastmessage } from '../../stores.mjs';
- import { CodeGradX } from 'codegradx/campaign';
- import { CodeGradX as cx } from 'codegradx/campaignlib';
+ import { CodeGradX } from 'codegradx/src/campaign';
+ import { CodeGradX as cx } from 'codegradx/src/campaignlib';
  import { initializePerson, goto, isUser } from '../../client/lib.mjs';
  import { fetchCampaign } from '../../client/campaignlib.mjs';
  import { parseAnomaly } from '../../client/errorlib.mjs';

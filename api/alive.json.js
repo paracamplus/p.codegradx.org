@@ -1,0 +1,1 @@
+module.exports=function(t,e=5e3){return async function(n,o,r){try{return new Promise(((r,u)=>{setTimeout((()=>u("timeout")),e),r(t(n,o))}))}catch(t){return{statusCode:500,headers:{},body:o.body+t.toString()}}}}(signupinit_get);

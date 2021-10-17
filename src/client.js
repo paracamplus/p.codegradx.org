@@ -1,9 +1,8 @@
 import * as sapper from '@sapper/app';
 
 // Weird but makes bundler happy:
-import { CodeGradX } from 'codegradx';
+import { CodeGradX } from 'codegradx/src/cache';
 //console.log(CodeGradX);// DEBUG
-import { plugCache } from 'codegradx/cache';
 import { configureConfig } from './client/lib.mjs';
 
 window.CodeGradX = CodeGradX; // Make CodeGradX global!
@@ -15,7 +14,7 @@ function customizer (state) {
     // Cache is performed in service-worker:
     //state.cacher = plugCache(CodeGradX, 'NoCache', state);
     //state.cacher = plugCache(CodeGradX, 'InlineCache', state);
-    state.cacher = plugCache(CodeGradX, cacherType, state);
+    state.plugCache(cacherType);
     caches.forEach((name) => state.mkCacheFor(name));
     if ( state.cacherType === 'LocalStorageCache' ) {
         caches.forEach((name) => {

@@ -46,7 +46,7 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { CodeGradX } from 'codegradx/campaignlib';
+ import { CodeGradX } from 'codegradx/src/campaignlib';
  import { campaign, lastmessage } from '../stores.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
  import { goto } from '../client/lib.mjs';

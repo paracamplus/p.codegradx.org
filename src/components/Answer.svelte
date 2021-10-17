@@ -43,7 +43,7 @@
  import EditorSCM from '../components/EditorSCM.svelte';
 
  import { onMount } from 'svelte';
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
  import { chooseProgrammingLanguage } from '../client/editorlib.mjs';
  
  export let exercise = null;

@@ -25,7 +25,7 @@
  
  import { onMount, createEventDispatcher } from 'svelte';
  const dispatch = createEventDispatcher();
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
  import { htmlencode } from 'codegradx/src/htmlencode';
 
  export let exercise;

@@ -61,7 +61,7 @@
  const dispatch = createEventDispatcher();
  import { person, campaign } from '../stores.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
- import { CodeGradX } from 'codegradx/campaignlib';
+ import { CodeGradX } from 'codegradx/src/campaignlib';
  import { doSortColumn } from '../client/sortlib.mjs';
  import { parseAnomaly } from '../client/errorlib.mjs';
  import { initializePerson, goto } from '../client/lib.mjs';

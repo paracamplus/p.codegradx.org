@@ -51,7 +51,7 @@ NOTA: many parts of code similar to campaignexercisejobs
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
  import { initializePerson, isUser, goto } from '../../client/lib.mjs';
  import { sleep } from '../../common/utils.mjs';
  import { person, current_exercise, campaign, lastmessage }

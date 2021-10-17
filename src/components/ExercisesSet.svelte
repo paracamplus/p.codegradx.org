@@ -43,7 +43,7 @@
 
 <script>
  import ExerciseTitle from './ExerciseTitle.svelte';
- import { CodeGradX } from 'codegradx/campaign';
+ import { CodeGradX } from 'codegradx/src/campaign';
 
  export let exercisesSet = null;
 </script>

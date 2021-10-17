@@ -51,7 +51,7 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { CodeGradX } from 'codegradx/campaign';
+ import { CodeGradX } from 'codegradx/src/campaign';
  import { sleep } from '../../common/utils.mjs';
  import { person, campaign, lastmessage } from '../../stores.mjs';
  import { initializePerson, isCampaign, goto, isUser }

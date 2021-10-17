@@ -136,7 +136,7 @@
  import { initializePerson, isUser, goto, buildGoto }
     from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
  import queryString from 'query-string';
  import { massagePRE } from '../../client/utils.mjs';
  import { onClient } from '../../common/utils.mjs';

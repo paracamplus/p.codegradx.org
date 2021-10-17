@@ -47,7 +47,7 @@
  
  import { onMount, createEventDispatcher } from 'svelte';
  const dispatch = createEventDispatcher();
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
  import { makeStoreEventHandler } from '../client/editorlib.mjs';
  
  export let exercise = undefined;

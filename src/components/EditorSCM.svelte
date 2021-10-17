@@ -116,7 +116,7 @@
   <section id='EvaluationResults'
            class:visible={showResults}
            class='w3-container Evaluation'>
-    <header class='w3-padding-16'>Résultats d'évaluation
+    <header class='w3-padding-16'>Résultats d'évaluation locale
       <span class='w3-right higher'
             title='Effacer ces résultats'
             data-close="EditorSCM"

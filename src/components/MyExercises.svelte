@@ -45,7 +45,7 @@
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
  import { doSortColumn } from '../client/sortlib.mjs';
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
  import { current_exercise } from '../stores.mjs';
  import { goto } from '../client/lib.mjs';
 

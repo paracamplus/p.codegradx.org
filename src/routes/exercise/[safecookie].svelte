@@ -63,7 +63,7 @@
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
  import { initializePerson, goto, buildGoto, isUser }
     from '../../client/lib.mjs';
  import { person, current_exercise, campaign, lastmessage }

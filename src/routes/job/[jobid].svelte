@@ -31,7 +31,7 @@
  import { onMount } from 'svelte';
  import { person, lastmessage } from '../../stores.mjs';
  import { initializePerson, goto } from '../../client/lib.mjs';
- import { CodeGradX } from 'codegradx/exercise';
+ import { CodeGradX } from 'codegradx/src/exercise';
 
  let currentJob = undefined;
  let error = undefined;
