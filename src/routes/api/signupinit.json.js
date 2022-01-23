@@ -2,7 +2,7 @@
 
 import { CodeGradX } from 'codegradx';
 import { crypt, shuffle } from '../../server/cryptlib.mjs';
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 /* NOTA: Fortunately, Vercel allows serverless functions to be invoked
    with or without the .js suffix.
