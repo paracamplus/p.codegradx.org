@@ -1,5 +1,7 @@
 //
 
+import { htmlencode } from 'codegradx/src/htmlencode';
+
 export function shorten (s, len=15) {
     const re = new RegExp(`^(.{${len}}).*\$`);
     s = s.replace(re, '$1');
