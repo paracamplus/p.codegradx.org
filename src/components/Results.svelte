@@ -64,18 +64,17 @@
    showresults = false;
    try {
      exercisesSet = await campaign.getExercisesSet();
-     if ( exercisesSet ) {
-       const user = await person.getProgress(campaign);
-       results = user.results;
-       showresults = true;
-       summary = computeSummary(results);
-       summary.total = computeNumberOfExercises(campaign);
-       summary.rest = summary.total -
-            summary.bad - summary.good - summary.verygood;
-     } else {
+     if ( Array.isArray(exercisesSet) && exercisesSet.length === 0 ) {
        error = "Aucun exercice associé!";
        return;
-     }
+     }       
+     const user = await person.getProgress(campaign);
+     results = user.results;
+     showresults = true;
+     summary = computeSummary(results);
+     summary.total = computeNumberOfExercises(campaign);
+     summary.rest = summary.total -
+         summary.bad - summary.good - summary.verygood;
    } catch (exc) {
      //console.log('Results refresh', {exc});
      error = parseAnomaly(exc);
