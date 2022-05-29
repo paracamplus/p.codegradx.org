@@ -25,10 +25,15 @@ export async function configureConfig () {
         $config = { hostname };
         const response = await fetch(`/${hostname}.json`);
         if ( response.ok ) {
-            $config = await response.json();
-            console.log(`fetched config from ${hostname}`);//DEBUG
-            // Note to avoid repeating the previous fetch
-            $config.from = hostname;
+            const ct = response.headers.get('Content-Type');
+            if ( ct && ct.startsWith('application/json') ) {
+                $config = await response.json();
+                console.log(`fetched config from ${hostname}`);//DEBUG
+                // Note to avoid repeating the previous fetch
+                $config.from = hostname;
+            } else {
+                console.log(`No extra configuration`);//DEBUG
+            }
         }
     } catch (exc) {
         // ignore
