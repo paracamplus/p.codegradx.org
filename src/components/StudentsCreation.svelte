@@ -120,11 +120,10 @@
        for ( const message of messages ) {
          problem |= ! message.ok;
        }
+       showmessages = true;
        if ( ! problem ) {
          content = '';
          dispatch('students', {});
-       } else {
-         showmessages = true;
        }
      } else {
        throw response;
