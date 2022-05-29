@@ -120,7 +120,7 @@ export async function initializePerson () {
             // considered as anonymous
         }
     }
-    if ( $person ) {
+    if ( $person && isUser($person) ) {
         // Redirect towards email confirmation or UA signature if needed:
         const href = await determineNextUserState($person);
         const where = document.location.pathname.replace(/^.*(\/\w+)/, '$1');
