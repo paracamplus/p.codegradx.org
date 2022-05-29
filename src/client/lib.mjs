@@ -124,8 +124,8 @@ export async function initializePerson () {
         // Redirect towards email confirmation or UA signature if needed:
         const href = await determineNextUserState($person);
         const where = document.location.pathname.replace(/^.*(\/\w+)/, '$1');
-        if ( href && href !== where ) {
-            //console.log(`From ${where}: goto ${href}`);
+        if ( href && href !== where && where !== '/resume' ) {
+            console.log(`From ${where}: goto ${href}`);// DEBUG
             return goto(href);
         }
     }
