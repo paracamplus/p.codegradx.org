@@ -80,6 +80,7 @@
  
  import { onMount, createEventDispatcher  } from 'svelte';
  const dispatch = createEventDispatcher();
+ import { config } from '../stores.mjs';
  import { CodeGradX } from 'codegradx/src/job';
  import { massageMark } from '../client/marklib.mjs';
 
@@ -95,6 +96,11 @@
      const parameters = {};
      if ( attempts ) {
        parameters.attempts = +(attempts);
+     }
+     if ( $config && $config.markFactor ) {
+       parameters.markFactor = $config.markFactor;
+     } else {
+       parameters.markFactor = 100;
      }
      await job.getReport(parameters);
      showReport = true;

@@ -98,9 +98,10 @@
  import { massageMark } from '../client/marklib.mjs';
  import { spreadItems, installTarget, reverse } from '../client/spreadlib.mjs';
  import { CodeGradX } from 'codegradx';
+ import { markFactor } from '../stores.mjs';
  
  let currentJob = undefined;
- export let factor = 100;
+ export let factor = $markFactor;
  export let jobs = [];
  export let count;
  export let rest;

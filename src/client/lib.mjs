@@ -32,7 +32,7 @@ export async function configureConfig () {
                 // Note to avoid repeating the previous fetch
                 $config.from = hostname;
             } else {
-                console.log(`No extra configuration`);//DEBUG
+                //console.log(`No extra configuration`);//DEBUG
             }
         }
     } catch (exc) {
