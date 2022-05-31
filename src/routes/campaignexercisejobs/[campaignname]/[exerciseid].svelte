@@ -14,14 +14,17 @@ NOTA: many parts of code similar to exercisejobs
   {#if exerciseTitle}
    <header class='w3-center w3-large'>
      Copies associées à {exerciseTitle}
-     {#if exercise}
-     <span class='w3-right w3-margin-left w3-xlarge'
-           title={"Information sur l'exercice"}
-           on:click='{() => showinfo = true}'><InformationSign /></span>
-     {/if}
     <span class='w3-right w3-margin-left'
           data-close="JobsList"
           on:click={close}>&#x2716;</span>
+     {#if exercise}
+     <span class='w3-right w3-margin-left w3-xlarge'
+           title={"Information sur l'exercice"}
+           on:click={() => showinfo = true}><InformationSign /></span>
+     <span class='w3-right w3-margin-left w3-xlarge'
+           title={"Meilleures copies seulement"}
+           on:click={() => best = "Best"}>Best</span>
+     {/if}
    </header>
   
    {#if showinfo && exercise}
@@ -63,6 +66,7 @@ NOTA: many parts of code similar to exercisejobs
  import { parseAnomaly } from '../../../client/errorlib.mjs';
  import { fetchCampaign } from '../../../client/campaignlib.mjs';
  import { onClient } from '../../../common/utils.mjs';
+ import queryString from 'query-string';
 
  let error = undefined;
  let exercise = undefined;
@@ -76,6 +80,7 @@ NOTA: many parts of code similar to exercisejobs
  let offset = 0;
  let total = undefined;
  let rest = 0;
+ let best = '';
  
  onClient(async () => {
    const uri = window.document.location.pathname;
@@ -83,7 +88,11 @@ NOTA: many parts of code similar to exercisejobs
         .replace(/\/campaignexercisejobs\/(.+)\/(.+)$/, '$1');
    uuid = uri.replace(/\/campaignexercisejobs\/(.+)\/(.+)$/, '$2');
    exerciseTitle = CodeGradX.normalizeUUID(uuid);
-   
+   const search = queryString.parse(window.document.location.search);
+   if ( search.best ) {
+     best = 'Best';
+   }
+
    const maybeperson = await initializePerson();
    if ( ! isUser(maybeperson) ) {
      $lastmessage = error = "Veuillez d'abord vous identifier!";
@@ -122,7 +131,7 @@ NOTA: many parts of code similar to exercisejobs
  async function findRelatedJobs (uuid) {
    try {
      const state = CodeGradX.getCurrentState();
-     const path = `/campaign/listJobsPerExercise/${$campaign.name}/${uuid}`;
+     const path = `/campaign/list${best}JobsPerExercise/${$campaign.name}/${uuid}`;
      const response = await state.sendAXServer('x', {
        path: `${path}?count=${count}&offset=${offset}`,
        method: 'GET',
