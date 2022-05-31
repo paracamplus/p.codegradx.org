@@ -136,6 +136,7 @@ NOTA: many parts of code similar to exercisejobs
      best = '';
    }
    showjobs = false;
+   jobs = [];
    try {
      await findRelatedJobs(uuid);
      showjobs = true;
