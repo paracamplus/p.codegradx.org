@@ -86,6 +86,9 @@
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
             on:click={mkCloseAllBut('showNotifications')}>
       dernières notifications</button>
+    <button class='w3-btn w3-round-xxlarge w3-theme-l4'
+            on:click={mkCloseAllBut('showHallOfFrame')}>
+      Hall of Fame</button>
   </div>
 
   {#if widgets.showNotifications}
