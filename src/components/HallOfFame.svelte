@@ -84,7 +84,7 @@
    };
  }
 
- async function refreshNotifications (event) {
+ async function refreshHallOfFame (event) {
    loaded = false;
    const state = CodeGradX.getCurrentState();
    try {

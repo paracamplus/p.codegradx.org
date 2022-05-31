@@ -90,6 +90,8 @@
 
   {#if widgets.showNotifications}
   <Notifications on:close={closeAll} />
+  {/if}
+  {#if widgets.showHallOfFrame}
   <HallOfFame on:close={closeAll} />
   {/if}
 
