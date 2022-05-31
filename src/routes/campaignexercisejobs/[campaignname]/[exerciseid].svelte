@@ -23,7 +23,8 @@ NOTA: many parts of code similar to exercisejobs
            on:click={() => showinfo = true}><InformationSign /></span>
      <span class='w3-right w3-margin-left w3-xlarge'
            title={"Meilleures copies seulement"}
-           on:click={() => best = "Best"}>Best</span>
+           on:click={refreshBest}>Best
+       <!-- svg viewBox="0 0 80 90"><path d="m 0,0 30,45 0,30 10,15 0,-45 30,-45 Z"></path></svg --></span>
      {/if}
    </header>
   
@@ -126,6 +127,22 @@ NOTA: many parts of code similar to exercisejobs
 
  async function seeMore (event) {
    await findRelatedJobs(uuid);
+ }
+
+ async function refreshBest (event) {
+   if ( best === '' ) {
+     best = 'Best';
+   } else {
+     best = '';
+   }
+   showjobs = false;
+   try {
+     await findRelatedJobs(uuid);
+     showjobs = true;
+   } catch (exc) {
+     console.log('exercisejobs1', {exc});
+     error = parseAnomaly(exc);
+   }
  }
 
  async function findRelatedJobs (uuid) {
