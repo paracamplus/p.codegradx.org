@@ -42,7 +42,9 @@
   {#if jobs && jobs.length}
   <p>
     Il y a {total} copies en tout.
+    {#if jobs.length < total}
     Seulement {jobs.length} sont actuellement listées ci-dessous.
+    {/if}
   </p>
   {/if}
   

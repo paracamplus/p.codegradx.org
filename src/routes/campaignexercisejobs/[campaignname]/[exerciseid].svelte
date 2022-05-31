@@ -7,7 +7,7 @@ NOTA: many parts of code similar to exercisejobs
 <style>
 </style>
 
-<Page title="Copies associées à {exerciseTitle}"
+<Page title={pageTitle}
       shortTitle="Copies {exerciseTitle}"
       showheader={false} >      
 
@@ -23,8 +23,7 @@ NOTA: many parts of code similar to exercisejobs
            on:click={() => showinfo = true}><InformationSign /></span>
      <span class='w3-right w3-margin-left w3-xlarge'
            title={"Meilleures copies seulement"}
-           on:click={refreshBest}>Best
-       <!-- svg viewBox="0 0 80 90"><path d="m 0,0 30,45 0,30 10,15 0,-45 30,-45 Z"></path></svg --></span>
+           on:click={refreshBest}><FunnelSign /></span>
      {/if}
    </header>
   
@@ -55,6 +54,7 @@ NOTA: many parts of code similar to exercisejobs
  import ExerciseInfo from '../../../components/ExerciseInfo.svelte';
  import WaitingImage from '../../../components/WaitingImage.svelte';
  import ExerciseJobsList from '../../../components/ExerciseJobsList.svelte';
+ import FunnelSign from '../../../components/FunnelSign.svelte';
 
  import * as sapper from '@sapper/app';
  import { onMount } from 'svelte';
@@ -82,6 +82,7 @@ NOTA: many parts of code similar to exercisejobs
  let total = undefined;
  let rest = 0;
  let best = '';
+ let pageTitle = `Copies associées à ${exerciseTitle}`;
  
  onClient(async () => {
    const uri = window.document.location.pathname;
@@ -92,6 +93,9 @@ NOTA: many parts of code similar to exercisejobs
    const search = queryString.parse(window.document.location.search);
    if ( search.best ) {
      best = 'Best';
+     pageTitle = `Meilleures copies associées à ${exerciseTitle}`;
+   } else {
+     pageTitle = `Copies associées à ${exerciseTitle}`;
    }
 
    const maybeperson = await initializePerson();
@@ -132,8 +136,10 @@ NOTA: many parts of code similar to exercisejobs
  async function refreshBest (event) {
    if ( best === '' ) {
      best = 'Best';
+     pageTitle = `Meilleures copies associées à ${exerciseTitle}`;
    } else {
      best = '';
+     pageTitle = `Copies associées à ${exerciseTitle}`;
    }
    showjobs = false;
    jobs = [];
