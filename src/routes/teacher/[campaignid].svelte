@@ -90,6 +90,7 @@
 
   {#if widgets.showNotifications}
   <Notifications on:close={closeAll} />
+  <HallOfFame on:close={closeAll} />
   {/if}
 
   {:else if ! error}
@@ -115,6 +116,7 @@
  import DaysStats from '../../components/DaysStats.svelte';
  import Notifications from '../../components/Notifications.svelte';
  import ExercisesSetCreation from '../../components/ExercisesSetCreation.svelte';
+ import HallOfFame from '../../components/HallOfFame.svelte';
 
  import { onMount } from 'svelte';
  import { person, campaign, lastmessage } from '../../stores.mjs';
@@ -142,7 +144,8 @@
    showExercisesStats: false,
    showBatches: false,
    showDaysStats: false,
-   showNotifications: false
+   showNotifications: false,
+   showHallOfFrame: false
  };
 
  function closeAll (event) {

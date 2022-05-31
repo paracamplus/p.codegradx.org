@@ -39,10 +39,11 @@
  import ResultsSet from '../components/ResultsSet.svelte';
  import WaitingImage from '../components/WaitingImage.svelte';
  
- import { onMount } from 'svelte';
+ import { onMount, tick } from 'svelte';
  import { parseAnomaly } from '../client/errorlib.mjs';
  import { CodeGradX } from 'codegradx/src/campaignlib';
  import { CodeGradX as _ } from 'codegradx/src/userlib';
+ import { goto } from '../client/lib.mjs';
  
  export let person = undefined;
  export let campaign = undefined;
@@ -66,7 +67,8 @@
      exercisesSet = await campaign.getExercisesSet();
      if ( Array.isArray(exercisesSet) && exercisesSet.length === 0 ) {
        error = "Aucun exercice associé!";
-       return;
+       await tick();
+       goto('/whoami');
      }       
      const user = await person.getProgress(campaign);
      results = user.results;
