@@ -43,7 +43,7 @@
  
  import { onMount, createEventDispatcher, onDestroy } from 'svelte';
  const dispatch = createEventDispatcher();
- import { campaign } from '../stores.mjs';
+ import { campaign, config } from '../stores.mjs';
  import { CodeGradX } from 'codegradx';
  import { doSortColumn } from '../client/sortlib.mjs';
  import { sleep } from '../common/utils.mjs';
@@ -89,13 +89,14 @@
    const state = CodeGradX.getCurrentState();
    try {
      const response = await state.sendAXServer('x', {
-       path: `/campaign/halloffame/${$campaign.name}`,
+       path: `/campaign/halloffame/${$campaign.name}/${$config.jfpExercise}`,
        method: 'GET',
        headers: {
          Accept: 'application/json'
        }
      });
      if ( response.ok ) {
+       console.log(response.entity);//DEBUG
        items = response.entity.map(massageHallOfFameItem);
        if ( from ) {
          items = items.filter(item => {

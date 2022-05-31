@@ -86,9 +86,9 @@
     <button class='w3-btn w3-round-xxlarge w3-theme-l4'
             on:click={mkCloseAllBut('showNotifications')}>
       dernières notifications</button>
-    <button class='w3-btn w3-round-xxlarge w3-theme-l4'
+    <!-- button class='w3-btn w3-round-xxlarge w3-theme-l4'
             on:click={mkCloseAllBut('showHallOfFrame')}>
-      Hall of Fame</button>
+      Hall of Fame</button -->
   </div>
 
   {#if widgets.showNotifications}
@@ -124,7 +124,7 @@
  import HallOfFame from '../../components/HallOfFame.svelte';
 
  import { onMount } from 'svelte';
- import { person, campaign, lastmessage } from '../../stores.mjs';
+ import { person, campaign, lastmessage, config } from '../../stores.mjs';
  import { initializePerson, isTeacher, goto, isUser }
    from '../../client/lib.mjs';
  import { htmlencode } from 'codegradx/src/htmlencode';

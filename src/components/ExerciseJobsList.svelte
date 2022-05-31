@@ -52,6 +52,7 @@
     <thead class="w3-theme-l3">
       <th on:click={sortColumn('finished', 'date')}>date</th>
       <th on:click={sortColumn('person_id', 'int')}>apprenant</th>
+      <th on:click={sortColumn('person_pseudo', 'int')}>pseudo</th>
       <th on:click={sortColumn('mark', 'float')}>note / {totalMark || '?'}</th>
       <th on:click={sortColumn('problem')}>problème</th>
     </thead>
@@ -64,6 +65,7 @@
               on:click={mkShowJob(job)} >
             <td>{CodeGradX.Date2str(job.finished)}</td>
             <td>{job.person_id}</td>
+            <td>{job.person_pseudo}</td>
             <td>{job.mark}</td>
             <td on:click={mkShowJobProblem(job)}>
               {#if job.problem}
