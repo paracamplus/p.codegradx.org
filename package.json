@@ -57,7 +57,7 @@
         "semver": "^7.3.4",
         "svelte": "^3.35.0",
         "svelte-loader": "^3.0.0",
-        "vercel": "^21.3.3"
+        "vercel": "^28.15.3"
     },
     "bugs": {
         "email": "bugs@codegradx.org"
